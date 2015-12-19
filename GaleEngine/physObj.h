@@ -1,5 +1,4 @@
 #pragma once
-
 #include<vector>
 
 class Mesh;
@@ -13,4 +12,7 @@ public:
 	std::vector<Vertex*> verts;
 	std::vector<Edge*> edges;
 	std::vector<Triangle*> tris;
+
+	PhysObj();
+	PhysObj(Mesh* mesh);
 };

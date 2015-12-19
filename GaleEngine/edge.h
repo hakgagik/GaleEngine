@@ -10,8 +10,9 @@ public:
 	Mesh* mesh;
 	Vertex* v0;
 	Vertex* v1;
-	Triangle* t0;
-	Triangle* t1;
+	std::vector<Triangle*> tris;
+
+	static Edge* buildEdge(Mesh* mesh, Vertex* v0, Vertex* v1);
 
 	Edge();
 	Edge(Mesh* mesh, Vertex* v0, Vertex* v1);

@@ -13,51 +13,87 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\MeshElements">
+    <Filter Include="Managers">
+      <UniqueIdentifier>{fb98255a-8e43-4f59-a265-f1c7d5688e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MeshElements">
       <UniqueIdentifier>{4915d7e7-b970-45b2-a2d0-518a9634817f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Mesh and PhysObj Elements">
-      <UniqueIdentifier>{1c6a1c8a-08eb-4b06-ad70-947db9d52cf6}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{78190ffb-fd29-4d2d-88e8-d0ebaf76c3c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Init">
+      <UniqueIdentifier>{c5ddafff-e18a-4438-8dbb-074400c4a67e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\MeshElements</Filter>
+      <Filter>MeshElements</Filter>
     </ClCompile>
     <ClCompile Include="edge.cpp">
-      <Filter>Source Files\MeshElements</Filter>
+      <Filter>MeshElements</Filter>
     </ClCompile>
     <ClCompile Include="triangle.cpp">
-      <Filter>Source Files\MeshElements</Filter>
+      <Filter>MeshElements</Filter>
     </ClCompile>
     <ClCompile Include="vertex.cpp">
-      <Filter>Source Files\MeshElements</Filter>
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader_Manager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="physObj.cpp">
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="Init_GLEW.cpp">
+      <Filter>Core\Init</Filter>
+    </ClCompile>
+    <ClCompile Include="Init_GLUT.cpp">
+      <Filter>Core\Init</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\Mesh and PhysObj Elements</Filter>
+    <ClInclude Include="Shader_Manager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
     <ClInclude Include="vertex.h">
-      <Filter>Header Files\Mesh and PhysObj Elements</Filter>
+      <Filter>MeshElements</Filter>
     </ClInclude>
     <ClInclude Include="triangle.h">
-      <Filter>Header Files\Mesh and PhysObj Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="edge.h">
-      <Filter>Header Files\Mesh and PhysObj Elements</Filter>
+      <Filter>MeshElements</Filter>
     </ClInclude>
     <ClInclude Include="physObj.h">
-      <Filter>Header Files\Mesh and PhysObj Elements</Filter>
+      <Filter>MeshElements</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>MeshElements</Filter>
+    </ClInclude>
+    <ClInclude Include="edge.h">
+      <Filter>MeshElements</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>MeshElements</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowInfo.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextInfo.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBufferInfo.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="Init_GLEW.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="Init_GLUT.h">
+      <Filter>Core\Init</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

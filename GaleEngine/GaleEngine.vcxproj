@@ -89,6 +89,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>lib\freeglut;lib\glew</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,19 +122,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="edge.cpp" />
+    <ClCompile Include="Init_GLEW.cpp" />
+    <ClCompile Include="Init_GLUT.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="particle.cpp" />
+    <ClCompile Include="physObj.cpp" />
+    <ClCompile Include="Shader_Manager.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ContextInfo.h" />
     <ClInclude Include="edge.h" />
+    <ClInclude Include="FrameBufferInfo.h" />
+    <ClInclude Include="Init_GLEW.h" />
+    <ClInclude Include="Init_GLUT.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="physObj.h" />
+    <ClInclude Include="Shader_Manager.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vertex.h" />
+    <ClInclude Include="WindowInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
