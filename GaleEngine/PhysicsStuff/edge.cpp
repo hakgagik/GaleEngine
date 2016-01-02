@@ -19,7 +19,7 @@ Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1)
 	this->v1 = v1;
 }
 
-Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0)
+Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, TrianglePhys* t0)
 {
 	this->mesh = mesh;
 	this->v0 = v0;
@@ -27,7 +27,7 @@ Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0)
 	this->tris.push_back(t0);
 }
 
-Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0, Triangle* t1)
+Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, TrianglePhys* t0, TrianglePhys* t1)
 {
 	this->mesh = mesh;
 	this->v0 = v0;
@@ -36,7 +36,7 @@ Edge::Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0, Triangle* t1)
 	tris.push_back(t0);
 }
 
-Triangle* Edge::getOtherTri(Triangle* t)
+TrianglePhys* Edge::getOtherTri(TrianglePhys* t)
 {
 	if (tris.size() > 2) return nullptr; // TODO: handle this more gracefully
 	if (t == tris[0]) return tris[1];
@@ -51,7 +51,7 @@ Vertex * Edge::getOtherVert(Vertex* v)
 	else return nullptr;
 }
 
-void Edge::addTri(Triangle* t)
+void Edge::addTri(TrianglePhys* t)
 {
 	tris.push_back(t);
 }

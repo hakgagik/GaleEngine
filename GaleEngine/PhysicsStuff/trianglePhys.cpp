@@ -1,13 +1,13 @@
-#include "triangle.h"
+#include "trianglePhys.h"
 
-Triangle::Triangle()
+TrianglePhys::TrianglePhys()
 {
 	mesh = nullptr;
 	verts = new Vertex*[3];
 	edges = new Edge*[3];
 }
 
-Triangle::Triangle(Mesh* mesh, Vertex* v0, Vertex* v1, Vertex* v2)
+TrianglePhys::TrianglePhys(Mesh* mesh, Vertex* v0, Vertex* v1, Vertex* v2)
 {
 	this->mesh = mesh;
 	verts[0] = v0;
@@ -15,7 +15,7 @@ Triangle::Triangle(Mesh* mesh, Vertex* v0, Vertex* v1, Vertex* v2)
 	verts[2] = v2;
 }
 
-Triangle::Triangle(Mesh* mesh, Vertex* v0, Vertex* v1, Vertex* v2, Edge* e0, Edge* e1, Edge* e2)
+TrianglePhys::TrianglePhys(Mesh* mesh, Vertex* v0, Vertex* v1, Vertex* v2, Edge* e0, Edge* e1, Edge* e2)
 {
 	this->mesh = mesh;
 	verts[0] = v0;

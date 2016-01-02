@@ -1,6 +1,6 @@
 #include "physObj.h"
 #include "mesh.h"
-#include "triangle.h"
+#include "trianglePhys.h"
 #include "edge.h"
 #include "vertex.h"
 #include <glm\glm.hpp>

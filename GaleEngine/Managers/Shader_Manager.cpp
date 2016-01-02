@@ -1,3 +1,4 @@
+// Modified from http://in2gpu.com/opengl-3/
 #include "Shader_Manager.h"
 
 using namespace Managers;

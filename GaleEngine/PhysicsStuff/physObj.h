@@ -4,14 +4,14 @@
 class Mesh;
 class Vertex;
 class Edge;
-class Triangle;
+class TrianglePhys;
 
 class PhysObj {
 public:
 	Mesh* mesh;
 	std::vector<Vertex*> verts;
 	std::vector<Edge*> edges;
-	std::vector<Triangle*> tris;
+	std::vector<TrianglePhys*> tris;
 
 	PhysObj();
 	PhysObj(Mesh* mesh);

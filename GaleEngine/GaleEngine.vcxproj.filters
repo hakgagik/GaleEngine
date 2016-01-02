@@ -30,70 +30,116 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>MeshElements</Filter>
+    <ClCompile Include="Core\Init\Init_GLEW.cpp">
+      <Filter>Core\Init</Filter>
     </ClCompile>
-    <ClCompile Include="edge.cpp">
-      <Filter>MeshElements</Filter>
+    <ClCompile Include="Core\Init\Init_GLUT.cpp">
+      <Filter>Core\Init</Filter>
     </ClCompile>
-    <ClCompile Include="triangle.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="vertex.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader_Manager.cpp">
+    <ClCompile Include="Managers\Scene_Manager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="physObj.cpp">
+    <ClCompile Include="Managers\Shader_Manager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsStuff\edge.cpp">
       <Filter>MeshElements</Filter>
     </ClCompile>
-    <ClCompile Include="particle.cpp">
+    <ClCompile Include="PhysicsStuff\mesh.cpp">
       <Filter>MeshElements</Filter>
     </ClCompile>
-    <ClCompile Include="Init_GLEW.cpp">
-      <Filter>Core\Init</Filter>
+    <ClCompile Include="PhysicsStuff\particle.cpp">
+      <Filter>MeshElements</Filter>
     </ClCompile>
-    <ClCompile Include="Init_GLUT.cpp">
-      <Filter>Core\Init</Filter>
+    <ClCompile Include="PhysicsStuff\physObj.cpp">
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsStuff\vertex.cpp">
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Models\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Models\Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Model_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsStuff\trianglePhys.cpp">
+      <Filter>MeshElements</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Models\Quad.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader_Manager.h">
+    <ClInclude Include="Core\Init\Init_GLEW.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Init\Init_GLUT.h">
+      <Filter>Core\Init</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\IListener.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FrameBufferInfo.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\WindowInfo.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ContextInfo.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Scene_Manager.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="vertex.h">
+    <ClInclude Include="Managers\Shader_Manager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsStuff\vertex.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="triangle.h">
+    <ClInclude Include="PhysicsStuff\edge.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="physObj.h">
+    <ClInclude Include="PhysicsStuff\mesh.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.h">
+    <ClInclude Include="PhysicsStuff\particle.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="edge.h">
+    <ClInclude Include="PhysicsStuff\physObj.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="particle.h">
+    <ClInclude Include="Rendering\VertexFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\IGameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Models\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Models\Triangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Model_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsStuff\trianglePhys.h">
       <Filter>MeshElements</Filter>
     </ClInclude>
-    <ClInclude Include="WindowInfo.h">
-      <Filter>Core\Init</Filter>
+    <ClInclude Include="Rendering\Models\Quad.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContextInfo.h">
-      <Filter>Core\Init</Filter>
+    <ClInclude Include="Core\DebugOutput.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FrameBufferInfo.h">
-      <Filter>Core\Init</Filter>
-    </ClInclude>
-    <ClInclude Include="Init_GLEW.h">
-      <Filter>Core\Init</Filter>
-    </ClInclude>
-    <ClInclude Include="Init_GLUT.h">
-      <Filter>Core\Init</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Vertex_Shader.glsl" />
+    <None Include="Shaders\Fragment_Shader.glsl" />
   </ItemGroup>
 </Project>

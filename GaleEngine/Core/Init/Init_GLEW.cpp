@@ -1,3 +1,4 @@
+// Modified from http://in2gpu.com/opengl-3/
 #include "Init_GLEW.h"
 using namespace Core;
 using namespace Core::Init;

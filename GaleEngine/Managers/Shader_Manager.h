@@ -1,12 +1,11 @@
-//Shader_Manager.h
-//modified from http://in2gpu.com/2014/10/29/shaders-basics
+// Modified from http://in2gpu.com/opengl-3/
 #pragma once
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <vector>
-#include "lib/glew/glew.h"
-#include "lib/freeglut/freeglut.h"
+#include "../lib/glew/glew.h"
+#include "../lib/freeglut/freeglut.h"
 
 namespace Managers
 {

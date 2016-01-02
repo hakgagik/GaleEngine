@@ -2,13 +2,13 @@
 #include <vector>
 #include <glm\glm.hpp>
 
-class Triangle;
+class TrianglePhys;
 class Edge;
 class Mesh;
 
 class Vertex {
 public:
-	std::vector<Triangle*> tris;
+	std::vector<TrianglePhys*> tris;
 	std::vector<Edge*> edges;
 	glm::vec3 pos;
 

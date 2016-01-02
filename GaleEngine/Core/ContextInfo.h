@@ -1,3 +1,4 @@
+// Modified from http://in2gpu.com/opengl-3/
 #pragma once
 
 namespace Core {

@@ -2,7 +2,7 @@
 #include <vector>
 
 class Mesh;
-class Triangle;
+class TrianglePhys;
 class Vertex;
 
 class Edge {
@@ -10,16 +10,16 @@ public:
 	Mesh* mesh;
 	Vertex* v0;
 	Vertex* v1;
-	std::vector<Triangle*> tris;
+	std::vector<TrianglePhys*> tris;
 
 	static Edge* buildEdge(Mesh* mesh, Vertex* v0, Vertex* v1);
 
 	Edge();
 	Edge(Mesh* mesh, Vertex* v0, Vertex* v1);
-	Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0);
-	Edge(Mesh* mesh, Vertex* v0, Vertex* v1, Triangle* t0, Triangle* t1);
+	Edge(Mesh* mesh, Vertex* v0, Vertex* v1, TrianglePhys* t0);
+	Edge(Mesh* mesh, Vertex* v0, Vertex* v1, TrianglePhys* t0, TrianglePhys* t1);
 
-	Triangle* getOtherTri(Triangle* t);
+	TrianglePhys* getOtherTri(TrianglePhys* t);
 	Vertex* getOtherVert(Vertex* v);
-	void addTri(Triangle* t);
+	void addTri(TrianglePhys* t);
 };
