@@ -141,5 +141,6 @@
   <ItemGroup>
     <None Include="Shaders\Vertex_Shader.glsl" />
     <None Include="Shaders\Fragment_Shader.glsl" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
