@@ -26,8 +26,7 @@ void Triangle::Create() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)0); // tell gl how to read just the vertex positions from the vbo
 	glEnableVertexAttribArray(1); // enable the second attribute array to be used for color
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(offsetof(VertexFormat, VertexFormat::color))); // same as above, but with color. note the non-zero offset
-	glBindVertexArray(0); //bind the vao again?...
-	//TODO: try removing the above. alternatively, try removing the first bind call
+	glBindVertexArray(0); //unbind the vao
 
 	this->vao = vao;
 	this->vbos.push_back(vbo);
