@@ -1,11 +1,9 @@
 // Modified from http://in2gpu.com/opengl-3/
 #pragma once
-#include <fstream>
-#include <iostream>
+#include "../lib/json.hpp"
+#include "GL/glew.h"
+#include <string>
 #include <map>
-#include <vector>
-#include "../lib/glew/glew.h"
-#include "../lib/freeglut/freeglut.h"
 
 namespace Managers
 {
@@ -17,10 +15,11 @@ namespace Managers
 		~Shader_Manager(void);
 
 		void CreateProgram(const std::string& shaderName, const std::string& VertexShaderFilename, const std::string& FragmentShaderFilename);
+
 	private:
 		static std::map<std::string, GLuint> programs;
 
-		std::string ReadShader(const std::string& filename);
-		GLuint CreateShader(GLenum shaderType, const std::string& source, const std::string& shaderName);
+		std::string readShader(const std::string& filename);
+		GLuint createShader(GLenum shaderType, const std::string& source, const std::string& shaderName);
 	};
 }

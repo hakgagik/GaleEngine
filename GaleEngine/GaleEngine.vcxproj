@@ -87,8 +87,9 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib\freeglut;lib\glew</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -121,49 +122,74 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PhysicsStuff\edge.cpp" />
+    <ClCompile Include="Core\DebugOutput.cpp" />
     <ClCompile Include="Core\Init\Init_GLEW.cpp" />
     <ClCompile Include="Core\Init\Init_GLUT.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhysicsStuff\mesh.cpp" />
-    <ClCompile Include="PhysicsStuff\particle.cpp" />
-    <ClCompile Include="PhysicsStuff\physObj.cpp" />
+    <ClCompile Include="Managers\Input_Manager.cpp" />
+    <ClCompile Include="Managers\Material_Manager.cpp" />
+    <ClCompile Include="Managers\Physics_Manager.cpp" />
     <ClCompile Include="Managers\Scene_Manager.cpp" />
     <ClCompile Include="Managers\Shader_Manager.cpp" />
-    <ClCompile Include="PhysicsStuff\trianglePhys.cpp" />
-    <ClCompile Include="PhysicsStuff\vertex.cpp" />
-    <ClCompile Include="Rendering\Models\Model.cpp" />
+    <ClCompile Include="Managers\Texture_Manager.cpp" />
+    <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp" />
+    <ClCompile Include="Physics\Constraints\StretchingConstraintGroup.cpp" />
+    <ClCompile Include="Physics\Transmuters\ClothTransmuter.cpp" />
+    <ClCompile Include="Rendering\GameObjects\Cameras\PerspectiveCamera.cpp" />
+    <ClCompile Include="Rendering\ForwardRenderer.cpp" />
+    <ClCompile Include="Rendering\GameObjects\HeadNode.cpp" />
+    <ClCompile Include="Rendering\GameObjects\IGameObject.cpp" />
+    <ClCompile Include="Rendering\GameObjects\Lights\Light.cpp" />
+    <ClCompile Include="Rendering\GameObjects\Models\Fragment.cpp" />
+    <ClCompile Include="Rendering\GameObjects\Models\Model.cpp" />
     <ClCompile Include="Managers\Model_Manager.cpp" />
-    <ClCompile Include="Rendering\Models\Quad.cpp" />
-    <ClCompile Include="Rendering\Models\Triangle.cpp" />
+    <ClCompile Include="Rendering\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\ContextInfo.h" />
     <ClInclude Include="Core\DebugOutput.h" />
-    <ClInclude Include="PhysicsStuff\edge.h" />
     <ClInclude Include="Core\FrameBufferInfo.h" />
-    <ClInclude Include="Core\IListener.h" />
+    <ClInclude Include="Core\ISceneListener.h" />
     <ClInclude Include="Core\Init\Init_GLEW.h" />
     <ClInclude Include="Core\Init\Init_GLUT.h" />
-    <ClInclude Include="PhysicsStuff\mesh.h" />
-    <ClInclude Include="PhysicsStuff\particle.h" />
-    <ClInclude Include="PhysicsStuff\physObj.h" />
+    <ClInclude Include="Managers\Input_Manager.h" />
+    <ClInclude Include="Managers\Material_Manager.h" />
+    <ClInclude Include="Managers\Physics_Manager.h" />
     <ClInclude Include="Managers\Scene_Manager.h" />
     <ClInclude Include="Managers\Shader_Manager.h" />
-    <ClInclude Include="PhysicsStuff\trianglePhys.h" />
-    <ClInclude Include="PhysicsStuff\vertex.h" />
     <ClInclude Include="Core\WindowInfo.h" />
-    <ClInclude Include="Rendering\IGameObject.h" />
-    <ClInclude Include="Rendering\Models\Model.h" />
+    <ClInclude Include="Managers\Texture_Manager.h" />
+    <ClInclude Include="Physics\Constraints\Constraint.h" />
+    <ClInclude Include="Physics\Constraints\ConstraintGroup.h" />
+    <ClInclude Include="Physics\Constraints\StretchingConstraint.h" />
+    <ClInclude Include="Physics\Constraints\StretchingConstraintGroup.h" />
+    <ClInclude Include="Physics\Forces\ForceField.h" />
+    <ClInclude Include="Physics\Particles\Particle.h" />
+    <ClInclude Include="Physics\Transmuters\ClothTransmuter.h" />
+    <ClInclude Include="Physics\Transmuters\Transmuter.h" />
+    <ClInclude Include="Rendering\GameObjects\Cameras\Camera.h" />
+    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h" />
+    <ClInclude Include="Rendering\ForwardRenderer.h" />
+    <ClInclude Include="Rendering\GameObjects\HeadNode.h" />
+    <ClInclude Include="Rendering\GameObjects\Models\Fragment.h" />
+    <ClInclude Include="Rendering\GameObjects\IGameObject.h" />
+    <ClInclude Include="Rendering\IRenderer.h" />
+    <ClInclude Include="Rendering\GameObjects\Lights\Light.h" />
+    <ClInclude Include="Rendering\Materials\BlinnPhongMaterial.h" />
+    <ClInclude Include="Rendering\Materials\IMaterial.h" />
+    <ClInclude Include="Rendering\Materials\LambertianMaterial.h" />
+    <ClInclude Include="Rendering\Materials\MaterialsHeader.h" />
+    <ClInclude Include="Rendering\Materials\SingleColorMaterial.h" />
+    <ClInclude Include="Rendering\GameObjects\Models\Model.h" />
     <ClInclude Include="Managers\Model_Manager.h" />
-    <ClInclude Include="Rendering\Models\Quad.h" />
-    <ClInclude Include="Rendering\Models\Triangle.h" />
+    <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\VertexFormat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Shaders\Fragment_Shader.glsl" />
-    <None Include="Shaders\Vertex_Shader.glsl" />
+    <None Include="Shaders\lambertian.frag" />
+    <None Include="Shaders\single_color.frag" />
+    <None Include="Shaders\standard.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

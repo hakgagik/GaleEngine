@@ -1,7 +1,7 @@
 // Modified from http://in2gpu.com/opengl-3/
 #pragma once
-#include "../../lib/glew/glew.h"
-#include "../../lib/freeglut/freeglut.h"
+#include "GL/glew.h"
+#include "GL/freeglut.h"
 
 namespace Core {
 	struct FramebufferInfo {

@@ -1,18 +1,29 @@
 // Modified from http://in2gpu.com/opengl-3/
 #include "Shader_Manager.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 using namespace Managers;
+using namespace std;
 
-std::map<std::string, GLuint> Shader_Manager::programs;
+map<string, GLuint> Shader_Manager::programs;
 
-const GLuint Managers::Shader_Manager::GetShader(const std::string & shaderName)
+const GLuint Shader_Manager::GetShader(const string & shaderName)
 {
-	return programs.at(shaderName);
+	try {
+		return programs.at(shaderName);
+	}
+	catch(const exception &e) {
+		cout << "Shader Manager: Shader " << shaderName << " does not exist." << endl;
+		cout << e.what() << endl;
+		return 0;
+	}
 }
 
 Shader_Manager::Shader_Manager(void) {}
 Shader_Manager::~Shader_Manager(void) {
-	std::map<std::string, GLuint>::iterator i;
+	map<string, GLuint>::iterator i;
 	for (i = programs.begin(); i != programs.end(); ++i) {
 		GLuint pr = i->second;
 		glDeleteProgram(pr);
@@ -20,19 +31,19 @@ Shader_Manager::~Shader_Manager(void) {
 	programs.clear();
 }
 
-void Managers::Shader_Manager::CreateProgram(const std::string & shaderName, const std::string & VertexShaderFilename, const std::string & FragmentShaderFilename)
+void Shader_Manager::CreateProgram(const string & shaderName, const string & VertexShaderFilename, const string & FragmentShaderFilename)
 {
 	if (programs.count(shaderName) > 0) {
-		std::cout << "Error: Program " << shaderName.c_str() << " already exists.";
+		cout << "Error: Program " << shaderName.c_str() << " already exists.";
 		return;
 	}
 	// read the code for the shaders
-	std::string vertex_shader_code = ReadShader(VertexShaderFilename);
-	std::string fragment_shader_code = ReadShader(FragmentShaderFilename);
+	string vertex_shader_code = readShader(VertexShaderFilename);
+	string fragment_shader_code = readShader(FragmentShaderFilename);
 
 	// compile the shaders
-	GLuint vertex_shader = CreateShader(GL_VERTEX_SHADER, vertex_shader_code, VertexShaderFilename);
-	GLuint fragment_shader = CreateShader(GL_FRAGMENT_SHADER, fragment_shader_code, FragmentShaderFilename);
+	GLuint vertex_shader = createShader(GL_VERTEX_SHADER, vertex_shader_code, VertexShaderFilename);
+	GLuint fragment_shader = createShader(GL_FRAGMENT_SHADER, fragment_shader_code, FragmentShaderFilename);
 
 	int link_result = 0;
 	// put 'em together into a program
@@ -47,31 +58,31 @@ void Managers::Shader_Manager::CreateProgram(const std::string & shaderName, con
 	if (link_result == GL_FALSE) {
 		int info_log_length = 0;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_length);
-		std::vector<char> program_log(info_log_length);
+		vector<char> program_log(info_log_length);
 		glGetProgramInfoLog(program, info_log_length, NULL, &program_log[0]);
-		std::cout << "Shader Loader : LINK ERROR" << std::endl << &program_log[0] << std::endl;
+		cout << "Shader Loader : LINK ERROR" << endl << &program_log[0] << endl;
 		return;
 	}
 	programs[shaderName] = program;
 }
 
-std::string Managers::Shader_Manager::ReadShader(const std::string & filename)
+string Shader_Manager::readShader(const string & filename)
 {
-	std::string shaderCode;
-	std::ifstream file(filename, std::ios::in); // create a filestream
+	string shaderCode;
+	ifstream file(filename, ios::in); // create a filestream
 	if (!file.good()) { // make sure it's good
-		std::cout << "Can't read file " << filename.c_str() << std::endl;
-		std::terminate();
+		cout << "Can't read file " << filename.c_str() << endl;
+		terminate();
 	}
-	file.seekg(0, std::ios::end); // go to the end of the file so we can check size
+	file.seekg(0, ios::end); // go to the end of the file so we can check size
 	shaderCode.resize((unsigned int)file.tellg()); // read the end position, determining the file size
-	file.seekg(0, std::ios::beg); // go back to the beginning
+	file.seekg(0, ios::beg); // go back to the beginning
 	file.read(&shaderCode[0], shaderCode.size()); // read the entire shader into the shaderCode string
 	file.close(); // close the file
 	return shaderCode;
 }
 
-GLuint Managers::Shader_Manager::CreateShader(GLenum shaderType, const std::string & source, const std::string & shaderName)
+GLuint Shader_Manager::createShader(GLenum shaderType, const string & source, const string & shaderName)
 {
 	int compile_result = 0;
 
@@ -87,9 +98,9 @@ GLuint Managers::Shader_Manager::CreateShader(GLenum shaderType, const std::stri
 	{
 		int info_log_length = 0;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_length); // get the length of the info log!
-		std::vector<char> shader_log(info_log_length); // prepare a vector of chars to store the info log
+		vector<char> shader_log(info_log_length); // prepare a vector of chars to store the info log
 		glGetShaderInfoLog(shader, info_log_length, NULL, &shader_log[0]); // ask GL for info on the compilation failure
-		std::cout << "ERROR compiling shader: " << shaderName.c_str() << std::endl << &shader_log[0] << std::endl; // print out the error
+		cout << "ERROR compiling shader: " << shaderName.c_str() << endl << &shader_log[0] << endl; // print out the error
 		return 0;
 	}
 	return shader;

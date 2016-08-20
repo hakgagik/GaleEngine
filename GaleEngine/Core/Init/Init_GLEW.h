@@ -1,8 +1,5 @@
-// Modified from http://in2gpu.com/opengl-3/
 #pragma once
-#include <iostream>
-#include "../../lib/glew/glew.h"
-#include "../../lib/freeglut/freeglut.h"
+// Modified from http://in2gpu.com/opengl-3/
 
 namespace Core {
 	namespace Init {

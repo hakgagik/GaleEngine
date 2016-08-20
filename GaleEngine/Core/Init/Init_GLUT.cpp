@@ -1,10 +1,22 @@
 // Modified from http://in2gpu.com/opengl-3/
 #include "Init_GLUT.h"
+#include "Init_GLEW.h"
+#include "../WindowInfo.h"
+#include "../ContextInfo.h"
+#include "../FrameBufferInfo.h"
+#include "../ISceneListener.h"
+#include "../DebugOutput.h"
+#include "../../Rendering/IRenderer.h"
+#include <iostream>
+#include "GL/glew.h"
+#include "GL/freeglut.h"
 
 using namespace Core;
 using namespace Init;
+using namespace Rendering;
+using namespace std;
 
-IListener* Init_GLUT::listener = NULL;
+ISceneListener* Init_GLUT::listener = NULL;
 WindowInfo Init_GLUT::windowInfo;
 
 void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, const FramebufferInfo & framebufferInfo)
@@ -31,12 +43,12 @@ void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, con
 	glutInitContextFlags(GLUT_DEBUG); // enable debugging
 	glutCreateWindow(window.name.c_str()); // finally create the window
 
-	std::cout << "GLUT: initialized" << std::endl;
+	cout << "GLUT: initialized" << endl;
 
 	glEnable(GL_DEBUG_OUTPUT);
 	// now intialize glew... no idea why this has to be done
 	Init_GLEW::Init();
-	glDebugMessageCallback(DebugOutput::myCallback, NULL);
+	glDebugMessageCallback((GLDEBUGPROC)DebugOutput::myCallback, NULL);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
 	// set the callback functions
@@ -44,6 +56,7 @@ void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, con
 	glutCloseFunc(closeCallback);
 	glutDisplayFunc(displayCallback);
 	glutReshapeFunc(reshapeCallback);
+	
 
 	// cleanup?
 	// when the window is closed, glut main loop returns
@@ -54,12 +67,17 @@ void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, con
 }
 
 void Init_GLUT::run() {
-	std::cout << "GLUT:\tStart Running " << std::endl;
-	glutMainLoop();
+	if (listener->sceneInitialized) {
+		cout << "GLUT:\tStart Running " << endl;
+		glutMainLoop();
+	}
+	else {
+		cout << "Init_GLUT:\tScene not initalized, cannot start." << endl;
+	}
 }
 
 void Init_GLUT::close() {
-	std::cout << "GLUT:\tFinished" << std::endl;
+	cout << "GLUT:\tFinished" << endl;
 	glutLeaveMainLoop();
 }
 
@@ -93,6 +111,7 @@ void Init_GLUT::closeCallback() {
 	close();
 }
 
+
 void Init_GLUT::enterFullscreen() {
 	glutFullScreen();
 }
@@ -106,13 +125,13 @@ void Init_GLUT::printOpenGLInfo(const WindowInfo & window, const ContextInfo & c
 	const unsigned char* renderer = glGetString(GL_RENDERER);
 	const unsigned char* vendor = glGetString(GL_VENDOR);
 	const unsigned char* version = glGetString(GL_VERSION);
-	std::cout << "******************************************************************************" << std::endl;
-	std::cout << "GLUT:\tVendor: " << vendor << std::endl;
-	std::cout << "GLUT:\tRenderer: " << renderer << std::endl;
-	std::cout << "GLUT:\tOpenGL version: " << version << std::endl;
+	cout << "******************************************************************************" << endl;
+	cout << "GLUT:\tVendor: " << vendor << endl;
+	cout << "GLUT:\tRenderer: " << renderer << endl;
+	cout << "GLUT:\tOpenGL version: " << version << endl;
 }
 
-void Core::Init::Init_GLUT::setListener(IListener *& iListener)
+void Init_GLUT::setListener(ISceneListener* &iSceneListener)
 {
-	listener = iListener;
+	listener = iSceneListener;
 }

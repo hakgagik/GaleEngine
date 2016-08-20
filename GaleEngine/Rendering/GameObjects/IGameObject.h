@@ -1,0 +1,50 @@
+#pragma once
+#include "../../lib/json.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <vector>
+#include <string>
+
+namespace Rendering {
+	namespace GameObjects {
+		class IGameObject {
+		public:
+			IGameObject();
+			virtual ~IGameObject() = 0; // pure virtual destructor!
+			virtual void Destroy();
+
+			IGameObject* parent;
+			std::string name;
+			std::vector<IGameObject*> children;
+			glm::mat4 toParentMatrix;
+			glm::mat4 toWorldMatrix;
+
+
+			virtual void addMeToChildren(IGameObject* child);
+			virtual void updateParent(IGameObject* parent);
+			virtual void deleteFromChildren(IGameObject* child);
+			virtual void addToSceneTree(IGameObject* parent, std::string name, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled = true);
+			virtual void updateMatrices();
+			virtual void invalidateMatrices();
+
+			bool enabled;
+
+			virtual glm::vec3 getPosition();
+			virtual glm::quat getOrientation();
+			virtual glm::vec3 getScale();
+
+			virtual void setPosition(glm::vec3 pos);
+			virtual void setOrientation(glm::quat orientation);
+			virtual void setScale(glm::vec3 scale);
+
+			virtual nlohmann::json GetJSON();
+		protected:
+			glm::vec3 position; //relative to parent
+			glm::quat orientation; // relative to parent
+			glm::vec3 scale; //relative to parent
+
+			bool matricesValid;
+			virtual void updateLocalMatrices();
+		};
+	}
+}

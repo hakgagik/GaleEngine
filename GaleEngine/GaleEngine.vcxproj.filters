@@ -42,34 +42,55 @@
     <ClCompile Include="Managers\Shader_Manager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsStuff\edge.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsStuff\mesh.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsStuff\particle.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsStuff\physObj.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsStuff\vertex.cpp">
-      <Filter>MeshElements</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Models\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Models\Triangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Managers\Model_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsStuff\trianglePhys.cpp">
-      <Filter>MeshElements</Filter>
+    <ClCompile Include="Rendering\ForwardRenderer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\Models\Quad.cpp">
+    <ClCompile Include="Rendering\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Texture_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DebugOutput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Material_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Input_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Lights\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Cameras\PerspectiveCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Models\Fragment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Models\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\IGameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\HeadNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\Physics_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Constraints\StretchingConstraintGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Transmuters\ClothTransmuter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="Core\Init\Init_GLUT.h">
       <Filter>Core\Init</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\IListener.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\FrameBufferInfo.h">
       <Filter>Core</Filter>
@@ -98,49 +116,104 @@
     <ClInclude Include="Managers\Shader_Manager.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsStuff\vertex.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsStuff\edge.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsStuff\mesh.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsStuff\particle.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsStuff\physObj.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
     <ClInclude Include="Rendering\VertexFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\IGameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\Models\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\Models\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Managers\Model_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsStuff\trianglePhys.h">
-      <Filter>MeshElements</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\Models\Quad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\DebugOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Rendering\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\ForwardRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Texture_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\BlinnPhongMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\IMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\LambertianMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\MaterialsHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\SingleColorMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Material_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Input_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Lights\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Cameras\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Models\Fragment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Models\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\IGameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\HeadNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\Physics_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Constraints\Constraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Particles\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Forces\ForceField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Constraints\StretchingConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Constraints\ConstraintGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Constraints\StretchingConstraintGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Transmuters\Transmuter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Transmuters\ClothTransmuter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ISceneListener.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\Vertex_Shader.glsl" />
-    <None Include="Shaders\Fragment_Shader.glsl" />
     <None Include="packages.config" />
+    <None Include="Shaders\single_color.frag" />
+    <None Include="Shaders\lambertian.frag" />
+    <None Include="Shaders\standard.vert" />
   </ItemGroup>
 </Project>

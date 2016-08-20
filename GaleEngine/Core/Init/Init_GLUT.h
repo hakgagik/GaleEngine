@@ -1,27 +1,25 @@
 // Modified from http://in2gpu.com/opengl-3/
 #pragma once
-#include <iostream>
-#include "../ContextInfo.h"
-#include "../FrameBufferInfo.h"
-#include "../WindowInfo.h"
-#include "../Init/Init_GLEW.h"
-#include "../IListener.h"
-#include "../DebugOutput.h"
 
 namespace Core {
+	struct WindowInfo;
+	struct ContextInfo;
+	struct FramebufferInfo;
+	class ISceneListener;
+
 	namespace Init {
 		class Init_GLUT {
 		public:
-			static void init(const Core::WindowInfo& window, const Core::ContextInfo& context, const Core::FramebufferInfo& framebufferInfo);
+			static void init(const WindowInfo& window, const ContextInfo& context, const FramebufferInfo& framebufferInfo);
 			static void run();
 			static void close();
 			static void enterFullscreen();
 			static void exitFullscreen();
-			static void printOpenGLInfo(const Core::WindowInfo& window, const Core::ContextInfo& context);
-			static void setListener(IListener*& iListener);
+			static void printOpenGLInfo(const WindowInfo& window, const ContextInfo& context);
+			static void setListener(ISceneListener* &iSceneListener);
 
 		private:
-			static IListener* listener;
+			static ISceneListener* listener;
 			static WindowInfo windowInfo;
 
 			static void idleCallback(void);
