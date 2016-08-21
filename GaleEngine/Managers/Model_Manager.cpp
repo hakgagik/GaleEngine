@@ -4,6 +4,8 @@
 #include "../Rendering/GameObjects/Models/ModelClone.h"
 #include "../Rendering/IRenderer.h"
 #include "../Rendering/VertexFormat.h"
+#include <unordered_set>
+#include <fstream>;
 //#include <fstream>
 
 using namespace Managers;
@@ -15,6 +17,9 @@ using namespace std;
 using json = nlohmann::json;
 
 const float Pi = glm::pi<float>();
+const string SPHERE_TEMPLATE_SOURCE = "ModelSources\\SphereTemplate.json";
+const string CUBE_TEMPLATE_SOURCE = "ModelSources\\CubeTemplate.json";
+const string RECT_TEMPLATE_SOURCE = "ModelSources\\RectTemplate.json";
 
 Model_Manager::Model_Manager() {
 }
@@ -59,7 +64,7 @@ ModelClone* Model_Manager::CloneAndAddd(string name, Model* source) {
 	return clone;
 }
 
-Model* Model_Manager::createSphere(int thetaDiv, int phiDiv) {
+void Model_Manager::createSphereTemplate(int thetaDiv, int phiDiv) {
 	vector<VertexFormat> verts;
 	vector<unsigned int> indices;
 	float theta, phi, st, ct, sp, cp;
@@ -104,10 +109,11 @@ Model* Model_Manager::createSphere(int thetaDiv, int phiDiv) {
 	//	output << indices[i] << endl;
 	//}
 
-	return new Model("Template Sphere", verts, indices);
+	sphereTemplate = new Model("Template Sphere", verts, indices);
+	sphereTemplate->source = SPHERE_TEMPLATE_SOURCE;
 }
 
-Model* Model_Manager::createCube() {
+void Model_Manager::createCubeTemplate() {
 	// Implement this method
 	vector<VertexFormat> verts;
 
@@ -198,17 +204,19 @@ Model* Model_Manager::createCube() {
 		20, 22, 23
 	};
 
-	return new Model("Cube Template", verts, indices);
+	cubeTemplate = new Model("Cube Template", verts, indices);
+	cubeTemplate->source = CUBE_TEMPLATE_SOURCE;
 }
 
-Model* Model_Manager::createRect() {
+void Model_Manager::createRectTemplate() {
 	// Implement this method
-	return new Model("Rectangle Template");
+	rectTemplate = new Model("Rectangle Template");
+	rectTemplate->source = RECT_TEMPLATE_SOURCE;
 }
 
 ModelClone* Model_Manager::getSphereCopy(string name) {
 	if (sphereTemplate == nullptr) {
-		sphereTemplate = createSphere();
+		createSphereTemplate();
 	}
 	ModelClone* sphere = new ModelClone(sphereTemplate, name);
 	cloneList[name] = sphere;
@@ -218,7 +226,7 @@ ModelClone* Model_Manager::getSphereCopy(string name) {
 ModelClone* Model_Manager::getCubeCopy(string name)
 {
 	if (cubeTemplate == nullptr) {
-		cubeTemplate = createCube();
+		createCubeTemplate();
 	}
 	ModelClone* cube = new ModelClone(cubeTemplate, name);
 	cloneList[name] = cube;
@@ -272,10 +280,56 @@ void Model_Manager::LoadFromJSON(json &j) {
 }
 
 void Model_Manager::WriteToJSON(json &j) {
-	cout << "Serializing Models" << endl;
 	for (auto kv : modelList) {
 		j[kv.first] = kv.second->GetJSON();
-		cout << "\rCurrently Serializing:\t" << kv.first;
 	}
-	cout << "\nFinished Serializing Models" << endl;
+	for (auto kv : cloneList) {
+		j[kv.first] = kv.second->GetJSON();
+	}
+}
+
+void Model_Manager::WriteModelsToJSON() {
+	cout << "Serializing Models" << endl;
+
+	unordered_set<string> sources;
+	
+	if (sphereTemplate != nullptr) {
+		cout << "Currently Serializing: Sphere Template\t" << endl;
+		json j = sphereTemplate->GetSourceJSON();
+		sources.emplace(sphereTemplate->source);
+		ofstream output(sphereTemplate->source);
+		output << j.dump();
+		output.close();
+	}
+
+	if (cubeTemplate != nullptr) {
+		cout << "Currently Serializing: Cube Template\t" << endl;
+		json j = cubeTemplate->GetSourceJSON();
+		sources.emplace(cubeTemplate->source);
+		ofstream output(cubeTemplate->source);
+		output << j.dump();
+		output.close();
+	}
+
+	if (rectTemplate != nullptr) {
+		cout << "Currently Serializing: Rectangle Template\t" << endl;
+		json j = rectTemplate->GetSourceJSON();
+		sources.emplace(rectTemplate->source);
+		ofstream output(rectTemplate->source);
+		output << j.dump();
+		output.close();
+	}
+
+	for (auto kv : modelList) {
+		if (!sources.count(kv.second->source)) {
+			cout << "Currently Serializing:\t" << kv.first << endl;
+			json j = kv.second->GetSourceJSON();
+			sources.emplace(kv.second->source);
+			ofstream output(kv.second->source);
+			output << j.dump();
+			output.close();
+		}
+	}
+
+	cout << "Finished Serializing Models" << endl;
 }

@@ -147,6 +147,7 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	texture_manager->WriteToJSON(j);
 	material_manager->WriteToJSON(j);
 	model_manager->WriteToJSON(j);
+	model_manager->WriteModelsToJSON();
 	physics_manager->WriteToJSON(j);
 	for (Camera* camera : cameras) {
 		j["Cameras"][camera->name] = camera->GetJSON();
@@ -158,6 +159,7 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	ofstream output(filename);
 	cout << "Printing to " << filename << endl;
 	output << j.dump();
+	output.close();
 }
 
 void Scene_Manager::SetupTestScene()
@@ -186,6 +188,7 @@ void Scene_Manager::SetupTestScene()
 		VertexFormat(vec4(0, 1, 1, 1), vec3(0, -1, 0), vec2(0, 1), vec4(1, 0, 0, 1)), };
 	vector<unsigned int> indices{ 0, 1, 2, 0, 2, 3 };
 	Model* triangle = model_manager->CreateAndAdd("Triangle", vertices, indices);
+	triangle->source = "ModelSources\\Triangle.json";
 	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one);
 	Texture* tex = texture_manager->LoadandAddTexture("Images\\test.bmp");
 	dynamic_cast<Materials::LambertianMaterial*>(triangle->GetFragmentMat("Main"))->diffuseTexture = tex;
@@ -220,7 +223,7 @@ void Scene_Manager::SetupTestScene()
 	sceneInitialized = true;
 	Input_Manager::registerCallbacks();
 	headNode->UpdateMatrices();
-	//SaveSceneToJSON("testScene.json");
+	SaveSceneToJSON("testScene.json");
 }
 
 string Scene_Manager::ReadFile(string &filename) {

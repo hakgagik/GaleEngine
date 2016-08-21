@@ -40,11 +40,12 @@ namespace Managers {
 
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
+		void WriteModelsToJSON();
 
 	private:
-		static Rendering::GameObjects::Models::Model* createSphere(int thetaDiv = 16, int phiDiv = 32);
-		static Rendering::GameObjects::Models::Model* createCube();
-		static Rendering::GameObjects::Models::Model* createRect();
+		void createSphereTemplate(int thetaDiv = 16, int phiDiv = 32);
+		void createCubeTemplate();
+		void createRectTemplate();
 		Rendering::GameObjects::Models::Model* sphereTemplate;
 		Rendering::GameObjects::Models::Model* cubeTemplate;
 		Rendering::GameObjects::Models::Model* rectTemplate;

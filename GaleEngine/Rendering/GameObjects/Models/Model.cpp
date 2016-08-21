@@ -209,8 +209,8 @@ void Model::DeleteFragment(string fragName) {
 	fragments.erase(fragName);
 }
 
-json Model::GetJSON() {
-	json j = IGameObject::GetJSON();
+json Model::GetSourceJSON() {
+	json j;
 
 	for (int i = 0; i < verts.size(); i++) {
 		j["Positions"][i] = { verts[i].position.x, verts[i].position.y, verts[i].position.z };
@@ -218,7 +218,7 @@ json Model::GetJSON() {
 		if (!calculatedNormals) j["Normals"][i] = { verts[i].normal.x, verts[i].normal.y , verts[i].normal.z };
 		if (!calculatedTangents) j["Tangents"][i] = { verts[i].tangent.x, verts[i].tangent.y, verts[i].tangent.z };
 	}
-	
+
 	for (int i : indices) {
 		j["Indices"].push_back(i);
 	}
@@ -229,9 +229,9 @@ json Model::GetJSON() {
 		j["Fragments"][kv.first]["IndexCount"] = kv.second->indexCount;
 		j["Fragments"][kv.first]["Material"] = kv.second->material->name;
 	}
-
 	return j;
 }
+
 
 void Model::PrintVBO(){
 	glBindVertexArray(GetVao());

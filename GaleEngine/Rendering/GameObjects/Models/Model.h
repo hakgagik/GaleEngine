@@ -52,7 +52,7 @@ namespace Rendering {
 				Materials::IMaterial* GetFragmentMat(std::string fragName);
 				void SetFragmentMat(std::string fragName, Materials::IMaterial* mat);
 
-				nlohmann::json GetJSON();
+				nlohmann::json GetSourceJSON();
 				void PrintVBO();
 			protected:
 				std::unordered_map<std::string, Fragment*> fragments;
