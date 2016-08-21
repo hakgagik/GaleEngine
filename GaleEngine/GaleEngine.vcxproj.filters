@@ -93,6 +93,9 @@
     <ClCompile Include="Physics\Transmuters\ClothTransmuter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Init\Init_GLEW.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Core\ISceneListener.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

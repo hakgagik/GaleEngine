@@ -13,24 +13,68 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-Model::Model() : IGameObject() {}
+Model::Model(string name) : IGameObject(name) {}
 
-Model::Model(const Model* other, string name) {
+Model::Model(const Model* other, string name) : IGameObject(name) {
+	cout << "Model: Copying " << other->name << " into " << name << ". This is very resource intensive. Should this be a clone instead?" << endl;
+	this->position = other->position;
+	this->orientation = other->orientation;
+	this->scale = other->scale;
+	this->source = other->source;
 	this->verts = other->verts;
 	this->indices = other->indices;
-	this->vao = other->vao;
-	this->vbos = other->vbos;
-	this->name = name;
 	for (auto kv : other->fragments) {
 		fragments[kv.first] = kv.second;
 	}
+
+	GenerateVAO();
+	UpdateVBO(true);
+	UpdateIBO(true);
 }
 
-Model::Model(vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color) : IGameObject()
+Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color) : IGameObject(name)
 {
 	this->verts = verts;
 	this->indices = indices;
 
+	GenerateVAO();
+	UpdateVBO(true);
+	UpdateIBO(true);
+
+	//SingleColorMaterial* mat = new SingleColorMaterial(color);
+	LambertianMaterial* mat = new LambertianMaterial(color);
+	this->fragments["Main"] = new Fragment(this, mat, 0, indices.size(), 0, verts.size());
+}
+
+Model::~Model() {
+	Destroy();
+}
+
+void Model::Update() {
+
+}
+
+void Model::UpdateVBO(bool force) {
+	if (vboInvalid || force) {
+		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexFormat), &verts[0], GL_STATIC_DRAW);
+		vboInvalid = false;
+	}
+}
+
+void Model::UpdateIBO(bool force) {
+	if (iboInvalid || force) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+	}
+}
+
+GLuint Model::GetVao() const {
+	return vao;
+}
+
+
+void Model::GenerateVAO() {
 	GLuint vao;
 	GLuint vbo;
 	GLuint ibo;
@@ -40,11 +84,8 @@ Model::Model(vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 co
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexFormat), &verts[0], GL_STATIC_DRAW);
-
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)offsetof(VertexFormat, VertexFormat::position));
@@ -59,27 +100,8 @@ Model::Model(vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 co
 	this->vao = vao;
 	this->vbos.push_back(vbo);
 	this->vbos.push_back(ibo);
-
-	//SingleColorMaterial* mat = new SingleColorMaterial(color);
-	LambertianMaterial* mat = new LambertianMaterial(color);
-	this->fragments["Main"] = new Fragment(this, mat, 0, indices.size(), 0, verts.size());
 }
 
-Model::~Model() {
-	Destroy();
-}
-
-void Model::Update() {
-	if (updateVBO) {
-		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexFormat), &verts[0], GL_STATIC_DRAW);
-		updateVBO = false;
-	}
-}
-
-GLuint Model::GetVao() const {
-	return vao;
-}
 
 const std::vector<GLuint>& Model::GetVbos() const {
 	return vbos;
@@ -87,7 +109,7 @@ const std::vector<GLuint>& Model::GetVbos() const {
 
 void Model::InvalidateVBO()
 {
-	updateVBO = true;
+	vboInvalid = true;
 }
 
 void Model::Destroy() {

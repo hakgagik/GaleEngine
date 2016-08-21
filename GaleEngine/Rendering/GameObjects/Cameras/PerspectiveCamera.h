@@ -14,7 +14,7 @@ namespace Rendering{
 
 				float fovy;
 
-				PerspectiveCamera(float near = 0.1f, float far = 100.0f, float aspect = 1.0f, float fovy = 1.0471975512f);
+				PerspectiveCamera(std::string name, float near = 0.1f, float far = 100.0f, float aspect = 1.0f, float fovy = 1.0471975512f);
 				virtual ~PerspectiveCamera() override;
 				virtual void Destroy() override;
 				virtual glm::mat4 GetProjMatrix() override;

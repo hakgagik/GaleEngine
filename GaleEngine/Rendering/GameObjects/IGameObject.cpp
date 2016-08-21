@@ -7,8 +7,9 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-IGameObject::IGameObject() {
+IGameObject::IGameObject(std::string name) {
 	children = vector<IGameObject*>();
+	this->name = name;
 }
 
 IGameObject::~IGameObject() {
@@ -18,15 +19,15 @@ IGameObject::~IGameObject() {
 void IGameObject::Destroy() {
 }
 
-void IGameObject::addMeToChildren(IGameObject* child) {
+void IGameObject::AddMeToChildren(IGameObject* child) {
 	children.push_back(child);
 }
 
-void IGameObject::updateParent(IGameObject* parent) {
+void IGameObject::UpdateParent(IGameObject* parent) {
 	//TODO
 }
 
-void IGameObject::deleteFromChildren(IGameObject* child) {
+void IGameObject::DeleteFromChildren(IGameObject* child) {
 	for (int i = 0; i < children.size(); i++) {
 		if (children[i] == child) {
 			children.erase(children.begin() + i);
@@ -35,31 +36,30 @@ void IGameObject::deleteFromChildren(IGameObject* child) {
 	}
 }
 
-void IGameObject::addToSceneTree(IGameObject* parent, string name, vec3 position, quat orientation, vec3 scale, bool enabled)
+void IGameObject::AddToSceneTree(IGameObject* parent, vec3 position, quat orientation, vec3 scale, bool enabled)
 {
 	this->parent = parent;
-	this->name = name;
 	this->position = position;
 	this->orientation = orientation;
 	this->scale = scale;
 	this->enabled = enabled;
 	this->matricesValid = false;
 
-	if (parent != nullptr) parent->addMeToChildren(this);
+	if (parent != nullptr) parent->AddMeToChildren(this);
 }
 
-void IGameObject::updateMatrices() {
+void IGameObject::UpdateMatrices() {
 	updateLocalMatrices();
 	for (auto child : children) {
-		child->updateMatrices();
+		child->UpdateMatrices();
 	}
 }
 
-void IGameObject::invalidateMatrices() {
+void IGameObject::InvalidateMatrices() {
 	if (matricesValid) {
 		matricesValid = false;
 		for (auto child : children) {
-			child->invalidateMatrices();
+			child->InvalidateMatrices();
 		}
 	}
 }
@@ -80,18 +80,18 @@ vec3 IGameObject::getScale() {
 void IGameObject::setPosition(vec3 pos)
 {
 	this->position = pos;
-	invalidateMatrices();
+	InvalidateMatrices();
 }
 
 void IGameObject::setOrientation(quat orientation)
 {
 	this->orientation = orientation;
-	invalidateMatrices();
+	InvalidateMatrices();
 }
 
 void IGameObject::setScale(vec3 scale) {
 	this->scale = scale;
-	invalidateMatrices();
+	InvalidateMatrices();
 }
 
 json IGameObject::GetJSON() {

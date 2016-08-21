@@ -12,16 +12,16 @@ namespace Rendering {
 	namespace GameObjects {
 		namespace Models {
 			class Model;
+			class ModelClone;
 		}
 	}
 }
 
 namespace Managers {
-	//TODO: Make this a gameobject manager?
 	class Model_Manager {
 	public:
-		Rendering::GameObjects::Models::Model* getSphereCopy(std::string name);
-		Rendering::GameObjects::Models::Model* getCubeCopy(std::string name);
+		Rendering::GameObjects::Models::ModelClone* getSphereCopy(std::string name);
+		Rendering::GameObjects::Models::ModelClone* getCubeCopy(std::string name);
 		//Model* getRectCopy(string name);
 
 		Model_Manager();
@@ -30,10 +30,13 @@ namespace Managers {
 		void Draw(Rendering::IRenderer* renderer);
 		void Update();
 		void DeleteModel(const std::string& gameModelName);
-		void AddModel(Rendering::GameObjects::Models::Model* model);
+		void DeleteClone(const std::string& cloneNme);
 		Rendering::GameObjects::Models::Model* CreateAndAdd(std::string name, std::vector<Rendering::VertexFormat> &verts, std::vector<unsigned int> &indices, glm::vec4 color = glm::vec4(1, 1, 1, 1));
+		Rendering::GameObjects::Models::ModelClone* CloneAndAddd(std::string name, Rendering::GameObjects::Models::Model* source);
 		void BuildAndAddFromOBJ(const std::string& filename);
+		Rendering::GameObjects::Models::Model* PromoteToModel(Rendering::GameObjects::Models::ModelClone* clone);
 		const Rendering::GameObjects::Models::Model* GetModel(const std::string& gameModelName) const;
+		const Rendering::GameObjects::Models::ModelClone* GetClone(const std::string& cloneName) const;
 
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
@@ -46,5 +49,6 @@ namespace Managers {
 		Rendering::GameObjects::Models::Model* cubeTemplate;
 		Rendering::GameObjects::Models::Model* rectTemplate;
 		std::map<std::string, Rendering::GameObjects::Models::Model*> modelList;
+		std::map<std::string, Rendering::GameObjects::Models::ModelClone*> cloneList;
 	};
 }

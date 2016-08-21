@@ -8,8 +8,10 @@ namespace Rendering {
 
 	class Texture;
 	namespace GameObjects {
+		class IGameObject;
 		namespace Models {
 			class Model;
+			class ModelClone;
 			class Fragment;
 		}
 		namespace Cameras {
@@ -31,6 +33,7 @@ namespace Rendering {
 		virtual ~ForwardRenderer() override;
 
 		virtual void Render(GameObjects::Models::Model* model) override;
+		virtual void Render(GameObjects::Models::ModelClone* model) override;
 		virtual void setCamera(GameObjects::Cameras::Camera* camera) override;
 		virtual void setLights(std::vector<GameObjects::Lights::Light*> light) override;
 
@@ -51,12 +54,14 @@ namespace Rendering {
 		std::vector<glm::float32> lightCutoffs;
 
 		//void bindPosNorTexTanAttributes(GLuint program, Models::Model* model, Models::Fragment* fragment);
+		void calculateOrientationMatrices(GameObjects::IGameObject* gameObject);
 		void setMatrixUniforms(GLuint program);
 		void setLightUniforms(GLuint program);
 		void useTexture(GLuint texIndex, const GLchar* uniformName, const GLchar* hasUniformName, Texture* texture, int textureUnit);
 		void unuseTexture(GLuint program, Texture* texture);
-		void RenderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::SingleColorMaterial* mat);
-		void RenderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::LambertianMaterial* mat);
-		void RenderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::BlinnPhongMaterial* mat);
+		void renderFromModel(GameObjects::Models::Model* model);
+		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::SingleColorMaterial* mat);
+		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::LambertianMaterial* mat);
+		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::BlinnPhongMaterial* mat);
 	};
 }

@@ -90,7 +90,7 @@ void Input_Manager::specialKeyPressed(GLuint key, int x, int y) {
 
 void Input_Manager::moveMouse(int x, int y) {
 	mousePos = vec2(x, y);
-	cout << mousePos.x << ", " << mousePos.y << endl;
+	//cout << mousePos.x << ", " << mousePos.y << endl;
 	mouseDelta = mousePos - oldMousePos;
 }
 

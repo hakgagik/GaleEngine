@@ -5,10 +5,11 @@ namespace Rendering {
 	namespace GameObjects {
 		class HeadNode : public IGameObject {
 		public:
+			HeadNode(std::string name);
 			virtual ~HeadNode() override;
 
-			virtual void updateParent(IGameObject* parent) override;
-			virtual void addToSceneTree(IGameObject* parent, std::string name, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled) override;
+			virtual void UpdateParent(IGameObject* parent) override;
+			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled) override;
 			virtual nlohmann::json GetJSON() override;
 
 		protected:

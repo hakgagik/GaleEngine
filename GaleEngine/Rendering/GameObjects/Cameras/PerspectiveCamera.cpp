@@ -25,7 +25,7 @@ void PerspectiveCamera::Destroy() {
 	IGameObject::Destroy();
 }
 
-PerspectiveCamera::PerspectiveCamera(float near, float far, float aspect, float fovy) : Camera() {
+PerspectiveCamera::PerspectiveCamera(string name, float near, float far, float aspect, float fovy) : Camera(name) {
 	this->nearClip = near;
 	this->farClip = far;
 	this->aspect = aspect;

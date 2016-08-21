@@ -1,6 +1,7 @@
 // Modified from http://in2gpu.com/opengl-3/
 #include "Model_Manager.h"
 #include "../Rendering/GameObjects/Models/Model.h"
+#include "../Rendering/GameObjects/Models/ModelClone.h"
 #include "../Rendering/IRenderer.h"
 #include "../Rendering/VertexFormat.h"
 //#include <fstream>
@@ -22,25 +23,40 @@ Model_Manager::~Model_Manager() {
 	for (auto model : modelList) {
 		delete model.second;
 	}
+	for (auto clone : cloneList) {
+		delete clone.second;
+	}
 }
 
 void Model_Manager::DeleteModel(const string& gameModelName) {
 	Model* model = modelList[gameModelName];
+	for (auto clone : cloneList) {
+		if (clone.second->source == model) {
+			clone.second->Destroy();
+			cloneList.erase(clone.second->name);
+		}
+	}
 	model->Destroy();
 	modelList.erase(gameModelName);
 }
 
-void Model_Manager::AddModel(Model * model)
-{
-	modelList[model->name] = model;
+void Model_Manager::DeleteClone(const string& cloneName) {
+	ModelClone* clone = cloneList[cloneName];
+	clone->Destroy();
+	cloneList.erase(cloneName);
 }
 
 Model* Model_Manager::CreateAndAdd(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color)
 {
-	Model* model = new Model(verts, indices, color);
-	model->name = name;
-	AddModel(model);
+	Model* model = new Model(name, verts, indices, color);
+	modelList[name] = model;
 	return model;
+}
+
+ModelClone* Model_Manager::CloneAndAddd(string name, Model* source) {
+	ModelClone* clone = new ModelClone(source, name);
+	cloneList[name] = clone;
+	return clone;
 }
 
 Model* Model_Manager::createSphere(int thetaDiv, int phiDiv) {
@@ -88,7 +104,7 @@ Model* Model_Manager::createSphere(int thetaDiv, int phiDiv) {
 	//	output << indices[i] << endl;
 	//}
 
-	return new Model(verts, indices);
+	return new Model("Template Sphere", verts, indices);
 }
 
 Model* Model_Manager::createCube() {
@@ -182,30 +198,30 @@ Model* Model_Manager::createCube() {
 		20, 22, 23
 	};
 
-	return new Model(verts, indices);
+	return new Model("Cube Template", verts, indices);
 }
 
 Model* Model_Manager::createRect() {
 	// Implement this method
-	return new Model();
+	return new Model("Rectangle Template");
 }
 
-Model* Model_Manager::getSphereCopy(string name) {
+ModelClone* Model_Manager::getSphereCopy(string name) {
 	if (sphereTemplate == nullptr) {
 		sphereTemplate = createSphere();
 	}
-	Model* sphere = new Model(sphereTemplate, name);
-	this->AddModel(sphere);
+	ModelClone* sphere = new ModelClone(sphereTemplate, name);
+	cloneList[name] = sphere;
 	return sphere;
 }
 
-Model* Model_Manager::getCubeCopy(string name)
+ModelClone* Model_Manager::getCubeCopy(string name)
 {
 	if (cubeTemplate == nullptr) {
 		cubeTemplate = createCube();
 	}
-	Model* cube = new Model(cubeTemplate, name);
-	this->AddModel(cube);
+	ModelClone* cube = new ModelClone(cubeTemplate, name);
+	cloneList[name] = cube;
 	return cube;
 }
 
@@ -217,20 +233,38 @@ void Model_Manager::Draw(IRenderer * renderer)
 			renderer->Render(model.second);
 		}
 	}
+
+	for (auto clone : cloneList) {
+		if (clone.second->enabled) {
+			renderer->Render(clone.second);
+		}
+	}
+}
+
+void Model_Manager::Update() {
+	for (auto model : modelList) {
+		//model.second->UpdateMatrices();
+	}
 }
 
 const Model * Model_Manager::GetModel(const string& gameModelName) const {
 	return modelList.at(gameModelName);
 }
 
+const ModelClone* Model_Manager::GetClone(const string& cloneName) const {
+	return cloneList.at(cloneName);
+}
+
 void Model_Manager::BuildAndAddFromOBJ(const std::string& filename) {
 
 }
 
-void Model_Manager::Update() {
-	for (auto model : modelList) {
-		//model.second->updateMatrices();
-	}
+Model* Model_Manager::PromoteToModel(ModelClone* clone) {
+	Model* model = new Model(clone->source, clone->name);
+	modelList[model->name] = model;
+	clone->Destroy();
+	cloneList.erase(clone->name);
+	return model;
 }
 
 void Model_Manager::LoadFromJSON(json &j) {

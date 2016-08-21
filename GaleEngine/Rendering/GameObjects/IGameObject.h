@@ -9,23 +9,22 @@ namespace Rendering {
 	namespace GameObjects {
 		class IGameObject {
 		public:
-			IGameObject();
-			virtual ~IGameObject() = 0; // pure virtual destructor!
-			virtual void Destroy();
-
 			IGameObject* parent;
 			std::string name;
 			std::vector<IGameObject*> children;
 			glm::mat4 toParentMatrix;
 			glm::mat4 toWorldMatrix;
 
+			IGameObject(std::string name);
+			virtual ~IGameObject() = 0; // pure virtual destructor!
+			virtual void Destroy();
 
-			virtual void addMeToChildren(IGameObject* child);
-			virtual void updateParent(IGameObject* parent);
-			virtual void deleteFromChildren(IGameObject* child);
-			virtual void addToSceneTree(IGameObject* parent, std::string name, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled = true);
-			virtual void updateMatrices();
-			virtual void invalidateMatrices();
+			virtual void AddMeToChildren(IGameObject* child);
+			virtual void UpdateParent(IGameObject* parent);
+			virtual void DeleteFromChildren(IGameObject* child);
+			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled = true);
+			virtual void UpdateMatrices();
+			virtual void InvalidateMatrices();
 
 			bool enabled;
 

@@ -1,5 +1,7 @@
 #include "ForwardRenderer.h"
+#include "GameObjects/IGameObject.h"
 #include "GameObjects/Models/Model.h"
+#include "GameObjects/Models/ModelClone.h"
 #include "GameObjects/Models/fragment.h"
 #include "Materials/IMaterial.h"
 #include "Materials/MaterialsHeader.h"
@@ -26,32 +28,43 @@ ForwardRenderer::ForwardRenderer() {}
 ForwardRenderer::~ForwardRenderer() {}
 
 void ForwardRenderer::Render(Model* model) {
+	calculateOrientationMatrices(model);
+	renderFromModel(model);
+}
 
-	//TODO Setup local matrices (modelView, normal)
-	modelViewMatrix = viewMatrix * model->toWorldMatrix;
+void ForwardRenderer::Render(ModelClone* model) {
+	calculateOrientationMatrices(model);
+	renderFromModel(model->source);
+}
+
+void ForwardRenderer::calculateOrientationMatrices(IGameObject* gameObject) {
+	modelViewMatrix = viewMatrix * gameObject->toWorldMatrix;
 	normalMatrix = transpose(inverse(mat3(modelViewMatrix)));
 	MVPMatrix = projectionMatrix*modelViewMatrix;
+}
+
+void ForwardRenderer::renderFromModel(Model* model) {
 	vector<string> fragNames = model->GetFragNames();
 	for (string f : fragNames) {
 		Fragment* fragment = model->GetFragment(f);
 		if (SingleColorMaterial* singleColorMat = dynamic_cast<SingleColorMaterial*>(fragment->material)) {
-			RenderFragment(model, fragment, singleColorMat);
+			renderFragment(model, fragment, singleColorMat);
 		}
 		else if (LambertianMaterial* lambertianMat = dynamic_cast<LambertianMaterial*>(fragment->material)) {
-			RenderFragment(model, fragment, lambertianMat);
+			renderFragment(model, fragment, lambertianMat);
 		}
 		else if (BlinnPhongMaterial* blinnPhongMat = dynamic_cast<BlinnPhongMaterial*>(fragment->material)) {
-			RenderFragment(model, fragment, blinnPhongMat);
+			renderFragment(model, fragment, blinnPhongMat);
 		}
 		else {
 			cout << "Forward Renderer: Can't find material for model  " << model->name << ". Rendering as white SingleColor." << endl;
 			fragment->material = new SingleColorMaterial();
-			RenderFragment(model, fragment, new SingleColorMaterial());
+			renderFragment(model, fragment, new SingleColorMaterial());
 		}
 	}
 }
 
-void ForwardRenderer::RenderFragment(Model* model, Fragment* fragment, SingleColorMaterial* mat) {
+void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, SingleColorMaterial* mat) {
 	GLint loc;
 
 	GLuint program = Shader_Manager::GetShader("single_color");
@@ -64,7 +77,7 @@ void ForwardRenderer::RenderFragment(Model* model, Fragment* fragment, SingleCol
 	glUniform4fv(loc, 1, value_ptr(mat->diffuseColor));
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
-void ForwardRenderer::RenderFragment(Model* model, Fragment* fragment, LambertianMaterial* mat) {
+void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, LambertianMaterial* mat) {
 	GLint loc;
 
 	GLuint program = Shader_Manager::GetShader("lambertian");
@@ -83,7 +96,7 @@ void ForwardRenderer::RenderFragment(Model* model, Fragment* fragment, Lambertia
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
 
-void ForwardRenderer::RenderFragment(Model* model, Fragment* fragment, BlinnPhongMaterial* mat) {
+void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, BlinnPhongMaterial* mat) {
 	GLint loc;
 
 	GLuint program = Shader_Manager::GetShader("blinn_phong");

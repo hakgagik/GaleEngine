@@ -10,6 +10,7 @@
 #include "../Rendering/ForwardRenderer.h"
 #include "../Rendering/GameObjects/Cameras/PerspectiveCamera.h"
 #include "../Rendering/GameObjects/Models/Model.h"
+#include "../Rendering/GameObjects/Models/ModelClone.h"
 #include "../Rendering/GameObjects/Lights/Light.h"
 #include "../Rendering/GameObjects/HeadNode.h"
 #include "../Rendering/Materials/MaterialsHeader.h"
@@ -64,7 +65,7 @@ Scene_Manager::~Scene_Manager() {
 void Scene_Manager::notifyBeginFrame() {
 	//model_manager->Update();
 	handleInputs();
-	headNode->updateMatrices();
+	headNode->UpdateMatrices();
 	renderer->setCamera(activeCam);
 	renderer->setLights(lights);
 }
@@ -124,7 +125,7 @@ void Scene_Manager::handleInputs()
 		Strafe.y = -Input_Manager::mouseDelta.y * dTheta;
 		activeCam->Orbit(Strafe.x, Strafe.y, dStrafe);
 	}
-	activeCam->invalidateMatrices();
+	activeCam->InvalidateMatrices();
 	Input_Manager::update();
 }
 
@@ -158,53 +159,68 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	cout << "Printing to " << filename << endl;
 	output << j.dump();
 }
+
 void Scene_Manager::SetupTestScene()
 {
+	//Define some generic transformations
 	vec3 zero(0);
 	vec3 one(1);
 	quat norot = angleAxis(0.0f, zero);
 	quat aLittleRot = angleAxis(0.4f, vec3(1, 0, 0));
 	quat aLittelMoreRot = angleAxis(0.4f, vec3(1));
-	headNode = new HeadNode();
-	headNode->addToSceneTree(nullptr, "Head Node", zero, norot, one, false);
-	lights.push_back(new Light());
-	lights.push_back(new Light());
-	lights[0]->addToSceneTree(headNode, "Main Light", vec3(0, 0, 2), norot, one);
-	lights[1]->addToSceneTree(headNode, "Second Light", vec3(5), norot, one);
+
+	//Create the head node
+	headNode = new HeadNode("Head Node");
+	headNode->AddToSceneTree(nullptr, zero, norot, one, false);
+	
+	//Create lights
+	lights.push_back(new Light("Main Light"));
+	lights.push_back(new Light("Second Light"));
+	lights[0]->AddToSceneTree(headNode, vec3(0, 0, 2), norot, one);
+	lights[1]->AddToSceneTree(headNode, vec3(5), norot, one);
+	
+	// Make a square. It's called triangle.
 	vector<VertexFormat> vertices = { VertexFormat(vec4(0, 1, 0, 1), vec3(0, -1, 0), vec2(0, 0), vec4(1, 0, 0, 1)),
 		VertexFormat(vec4(1, 1, 0, 1), vec3(0, -1, 0), vec2(1, 0), vec4(1, 0, 0, 1)),
 		VertexFormat(vec4(1, 1, 1, 1), vec3(0, -1, 0), vec2(1, 1), vec4(1, 0, 0, 1)),
 		VertexFormat(vec4(0, 1, 1, 1), vec3(0, -1, 0), vec2(0, 1), vec4(1, 0, 0, 1)), };
 	vector<unsigned int> indices{ 0, 1, 2, 0, 2, 3 };
 	Model* triangle = model_manager->CreateAndAdd("Triangle", vertices, indices);
-	triangle->addToSceneTree(headNode, triangle->name, vec3(1.0f), -aLittleRot, one);
+	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one);
 	Texture* tex = texture_manager->LoadandAddTexture("Images\\test.bmp");
 	dynamic_cast<Materials::LambertianMaterial*>(triangle->GetFragmentMat("Main"))->diffuseTexture = tex;
-	Model* sphere = model_manager->getSphereCopy("Sphere");
-	sphere->addToSceneTree(headNode, sphere->name, vec3(2.0f), aLittleRot, one);
+
+	// Get a sphere copy
+	Model* sphere = model_manager->PromoteToModel(model_manager->getSphereCopy("Sphere"));
+	sphere->AddToSceneTree(headNode, vec3(2.0f), aLittleRot, one);
 	sphere->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 	//Model* sphere2 = model_manager->getSphereCopy("SphereTwo");
 	//sphere2->addToSceneTree(headNode, sphere->name, vec3(0.0f, 3.0f, 1.0f), norot, one);
-	Model* cube = model_manager->getCubeCopy("Cube");
-	cube->addToSceneTree(headNode, sphere->name, vec3(3, 2, 3), aLittelMoreRot, one);
+
+	// Get a cube copy
+	Model* cube = model_manager->PromoteToModel(model_manager->getCubeCopy("Cube"));
+	cube->AddToSceneTree(headNode, vec3(3, 2, 3), aLittelMoreRot, one);
 	Texture* cubeTex = texture_manager->LoadandAddTexture("Images\\cubeTest.bmp");
 	cube->SetFragmentMat("Main", new Materials::LambertianMaterial(vec4(1.0f), cubeTex));
 
-	activeCam = new PerspectiveCamera();
-	activeCam->addToSceneTree(headNode, "Main Camera", zero, norot, one);
+	// Create the main camera
+	activeCam = new PerspectiveCamera("Main Camera");
+	activeCam->AddToSceneTree(headNode, zero, norot, one);
 	activeCam->LookAt(vec3(0.5f, 0, 0.5f), vec3(0.5f, 1, 0.5f), vec3(0, 0, 1));
+
+	// Spam some sphere clones
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			string name = "Sphere" + to_string(10 * i + j);
-			Model* sphere = model_manager->getSphereCopy(name);
-			sphere->addToSceneTree(headNode, sphere->name, vec3(i, j, 0), norot, one * 0.5f);
+			ModelClone* sphere = model_manager->getSphereCopy(name);
+			sphere->AddToSceneTree(headNode, vec3(i, j, 0), norot, one * 0.5f);
 		}
 	}
 
 	sceneInitialized = true;
 	Input_Manager::registerCallbacks();
-	headNode->updateMatrices();
-	SaveSceneToJSON("testScene.json");
+	headNode->UpdateMatrices();
+	//SaveSceneToJSON("testScene.json");
 }
 
 string Scene_Manager::ReadFile(string &filename) {

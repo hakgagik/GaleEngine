@@ -143,6 +143,7 @@
     <ClCompile Include="Rendering\GameObjects\Models\Fragment.cpp" />
     <ClCompile Include="Rendering\GameObjects\Models\Model.cpp" />
     <ClCompile Include="Managers\Model_Manager.cpp" />
+    <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="Rendering\GameObjects\HeadNode.h" />
     <ClInclude Include="Rendering\GameObjects\Models\Fragment.h" />
     <ClInclude Include="Rendering\GameObjects\IGameObject.h" />
+    <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h" />
     <ClInclude Include="Rendering\IRenderer.h" />
     <ClInclude Include="Rendering\GameObjects\Lights\Light.h" />
     <ClInclude Include="Rendering\Materials\BlinnPhongMaterial.h" />

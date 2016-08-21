@@ -18,7 +18,7 @@ namespace Rendering {
 				float farClip;
 				float aspect;
 
-				Camera() : IGameObject() { };
+				Camera(std::string name) : IGameObject(name) { };
 				virtual glm::mat4 GetProjMatrix() = 0;
 				virtual glm::mat4 GetViewMatrix() = 0;
 				virtual void Destroy() override = 0;

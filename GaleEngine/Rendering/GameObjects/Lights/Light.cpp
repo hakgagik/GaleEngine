@@ -3,10 +3,11 @@
 using namespace Rendering;
 using namespace GameObjects;
 using namespace Lights;
+using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-Light::Light(vec3 color, vec3 attenuation, float32 cutoff) : IGameObject() {
+Light::Light(string name, vec3 color, vec3 attenuation, float32 cutoff) : IGameObject(name) {
 	this->color = color;
 	this->attenuation = attenuation;
 	this->cutoff = cutoff;
