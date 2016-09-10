@@ -18,7 +18,7 @@ namespace Rendering {
 				GLuint indexCount = 0;
 				Rendering::Materials::IMaterial* material;
 				// Model this fragment is part of
-				Model* parent;
+				const Model* parent;
 
 				int startingVertex;
 				int vertexCount;

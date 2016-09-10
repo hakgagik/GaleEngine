@@ -165,8 +165,8 @@ void PerspectiveCamera::Strafe(float dx, float dy)
 	//frameUpdated = false;
 }
 
-json PerspectiveCamera::GetJSON() {
-	json j = GetJSON();
+json PerspectiveCamera::GetSourceJSON() const {
+	json j = IGameObject::GetSourceJSON();
 	j["Type"] = "PerspectiveCamera";
 	j["FoVy"] = fovy;
 	j["Target"] = { target.x, target.y, target.z };

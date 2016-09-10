@@ -5,8 +5,7 @@
 #include "../Rendering/IRenderer.h"
 #include "../Rendering/VertexFormat.h"
 #include <unordered_set>
-#include <fstream>;
-//#include <fstream>
+#include <fstream>
 
 using namespace Managers;
 using namespace Rendering;
@@ -17,9 +16,9 @@ using namespace std;
 using json = nlohmann::json;
 
 const float Pi = glm::pi<float>();
-const string SPHERE_TEMPLATE_SOURCE = "ModelSources\\SphereTemplate.json";
-const string CUBE_TEMPLATE_SOURCE = "ModelSources\\CubeTemplate.json";
-const string RECT_TEMPLATE_SOURCE = "ModelSources\\RectTemplate.json";
+const string SPHERE_TEMPLATE_SOURCE = "JSON\\ModelSources\\SphereTemplate.json";
+const string CUBE_TEMPLATE_SOURCE = "JSON\\ModelSources\\CubeTemplate.json";
+const string RECT_TEMPLATE_SOURCE = "JSON\\ModelSources\\RectTemplate.json";
 
 Model_Manager::Model_Manager() {
 }
@@ -281,14 +280,14 @@ void Model_Manager::LoadFromJSON(json &j) {
 
 void Model_Manager::WriteToJSON(json &j) {
 	for (auto kv : modelList) {
-		j[kv.first] = kv.second->GetJSON();
+		j["Models"][kv.first] = kv.second->source;
 	}
 	for (auto kv : cloneList) {
-		j[kv.first] = kv.second->GetJSON();
+		j["Clones"][kv.first] = kv.second->source->name;
 	}
 }
 
-void Model_Manager::WriteModelsToJSON() {
+void Model_Manager::WriteModelsToSourceJSON() {
 	cout << "Serializing Models" << endl;
 
 	unordered_set<string> sources;
@@ -332,4 +331,17 @@ void Model_Manager::WriteModelsToJSON() {
 	}
 
 	cout << "Finished Serializing Models" << endl;
+}
+
+vector<string> Model_Manager::GetModelNames() {
+	vector<string> names(modelList.size() + cloneList.size());
+	return names;
+}
+
+unordered_map<string, Model*> Model_Manager::GetModelList() {
+	return modelList;
+}
+
+unordered_map<string, ModelClone*> Model_Manager::GetCloneList() {
+	return cloneList;
 }

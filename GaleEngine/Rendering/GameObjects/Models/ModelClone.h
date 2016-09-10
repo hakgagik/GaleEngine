@@ -8,8 +8,8 @@ namespace Rendering {
 
 			class ModelClone : public IGameObject {
 			public:
-				Model* source;
-				ModelClone(Model* source, std::string name);
+				const Model* source;
+				ModelClone(const Model* source, std::string name);
 			};
 		}
 	}

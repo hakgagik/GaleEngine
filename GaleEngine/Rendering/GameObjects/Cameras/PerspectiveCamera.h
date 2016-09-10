@@ -25,7 +25,7 @@ namespace Rendering{
 				virtual void Zoom(float zoomFactor) override;
 				virtual void Strafe(float dx, float dy) override;
 
-				virtual nlohmann::json GetJSON() override;
+				virtual nlohmann::json GetSourceJSON() const override;
 			protected:
 				//void updateFrame();
 				void updateLocalMatrices() override;

@@ -19,7 +19,7 @@ void HeadNode::UpdateParent(IGameObject* parent) {
 	cout << "GameObject " << name << ": The parent of a HeadNode was attempted to be updated. This should not happen." << endl;
 }
 
-void HeadNode::AddToSceneTree(IGameObject* parent, vec3 position, quat orientation, vec3 scale, bool enabled = true) {
+void HeadNode::AddToSceneTree(IGameObject* parent, vec3 &position, quat &orientation, vec3 &scale, bool enabled = true) {
 	if (parent != nullptr) cout << "GameObject " << name << ": Cannot add HeadNode as a child object. Setting parent to null." << endl;
 	this->parent = nullptr;
 	this->position = position;
@@ -35,8 +35,7 @@ void HeadNode::updateLocalMatrices() {
 	matricesValid = true;
 }
 
-json HeadNode::GetJSON() {
-	json j = IGameObject::GetJSON();
-	j["Type"] = "HeadNode";
+json HeadNode::GetSourceJSON() const {
+	json j = IGameObject::GetSourceJSON();
 	return j;
 }

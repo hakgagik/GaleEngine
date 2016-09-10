@@ -10,9 +10,9 @@ namespace Rendering {
 			virtual ~LambertianMaterial() override {}
 
 			glm::vec4 diffuseColor = glm::vec4(1.0f);
-			Texture* diffuseTexture = nullptr;
+			const Texture* diffuseTexture = nullptr;
 
-			LambertianMaterial(glm::vec4 color = glm::vec4(1.0f), Texture* texture = nullptr) {
+			LambertianMaterial(glm::vec4 color = glm::vec4(1.0f), const Texture* texture = nullptr) {
 				diffuseColor = color;
 				diffuseTexture = texture;
 			}

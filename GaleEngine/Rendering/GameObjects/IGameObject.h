@@ -9,7 +9,7 @@ namespace Rendering {
 	namespace GameObjects {
 		class IGameObject {
 		public:
-			IGameObject* parent;
+			const IGameObject* parent;
 			std::string name;
 			std::vector<IGameObject*> children;
 			glm::mat4 toParentMatrix;
@@ -22,21 +22,22 @@ namespace Rendering {
 			virtual void AddMeToChildren(IGameObject* child);
 			virtual void UpdateParent(IGameObject* parent);
 			virtual void DeleteFromChildren(IGameObject* child);
-			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled = true);
+			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 &position, glm::quat &orientation, glm::vec3 &scale, bool enabled = true);
 			virtual void UpdateMatrices();
 			virtual void InvalidateMatrices();
 
 			bool enabled;
 
-			virtual glm::vec3 getPosition();
-			virtual glm::quat getOrientation();
-			virtual glm::vec3 getScale();
+			virtual glm::vec3 getPosition() const;
+			virtual glm::quat getOrientation() const;
+			virtual glm::vec3 getScale() const;
 
 			virtual void setPosition(glm::vec3 pos);
 			virtual void setOrientation(glm::quat orientation);
 			virtual void setScale(glm::vec3 scale);
 
-			virtual nlohmann::json GetJSON();
+			virtual nlohmann::json GetSourceJSON() const;
+			nlohmann::json GetSceneJSON() const;
 		protected:
 			glm::vec3 position; //relative to parent
 			glm::quat orientation; // relative to parent

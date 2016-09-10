@@ -7,7 +7,7 @@
 using namespace Managers;
 using namespace std;
 
-map<string, GLuint> Shader_Manager::programs;
+unordered_map<string, GLuint> Shader_Manager::programs;
 
 const GLuint Shader_Manager::GetShader(const string & shaderName)
 {
@@ -22,8 +22,9 @@ const GLuint Shader_Manager::GetShader(const string & shaderName)
 }
 
 Shader_Manager::Shader_Manager(void) {}
+
 Shader_Manager::~Shader_Manager(void) {
-	map<string, GLuint>::iterator i;
+	unordered_map<string, GLuint>::iterator i;
 	for (i = programs.begin(); i != programs.end(); ++i) {
 		GLuint pr = i->second;
 		glDeleteProgram(pr);

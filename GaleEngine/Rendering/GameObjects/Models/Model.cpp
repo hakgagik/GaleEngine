@@ -73,7 +73,6 @@ GLuint Model::GetVao() const {
 	return vao;
 }
 
-
 void Model::GenerateVAO() {
 	GLuint vao;
 	GLuint vbo;
@@ -101,7 +100,6 @@ void Model::GenerateVAO() {
 	this->vbos.push_back(vbo);
 	this->vbos.push_back(ibo);
 }
-
 
 const std::vector<GLuint>& Model::GetVbos() const {
 	return vbos;
@@ -185,8 +183,8 @@ void Model::RecalculateTangents() {
 	
 }
 
-Fragment* Model::GetFragment(string fragName) {
-	return fragments[fragName];
+const Fragment* Model::GetFragment(string fragName) const {
+	return fragments.at(fragName);
 }
 
 vector<string> Model::GetFragNames() const {
@@ -209,8 +207,8 @@ void Model::DeleteFragment(string fragName) {
 	fragments.erase(fragName);
 }
 
-json Model::GetSourceJSON() {
-	json j;
+json Model::GetSourceJSON() const {
+	json j = IGameObject::GetSourceJSON();
 
 	for (int i = 0; i < verts.size(); i++) {
 		j["Positions"][i] = { verts[i].position.x, verts[i].position.y, verts[i].position.z };
@@ -232,8 +230,7 @@ json Model::GetSourceJSON() {
 	return j;
 }
 
-
-void Model::PrintVBO(){
+void Model::PrintVBO() const {
 	glBindVertexArray(GetVao());
 	float* vboPtr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
 	for (int i = 0; i < verts.size(); i++) {

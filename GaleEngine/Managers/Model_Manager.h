@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 namespace Rendering {
 	class IRenderer;
@@ -40,7 +40,10 @@ namespace Managers {
 
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
-		void WriteModelsToJSON();
+		void WriteModelsToSourceJSON();
+		std::vector<std::string> GetModelNames();
+		std::unordered_map<std::string, Rendering::GameObjects::Models::Model*> GetModelList();
+		std::unordered_map<std::string, Rendering::GameObjects::Models::ModelClone*> GetCloneList();
 
 	private:
 		void createSphereTemplate(int thetaDiv = 16, int phiDiv = 32);
@@ -49,7 +52,7 @@ namespace Managers {
 		Rendering::GameObjects::Models::Model* sphereTemplate;
 		Rendering::GameObjects::Models::Model* cubeTemplate;
 		Rendering::GameObjects::Models::Model* rectTemplate;
-		std::map<std::string, Rendering::GameObjects::Models::Model*> modelList;
-		std::map<std::string, Rendering::GameObjects::Models::ModelClone*> cloneList;
+		std::unordered_map<std::string, Rendering::GameObjects::Models::Model*> modelList;
+		std::unordered_map<std::string, Rendering::GameObjects::Models::ModelClone*> cloneList;
 	};
 }

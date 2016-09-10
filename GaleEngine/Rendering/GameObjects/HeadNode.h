@@ -9,8 +9,8 @@ namespace Rendering {
 			virtual ~HeadNode() override;
 
 			virtual void UpdateParent(IGameObject* parent) override;
-			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 position, glm::quat orientation, glm::vec3 scale, bool enabled) override;
-			virtual nlohmann::json GetJSON() override;
+			virtual void AddToSceneTree(IGameObject* parent, glm::vec3 &position, glm::quat &orientation, glm::vec3 &scale, bool enabled) override;
+			virtual nlohmann::json GetSourceJSON() const override;
 
 		protected:
 			virtual void updateLocalMatrices() override;

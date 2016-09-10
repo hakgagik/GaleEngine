@@ -33,7 +33,7 @@ namespace Rendering {
 				const std::vector<GLuint>& GetVbos() const;
 				void InvalidateVBO();
 
-				virtual void Update();
+				void Update();
 				void UpdateVBO(bool force);
 				void UpdateIBO(bool force);
 				void UpdatePosition(int ind, glm::vec4 &pos);
@@ -46,14 +46,14 @@ namespace Rendering {
 				void RecalculateNormals();
 				void RecalculateTangents();
 
-				virtual Fragment* GetFragment(std::string fragName);
+				const Fragment* GetFragment(std::string fragName) const;
 				std::vector<std::string> GetFragNames() const;
 				void DeleteFragment(std::string fragName);
 				Materials::IMaterial* GetFragmentMat(std::string fragName);
 				void SetFragmentMat(std::string fragName, Materials::IMaterial* mat);
 
-				nlohmann::json GetSourceJSON();
-				void PrintVBO();
+				virtual nlohmann::json GetSourceJSON() const override;
+				void PrintVBO() const;
 			protected:
 				std::unordered_map<std::string, Fragment*> fragments;
 				GLuint vao;

@@ -2,7 +2,7 @@
 #include "GL/glew.h"
 #include "../lib/json.hpp"
 #include <string>
-#include <map>
+#include <unordered_map>
 
 namespace Rendering {
 	class Texture;
@@ -21,6 +21,6 @@ namespace Managers {
 		void WriteToJSON(nlohmann::json &j);
 
 	private:
-		std::map<std::string, Rendering::Texture*> textureList;
+		std::unordered_map<std::string, Rendering::Texture*> textureList;
 	};
 }

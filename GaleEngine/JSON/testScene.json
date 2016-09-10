@@ -1,0 +1,2213 @@
+{
+    "ActiveCam": "Main Camera",
+    "Cameras": {
+        "Main Camera": {
+            "Aspect": 1,
+            "FarClip": 100,
+            "FoVy": 1.04719758033752,
+            "NearClip": 0.100000001490116,
+            "Rigth": [
+                1,
+                0.0,
+                0.0
+            ],
+            "Target": [
+                0.5,
+                1,
+                0.5
+            ],
+            "Type": "PerspectiveCamera",
+            "Up": [
+                0.0,
+                0.0,
+                1
+            ]
+        }
+    },
+    "Clones": {
+        "Sphere0": "Template Sphere",
+        "Sphere1": "Template Sphere",
+        "Sphere10": "Template Sphere",
+        "Sphere11": "Template Sphere",
+        "Sphere12": "Template Sphere",
+        "Sphere13": "Template Sphere",
+        "Sphere14": "Template Sphere",
+        "Sphere15": "Template Sphere",
+        "Sphere16": "Template Sphere",
+        "Sphere17": "Template Sphere",
+        "Sphere18": "Template Sphere",
+        "Sphere19": "Template Sphere",
+        "Sphere2": "Template Sphere",
+        "Sphere20": "Template Sphere",
+        "Sphere21": "Template Sphere",
+        "Sphere22": "Template Sphere",
+        "Sphere23": "Template Sphere",
+        "Sphere24": "Template Sphere",
+        "Sphere25": "Template Sphere",
+        "Sphere26": "Template Sphere",
+        "Sphere27": "Template Sphere",
+        "Sphere28": "Template Sphere",
+        "Sphere29": "Template Sphere",
+        "Sphere3": "Template Sphere",
+        "Sphere30": "Template Sphere",
+        "Sphere31": "Template Sphere",
+        "Sphere32": "Template Sphere",
+        "Sphere33": "Template Sphere",
+        "Sphere34": "Template Sphere",
+        "Sphere35": "Template Sphere",
+        "Sphere36": "Template Sphere",
+        "Sphere37": "Template Sphere",
+        "Sphere38": "Template Sphere",
+        "Sphere39": "Template Sphere",
+        "Sphere4": "Template Sphere",
+        "Sphere40": "Template Sphere",
+        "Sphere41": "Template Sphere",
+        "Sphere42": "Template Sphere",
+        "Sphere43": "Template Sphere",
+        "Sphere44": "Template Sphere",
+        "Sphere45": "Template Sphere",
+        "Sphere46": "Template Sphere",
+        "Sphere47": "Template Sphere",
+        "Sphere48": "Template Sphere",
+        "Sphere49": "Template Sphere",
+        "Sphere5": "Template Sphere",
+        "Sphere50": "Template Sphere",
+        "Sphere51": "Template Sphere",
+        "Sphere52": "Template Sphere",
+        "Sphere53": "Template Sphere",
+        "Sphere54": "Template Sphere",
+        "Sphere55": "Template Sphere",
+        "Sphere56": "Template Sphere",
+        "Sphere57": "Template Sphere",
+        "Sphere58": "Template Sphere",
+        "Sphere59": "Template Sphere",
+        "Sphere6": "Template Sphere",
+        "Sphere60": "Template Sphere",
+        "Sphere61": "Template Sphere",
+        "Sphere62": "Template Sphere",
+        "Sphere63": "Template Sphere",
+        "Sphere64": "Template Sphere",
+        "Sphere65": "Template Sphere",
+        "Sphere66": "Template Sphere",
+        "Sphere67": "Template Sphere",
+        "Sphere68": "Template Sphere",
+        "Sphere69": "Template Sphere",
+        "Sphere7": "Template Sphere",
+        "Sphere70": "Template Sphere",
+        "Sphere71": "Template Sphere",
+        "Sphere72": "Template Sphere",
+        "Sphere73": "Template Sphere",
+        "Sphere74": "Template Sphere",
+        "Sphere75": "Template Sphere",
+        "Sphere76": "Template Sphere",
+        "Sphere77": "Template Sphere",
+        "Sphere78": "Template Sphere",
+        "Sphere79": "Template Sphere",
+        "Sphere8": "Template Sphere",
+        "Sphere80": "Template Sphere",
+        "Sphere81": "Template Sphere",
+        "Sphere82": "Template Sphere",
+        "Sphere83": "Template Sphere",
+        "Sphere84": "Template Sphere",
+        "Sphere85": "Template Sphere",
+        "Sphere86": "Template Sphere",
+        "Sphere87": "Template Sphere",
+        "Sphere88": "Template Sphere",
+        "Sphere89": "Template Sphere",
+        "Sphere9": "Template Sphere",
+        "Sphere90": "Template Sphere",
+        "Sphere91": "Template Sphere",
+        "Sphere92": "Template Sphere",
+        "Sphere93": "Template Sphere",
+        "Sphere94": "Template Sphere",
+        "Sphere95": "Template Sphere",
+        "Sphere96": "Template Sphere",
+        "Sphere97": "Template Sphere",
+        "Sphere98": "Template Sphere",
+        "Sphere99": "Template Sphere"
+    },
+    "HeadNode": {
+        "Children": {
+            "Cube": {
+                "Enabled": true,
+                "Orientation": [
+                    0.198669329285622,
+                    0.198669329285622,
+                    0.198669329285622,
+                    0.9800665974617
+                ],
+                "Position": [
+                    3,
+                    2,
+                    3
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Main Camera": {
+                "Enabled": true,
+                "Orientation": [
+                    0.70710676908493,
+                    0.0,
+                    0.0,
+                    0.70710676908493
+                ],
+                "Position": [
+                    0.5,
+                    0.0,
+                    0.5
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Main Light": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    0.0,
+                    2
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Second Light": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    5,
+                    5
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Sphere": {
+                "Enabled": true,
+                "Orientation": [
+                    0.198669329285622,
+                    0.0,
+                    0.0,
+                    0.9800665974617
+                ],
+                "Position": [
+                    2,
+                    2,
+                    2
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "Sphere0": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere1": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere10": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere11": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere12": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere13": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere14": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere15": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere16": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere17": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere18": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere19": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    1,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere2": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere20": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere21": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere22": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere23": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere24": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere25": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere26": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere27": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere28": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere29": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    2,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere3": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere30": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere31": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere32": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere33": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere34": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere35": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere36": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere37": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere38": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere39": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    3,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere4": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere40": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere41": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere42": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere43": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere44": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere45": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere46": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere47": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere48": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere49": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    4,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere5": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere50": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere51": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere52": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere53": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere54": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere55": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere56": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere57": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere58": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere59": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    5,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere6": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere60": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere61": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere62": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere63": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere64": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere65": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere66": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere67": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere68": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere69": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    6,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere7": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere70": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere71": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere72": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere73": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere74": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere75": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere76": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere77": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere78": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere79": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    7,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere8": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere80": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere81": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere82": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere83": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere84": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere85": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere86": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere87": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere88": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere89": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    8,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere9": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    0.0,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere90": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere91": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    1,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere92": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    2,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere93": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    3,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere94": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    4,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere95": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    5,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere96": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    6,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere97": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    7,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere98": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    8,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Sphere99": {
+                "Enabled": true,
+                "Orientation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1
+                ],
+                "Position": [
+                    9,
+                    9,
+                    0.0
+                ],
+                "Scale": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "Triangle": {
+                "Enabled": true,
+                "Orientation": [
+                    -0.198669329285622,
+                    -0.0,
+                    -0.0,
+                    -0.9800665974617
+                ],
+                "Position": [
+                    1,
+                    1,
+                    1
+                ],
+                "Scale": [
+                    1,
+                    1,
+                    1
+                ]
+            }
+        },
+        "Enabled": false,
+        "Orientation": [
+            0.0,
+            0.0,
+            0.0,
+            1
+        ],
+        "Position": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Scale": [
+            1,
+            1,
+            1
+        ]
+    },
+    "Lights": {
+        "Main Light": {
+            "Attentuation": [
+                0.0,
+                0.0,
+                0.100000001490116
+            ],
+            "Color": [
+                1,
+                1,
+                1
+            ],
+            "Cutoff": 1000000,
+            "Type": "PointLight"
+        },
+        "Second Light": {
+            "Attentuation": [
+                0.0,
+                0.0,
+                0.100000001490116
+            ],
+            "Color": [
+                1,
+                1,
+                1
+            ],
+            "Cutoff": 1000000,
+            "Type": "PointLight"
+        }
+    },
+    "Models": {
+        "Cube": "JSON\\ModelSources\\CubeTemplate.json",
+        "Sphere": "JSON\\ModelSources\\SphereTemplate.json",
+        "Triangle": "ModelSources\\Triangle.json"
+    },
+    "Shaders": {
+        "Lambertian": {
+            "Fragment": "Shaders\\lambertian.frag",
+            "Vertex": "Shaders\\standard.vert"
+        },
+        "SingleColor": {
+            "Fragment": "Shaders\\single_color.frag",
+            "Vertex": "Shaders\\standard.vert"
+        }
+    },
+    "Textures": [
+        "Images\\test.bmp",
+        "Images\\cubeTest.bmp"
+    ]
+}

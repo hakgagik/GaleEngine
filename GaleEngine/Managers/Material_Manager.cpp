@@ -1,11 +1,14 @@
 #include "Material_Manager.h"
+#include "Texture_Manager.h"
 #include "../Rendering/Materials/IMaterial.h"
 #include "../Rendering/Materials/MaterialsHeader.h"
+#include <glm/glm.hpp>
 
 using namespace Rendering;
 using namespace Materials;
 using namespace Managers;
 using namespace std;
+using namespace glm;
 using json = nlohmann::json;
 
 Material_Manager::Material_Manager() {}
@@ -29,8 +32,42 @@ const void Material_Manager::AddMaterial() {
 	// TODO
 }
 
-void Material_Manager::LoadFromJSON(json &j) {
-	
+void Material_Manager::LoadFromJSON(json &j, Texture_Manager* texture_manager) {
+	for (json::iterator it = j["Materials"].begin(); it != j["Materials"].end(); ++it) {
+		json m = *it;
+		if (m["Type"] == "SingleColor") {
+			vec4 color(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
+			materialList[it.key()] = new SingleColorMaterial(color);
+		}
+		else if (m["Type"] = "Lambertian") {
+			vec4 diffuseColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
+			const Texture* diffuseTexture;
+			if (!m["DiffuseTexture"].is_null()) {
+				diffuseTexture = texture_manager->GetTexture(m["DiffuseTexture"]);
+			}
+			materialList[it.key()] = new LambertianMaterial(diffuseColor, diffuseTexture);
+		}
+		else if (m["Type"] = "BlinnPhong") {
+			vec4 diffuseColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
+			vec4 specularColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
+			const Texture* diffuseTexture;
+			const Texture* specularTexture;
+			const Texture* exponentTexture;
+			if (!m["DiffuseTexture"].is_null()) {
+				diffuseTexture = texture_manager->GetTexture(m["DiffuseTexture"]);
+			}
+			if (!m["SpecularTexture"].is_null()) {
+				specularTexture = texture_manager->GetTexture(m["SpecularTexture"]);
+			}
+			if (!m["ExponentTexture"].is_null()) {
+				exponentTexture = texture_manager->GetTexture(m["ExponentTexture"]);
+			}
+			materialList[it.key()] = new BlinnPhongMaterial(diffuseTexture, specularTexture, exponentTexture, diffuseColor, specularColor, m["Exponent"]);
+		}
+		else {
+			cout << "Material_Manager: Unrecognized material type, """ << m["Type"] << """." << endl;
+		}
+	}
 }
 
 void Material_Manager::WriteToJSON(json &j) {

@@ -27,7 +27,7 @@ namespace Rendering {
 				virtual void Dolly(float dRho) = 0;
 				virtual void Zoom(float zoomFactor) = 0;
 				virtual void Strafe(float dx, float dy) = 0;
-				virtual nlohmann::json GetJSON() override = 0;
+				virtual nlohmann::json GetSourceJSON() const override = 0;
 			protected:
 				virtual void updateLocalMatrices() override = 0;
 			};

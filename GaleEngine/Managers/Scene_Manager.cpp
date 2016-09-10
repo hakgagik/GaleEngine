@@ -34,13 +34,13 @@ using namespace std;
 using namespace glm;
 using namespace nlohmann;
 
+// TODO: should JSON strings be consts or defined?
+
 Scene_Manager::Scene_Manager()
 {
 	glEnable(GL_DEPTH_TEST);
 	
 	shader_manager = new Shader_Manager();
-	shader_manager->CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
-	shader_manager->CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
 	model_manager = new Model_Manager();
 	texture_manager = new Texture_Manager();
 	material_manager = new Material_Manager();
@@ -104,7 +104,7 @@ void Scene_Manager::handleInputs()
 		Strafe += vec2(1, 0);
 	}
 	if (Input_Manager::testKey) {
-		activeCam->Orbit(0, 0.1, 0.1);
+		activeCam->Orbit(0, 0.1f, 0.1f);
 	}
 	if (Input_Manager::arrowForward) {
 		activeCam->Dolly(dStrafe);
@@ -133,9 +133,57 @@ void Scene_Manager::SetRenderer(IRenderer* renderer) {
 	this->renderer = renderer;
 }
 
+// TODO::add a "json_utils.h"
 void Scene_Manager::BuildSceneFromJSON(string &filename) {
 	string jsonString = ReadFile(filename);
 	json j = json::parse(jsonString);
+
+	//Create shaders
+	shader_manager->CreateProgram("single_color", j["Shaders"]["SingleColor"]["Vertex"], j["Shaders"]["SingleColor"]["Fragment"]);
+	shader_manager->CreateProgram("lambertian", j["Shaders"]["Lambertian"]["Vertex"], j["Shaders"]["Lambertian"]["Fragment"]);
+	
+	//Load textures, materials, models, and physics
+	texture_manager->LoadFromJSON(j);
+	material_manager->LoadFromJSON(j);
+	model_manager->LoadFromJSON(j);
+	physics_manager->LoadFromJSON(j);
+
+	//Container to temporarily hold all the IGameObjects, until we place them in the scene.
+	unordered_map<string, IGameObject*> gameObjects;
+	for (auto kv : model_manager->GetModelList()) {
+		gameObjects[kv.first] = kv.second;
+	}
+	for (auto kv : model_manager->GetCloneList()) {
+		gameObjects[kv.first] = kv.second;
+	}
+
+	//Load cameras
+	for (json::iterator it = j["Cameras"].begin(); it != j["Cameras"].end(); ++it) {
+		// TODO: abastract away camera creation to another manager
+		json c = *it;
+		if (c["Type"] == "PerspectiveCamera") {
+			PerspectiveCamera* camera = new PerspectiveCamera(it.key(), (float)c["NearClip"], (float)c["FarClip"], (float)c["Aspect"], (float)c["FoVy"]);
+			gameObjects[camera->name] = camera;
+			cameras.push_back(camera);
+		}
+	}
+
+	//Load lights
+	for (json::iterator it = j["Lights"].begin(); it != j["Lights"].end(); ++it) {
+		json l = *it;
+		if (l["Type"] == "PointLight") {
+			vec3 color(l["Light"][0], l["Light"][1], l["Light"][2]);
+			vec3 attentuation(l["Attenuation"][0], l["Attenuation"][1], l["Attenuation"][2]);	
+			Light* light = new Light(it.key(), color, attentuation, l["Cutoff"]);
+			gameObjects[light->name] = light;
+			lights.push_back(light);
+		}
+	}
+
+	//Build scene tree
+	activeCam = cameras[j["ActiveCam"]];
+	headNode = new HeadNode("Head Node");
+	buildSceneTreeBranch(headNode, nullptr, j["Head Node"], gameObjects);
 }
 
 void Scene_Manager::SaveSceneToJSON(const string &filename) {
@@ -147,23 +195,29 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	texture_manager->WriteToJSON(j);
 	material_manager->WriteToJSON(j);
 	model_manager->WriteToJSON(j);
-	model_manager->WriteModelsToJSON();
+	model_manager->WriteModelsToSourceJSON();
 	physics_manager->WriteToJSON(j);
 	for (Camera* camera : cameras) {
-		j["Cameras"][camera->name] = camera->GetJSON();
+		j["Cameras"][camera->name] = camera->GetSourceJSON();
 	}
 	for (Light* light : lights) {
-		j["Lights"][light->name] = light->GetJSON();
+		j["Lights"][light->name] = light->GetSourceJSON();
 	}
-	j["SceneTree"] = writeBranchToJSON(headNode);
+	//j["SceneTree"] = writeBranchToJSON(headNode);
+	j["HeadNode"] = headNode->GetSceneJSON();
+	j["ActiveCam"] = activeCam->name;
 	ofstream output(filename);
 	cout << "Printing to " << filename << endl;
-	output << j.dump();
+	output << j.dump(4);
 	output.close();
 }
 
 void Scene_Manager::SetupTestScene()
 {
+	//Create shaders
+	shader_manager->CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
+	shader_manager->CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
+
 	//Define some generic transformations
 	vec3 zero(0);
 	vec3 one(1);
@@ -210,6 +264,7 @@ void Scene_Manager::SetupTestScene()
 	activeCam = new PerspectiveCamera("Main Camera");
 	activeCam->AddToSceneTree(headNode, zero, norot, one);
 	activeCam->LookAt(vec3(0.5f, 0, 0.5f), vec3(0.5f, 1, 0.5f), vec3(0, 0, 1));
+	cameras.push_back(activeCam);
 
 	// Spam some sphere clones
 	for (int i = 0; i < 10; i++) {
@@ -223,10 +278,20 @@ void Scene_Manager::SetupTestScene()
 	sceneInitialized = true;
 	Input_Manager::registerCallbacks();
 	headNode->UpdateMatrices();
-	SaveSceneToJSON("testScene.json");
+	SaveSceneToJSON("JSON\\testScene.json");
 }
 
-string Scene_Manager::ReadFile(string &filename) {
+void Scene_Manager::buildSceneTreeBranch(IGameObject* node, IGameObject* parent, json branch, unordered_map<string, IGameObject*> &gameObjects) {
+	vec3 position(branch["Position"][0], branch["Position"][1], branch["Position"][2]);
+	quat orientation(branch["Orientation"][0], branch["Orientation"][1], branch["Orientation"][2], branch["Orientation"][3]);
+	vec3 scale(branch["Scale"][0], branch["Scale"][1], branch["Scale"][2]);
+	node->AddToSceneTree(parent, position, orientation, scale, branch["Enabled"]);
+	for (json::iterator it = branch["Children"].begin(); it != branch["Children"].end(); it++) {
+		buildSceneTreeBranch(gameObjects[it.key()], node, *it, gameObjects);
+	}
+}
+
+string Scene_Manager::ReadFile(const string &filename) {
 	ifstream file(filename);
 	string output;
 	if (!file.good()) {
@@ -242,10 +307,10 @@ string Scene_Manager::ReadFile(string &filename) {
 	return output;
 }
 
-json Scene_Manager::writeBranchToJSON(IGameObject* node) {
-	json j;
-	for (IGameObject* childNode : node->children) {
-		j[childNode->name] = writeBranchToJSON(childNode);
-	}
-	return j;
-}
+//json Scene_Manager::writeBranchToJSON(IGameObject* node) {
+//	json j;
+//	for (IGameObject* childNode : node->children) {
+//		j[childNode->name] = writeBranchToJSON(childNode);
+//	}
+//	return j;
+//}

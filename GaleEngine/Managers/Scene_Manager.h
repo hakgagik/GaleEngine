@@ -3,6 +3,7 @@
 #include "../Core/ISceneListener.h"
 #include "../lib/json.hpp"
 #include <vector>
+#include <unordered_map>
 
 
 namespace Rendering {
@@ -40,7 +41,7 @@ namespace Managers {
 		void BuildSceneFromJSON(std::string &filename);
 		void SaveSceneToJSON(const std::string &filename);
 		void SetupTestScene();
-		std::string ReadFile(std::string &filename);
+		std::string ReadFile(const std::string &filename);
 
 	private:
 		Shader_Manager* shader_manager;
@@ -59,6 +60,7 @@ namespace Managers {
 		float dStrafe = 0.1f;
 		float dTheta = 0.01308996939f;
 
-		nlohmann::json writeBranchToJSON(Rendering::GameObjects::IGameObject* node);
+		//nlohmann::json writeBranchToJSON(Rendering::GameObjects::IGameObject* node);
+		void buildSceneTreeBranch(Rendering::GameObjects::IGameObject* node, Rendering::GameObjects::IGameObject* parent, nlohmann::json branch, std::unordered_map<std::string, Rendering::GameObjects::IGameObject*> &gameObjects);
 	};
 }

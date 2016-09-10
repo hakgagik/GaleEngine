@@ -19,9 +19,9 @@ void Light::Destroy() {
 	IGameObject::Destroy();
 }
 
-json Light::GetJSON() {
-	json j = IGameObject::GetJSON();
-	j["Type"] = "Light";
+json Light::GetSourceJSON() const {
+	json j = IGameObject::GetSourceJSON();
+	j["Type"] = "PointLight";
 	j["Cutoff"] = cutoff;
 	j["Color"] = { color.x, color.y, color.z };
 	j["Attentuation"] = { attenuation.x, attenuation.y, attenuation.z };

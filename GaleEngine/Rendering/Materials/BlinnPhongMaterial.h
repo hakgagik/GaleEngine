@@ -14,16 +14,18 @@ namespace Rendering {
 			glm::float32 exponent = 50.0f;
 
 			// Optional textures
-			Texture* diffuseTexture = nullptr;
-			Texture* specularTexture = nullptr;
-			Texture* exponentTexture = nullptr;
+			const Texture* diffuseTexture = nullptr;
+			const Texture* specularTexture = nullptr;
+			const Texture* exponentTexture = nullptr;
 
 			BlinnPhongMaterial(glm::vec4 diffColor = glm::vec4(1.0f), glm::vec4 specColor = glm::vec4(1.0f), float exp = 50) {
 				diffuseColor = diffColor;
 				specularColor = specColor;
 				exponent = exp;
 			}
-			BlinnPhongMaterial(Texture* diffTexture, Texture* specTexture = nullptr, Texture* expTexture = nullptr, glm::vec4 diffColor = glm::vec4(1.0f), glm::vec4 specColor = glm::vec4(1.0f), float exp = 50.0f) {
+
+			// Second constructure in case I was to specify textures instead of colors. First one has no default to avoid two default constructors
+			BlinnPhongMaterial(const Texture* diffTexture, const Texture* specTexture = nullptr, const Texture* expTexture = nullptr, glm::vec4 diffColor = glm::vec4(1.0f), glm::vec4 specColor = glm::vec4(1.0f), float exp = 50.0f) {
 				diffuseColor = diffColor;
 				specularColor = specColor;
 				exponent = exp;

@@ -3,7 +3,7 @@
 #include "../lib/json.hpp"
 #include "GL/glew.h"
 #include <string>
-#include <map>
+#include <unordered_map>
 
 namespace Managers
 {
@@ -17,7 +17,7 @@ namespace Managers
 		void CreateProgram(const std::string& shaderName, const std::string& VertexShaderFilename, const std::string& FragmentShaderFilename);
 
 	private:
-		static std::map<std::string, GLuint> programs;
+		static std::unordered_map<std::string, GLuint> programs;
 
 		std::string readShader(const std::string& filename);
 		GLuint createShader(GLenum shaderType, const std::string& source, const std::string& shaderName);

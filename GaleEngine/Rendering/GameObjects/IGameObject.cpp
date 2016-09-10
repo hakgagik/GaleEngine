@@ -36,7 +36,7 @@ void IGameObject::DeleteFromChildren(IGameObject* child) {
 	}
 }
 
-void IGameObject::AddToSceneTree(IGameObject* parent, vec3 position, quat orientation, vec3 scale, bool enabled)
+void IGameObject::AddToSceneTree(IGameObject* parent, vec3 &position, quat &orientation, vec3 &scale, bool enabled)
 {
 	this->parent = parent;
 	this->position = position;
@@ -44,8 +44,7 @@ void IGameObject::AddToSceneTree(IGameObject* parent, vec3 position, quat orient
 	this->scale = scale;
 	this->enabled = enabled;
 	this->matricesValid = false;
-
-	if (parent != nullptr) parent->AddMeToChildren(this);
+	parent->AddMeToChildren(this);
 }
 
 void IGameObject::UpdateMatrices() {
@@ -64,16 +63,16 @@ void IGameObject::InvalidateMatrices() {
 	}
 }
 
-vec3 IGameObject::getPosition()
+vec3 IGameObject::getPosition() const
 {
 	return position;
 }
 
-quat IGameObject::getOrientation() {
+quat IGameObject::getOrientation() const {
 	return orientation;
 }
 
-vec3 IGameObject::getScale() {
+vec3 IGameObject::getScale() const {
 	return scale;
 }
 
@@ -94,12 +93,20 @@ void IGameObject::setScale(vec3 scale) {
 	InvalidateMatrices();
 }
 
-json IGameObject::GetJSON() {
+json IGameObject::GetSourceJSON() const {
+	json j;
+	return j;
+}
+
+json IGameObject::GetSceneJSON() const {
 	json j;
 	j["Enabled"] = enabled;
 	j["Position"] = { position.x, position.y, position.z };
-	j["Oritentation"] = { orientation.x, orientation.y, orientation.z, orientation.w };
+	j["Orientation"] = { orientation.x, orientation.y, orientation.z, orientation.w };
 	j["Scale"] = { scale.x, scale.y, scale.z };
+	for (auto child : children) {
+		j["Children"][child->name] = child->GetSceneJSON();
+	}
 	return j;
 }
 
