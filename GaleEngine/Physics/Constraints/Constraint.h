@@ -13,13 +13,13 @@ namespace Physics {
 		public:
 			virtual ~Constraint();
 
-			virtual void Update() = 0;
+			virtual void UpdateDerivs() = 0;
 			virtual bool ContainsParticle(Particles::Particle* particle) = 0;
 			
 			std::unordered_map<Particles::Particle*, glm::vec3> particleGradients;
 			float stiffness;
-			float lambda;
-			float currentValue;
+			//float currentValue;
+			float s;
 		};
 		inline Constraint::~Constraint() {}
 	}

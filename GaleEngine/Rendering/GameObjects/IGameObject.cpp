@@ -129,6 +129,7 @@ void IGameObject::updateLocalMatrices() {
 	toParentMatrix[3][2] = position[2];
 
 	toWorldMatrix = toParentMatrix * parent->toWorldMatrix;
+	toWorldMatrixInv = inverse(toWorldMatrix);
 
 	matricesValid = true;
 }

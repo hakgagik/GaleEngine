@@ -11,7 +11,8 @@ namespace Rendering {
 namespace Managers {
 	class Texture_Manager {
 	public:
-		Texture_Manager();
+		static Texture_Manager* Get();
+
 		~Texture_Manager();
 		
 		void DeleteTexture(const std::string& textureName);
@@ -21,6 +22,9 @@ namespace Managers {
 		void WriteToJSON(nlohmann::json &j);
 
 	private:
+		static Texture_Manager* instance;
+
+		Texture_Manager();
 		std::unordered_map<std::string, Rendering::Texture*> textureList;
 	};
 }

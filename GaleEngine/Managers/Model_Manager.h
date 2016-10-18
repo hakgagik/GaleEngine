@@ -20,11 +20,12 @@ namespace Rendering {
 namespace Managers {
 	class Model_Manager {
 	public:
+		static Model_Manager* Get();
+
 		Rendering::GameObjects::Models::ModelClone* getSphereCopy(std::string name);
 		Rendering::GameObjects::Models::ModelClone* getCubeCopy(std::string name);
-		//Model* getRectCopy(string name);
+		Rendering::GameObjects::Models::ModelClone* getRectCopy(std::string name);
 
-		Model_Manager();
 		~Model_Manager();
 		
 		void Draw(Rendering::IRenderer* renderer);
@@ -45,10 +46,15 @@ namespace Managers {
 		std::unordered_map<std::string, Rendering::GameObjects::Models::Model*> GetModelList();
 		std::unordered_map<std::string, Rendering::GameObjects::Models::ModelClone*> GetCloneList();
 
+		std::string ReadFile(const std::string &filename);
+
 	private:
-		void createSphereTemplate(int thetaDiv = 16, int phiDiv = 32);
+		static Model_Manager* instance;
+
+		Model_Manager();
+		void createSphereTemplate(unsigned int thetaDiv = 16, unsigned int phiDiv = 32);
 		void createCubeTemplate();
-		void createRectTemplate();
+		void createRectTemplate(unsigned int xDiv = 10, unsigned int yDiv = 10);
 		Rendering::GameObjects::Models::Model* sphereTemplate;
 		Rendering::GameObjects::Models::Model* cubeTemplate;
 		Rendering::GameObjects::Models::Model* rectTemplate;

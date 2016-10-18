@@ -32,6 +32,19 @@ Model::Model(const Model* other, string name) : IGameObject(name) {
 	UpdateIBO(true);
 }
 
+Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, bool calculatedNormals, bool calculatedTangents) : IGameObject(name)
+{
+	this->verts = verts;
+	this->indices = indices;
+
+	if (calculatedNormals) RecalculateNormals();
+	if (calculatedTangents) RecalculateTangents();
+
+	GenerateVAO();
+	UpdateVBO(true);
+	UpdateIBO(true);
+}
+
 Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color) : IGameObject(name)
 {
 	this->verts = verts;
@@ -50,8 +63,21 @@ Model::~Model() {
 	Destroy();
 }
 
-void Model::Update() {
+vec3 Model::GetVertPos(unsigned int ind) {
+	return vec3(verts[ind].position);
+}
 
+vec3 Model::GetVertWorldPos(unsigned int ind) {
+	return vec3(this->toWorldMatrix * verts[ind].position);
+}
+
+unsigned int Model::GetIndex(unsigned int n) {
+	return indices[n];
+}
+
+void Model::Update() {
+	UpdateVBO();
+	UpdateIBO();
 }
 
 void Model::UpdateVBO(bool force) {
@@ -122,7 +148,7 @@ void Model::UpdatePosition(int ind, vec4 &pos) {
 }
 
 void Model::UpdatePosition(int ind, vec3 &pos) {
-	verts[ind].position = vec4(pos, 1);
+	verts[ind].position = toWorldMatrixInv * vec4(pos, 1);
 }
 
 void Model::UpdateNormal(int ind, vec3 &norm) {
@@ -146,11 +172,6 @@ void Model::RecalculateNormals() {
 	int numVerts = verts.size();
 	vector<vec3> normals(numVerts);
 	vector<float> adjacentTris(numVerts);
-
-	for (int i = 0; i < numVerts; i++) {
-		normals[i] = vec3(0);
-		adjacentTris[i] = 0;
-	}
 	
 	vec3 p0, p1, p2, n;
 	int triInd, i0, i1, i2;
@@ -159,21 +180,23 @@ void Model::RecalculateNormals() {
 		i0 = indices[triInd];
 		i1 = indices[triInd + 1];
 		i2 = indices[triInd + 2];
-		p0 = vec3(verts[indices[triInd]].position);
-		p1 = vec3(verts[indices[triInd + 1]].position);
-		p2 = vec3(verts[indices[triInd + 2]].position);
+		p0 = vec3(verts[i0].position);
+		p1 = vec3(verts[i1].position);
+		p2 = vec3(verts[i2].position);
 
 		n = cross(p1 - p0, p2 - p0);
 
 		normals[i0] += n;
 		normals[i1] += n;
 		normals[i2] += n;
-		adjacentTris[i]++;
+		adjacentTris[i0]++;
+		adjacentTris[i1]++;
+		adjacentTris[i2]++;
 	}
 
 	for (int i = 0; i < numVerts; i++) {
 		if (adjacentTris[i] != 0) normals[i] /= adjacentTris[i];
-		verts[i].normal = normals[i];
+		verts[i].normal = normalize(normals[i]);
 	}
 	calculatedNormals = true;
 }
@@ -181,6 +204,15 @@ void Model::RecalculateNormals() {
 void Model::RecalculateTangents() {
 	// TODO: calculate tangents
 	
+}
+
+void Model::CreateAndAddFragment(string name, IMaterial* material, int startingIndex, GLuint indexCount, int startingVertex, int vertexCount, GLuint primitiveType) {
+	if (fragments[name] == nullptr) {
+		fragments[name] = new Fragment(this, material, startingIndex, indexCount, vertexCount, primitiveType);
+	}
+	else {
+		cout << "Model " << this->name << ": Fragment " << name << " already exists." << endl;
+	}
 }
 
 const Fragment* Model::GetFragment(string fragName) const {
@@ -210,11 +242,24 @@ void Model::DeleteFragment(string fragName) {
 json Model::GetSourceJSON() const {
 	json j = IGameObject::GetSourceJSON();
 
+	j["CalculatedNormals"] = this->calculatedNormals;
+	j["CalculatedTangents"] = this->calculatedTangents;
+
 	for (int i = 0; i < verts.size(); i++) {
 		j["Positions"][i] = { verts[i].position.x, verts[i].position.y, verts[i].position.z };
 		j["UVs"][i] = { verts[i].uv.x, verts[i].uv.y };
-		if (!calculatedNormals) j["Normals"][i] = { verts[i].normal.x, verts[i].normal.y , verts[i].normal.z };
-		if (!calculatedTangents) j["Tangents"][i] = { verts[i].tangent.x, verts[i].tangent.y, verts[i].tangent.z };
+	}
+
+	if (!calculatedNormals) {
+		for (int i = 0; i < verts.size(); i++) {
+			j["Normals"][i] = { verts[i].normal.x, verts[i].normal.y , verts[i].normal.z };
+		}
+	}
+
+	if (!calculatedTangents) {
+		for (int i = 0; i < verts.size(); i++) {
+			j["Tangents"][i] = { verts[i].tangent.x, verts[i].tangent.y, verts[i].tangent.z };
+		}
 	}
 
 	for (int i : indices) {

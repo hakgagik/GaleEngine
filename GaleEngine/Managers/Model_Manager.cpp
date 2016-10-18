@@ -1,6 +1,8 @@
 // Modified from http://in2gpu.com/opengl-3/
 #include "Model_Manager.h"
+#include "Material_Manager.h"
 #include "../Rendering/GameObjects/Models/Model.h"
+#include "../Rendering/GameObjects/Models/Fragment.h"
 #include "../Rendering/GameObjects/Models/ModelClone.h"
 #include "../Rendering/IRenderer.h"
 #include "../Rendering/VertexFormat.h"
@@ -19,6 +21,15 @@ const float Pi = glm::pi<float>();
 const string SPHERE_TEMPLATE_SOURCE = "JSON\\ModelSources\\SphereTemplate.json";
 const string CUBE_TEMPLATE_SOURCE = "JSON\\ModelSources\\CubeTemplate.json";
 const string RECT_TEMPLATE_SOURCE = "JSON\\ModelSources\\RectTemplate.json";
+
+Model_Manager* Model_Manager::instance = nullptr;
+
+Model_Manager* Model_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Model_Manager();
+	}
+	return instance;
+}
 
 Model_Manager::Model_Manager() {
 }
@@ -63,7 +74,7 @@ ModelClone* Model_Manager::CloneAndAddd(string name, Model* source) {
 	return clone;
 }
 
-void Model_Manager::createSphereTemplate(int thetaDiv, int phiDiv) {
+void Model_Manager::createSphereTemplate(unsigned int thetaDiv, unsigned int phiDiv) {
 	vector<VertexFormat> verts;
 	vector<unsigned int> indices;
 	float theta, phi, st, ct, sp, cp;
@@ -94,10 +105,11 @@ void Model_Manager::createSphereTemplate(int thetaDiv, int phiDiv) {
 	}
 	for (int i = 0; i < thetaDiv; i++) {
 		for (int j = 0; j < phiDiv; j++) {
-			int index = i * (phiDiv + 1) + j;
+			unsigned int index = i * (phiDiv + 1) + j;
 			indices.push_back(index);
 			indices.push_back(index + (phiDiv + 1));
 			indices.push_back(index + (phiDiv + 1) + 1);
+
 			indices.push_back(index);
 			indices.push_back(index + (phiDiv + 1) + 1);
 			indices.push_back(index + 1);
@@ -108,7 +120,7 @@ void Model_Manager::createSphereTemplate(int thetaDiv, int phiDiv) {
 	//	output << indices[i] << endl;
 	//}
 
-	sphereTemplate = new Model("Template Sphere", verts, indices);
+	sphereTemplate = new Model("Template Sphere", verts, indices, vec4(1));
 	sphereTemplate->source = SPHERE_TEMPLATE_SOURCE;
 }
 
@@ -203,13 +215,43 @@ void Model_Manager::createCubeTemplate() {
 		20, 22, 23
 	};
 
-	cubeTemplate = new Model("Cube Template", verts, indices);
+	cubeTemplate = new Model("Cube Template", verts, indices, vec4(1));
 	cubeTemplate->source = CUBE_TEMPLATE_SOURCE;
 }
 
-void Model_Manager::createRectTemplate() {
+void Model_Manager::createRectTemplate(unsigned int xDiv, unsigned int yDiv) {
+	vector<VertexFormat> rectVertices;
+	vector<unsigned int> rectIndices;
+	vec4 p(0, 0, 0, 1);
+	vec3 n(0, 0, 1);
+	vec2 u(0, 0);
+	vec4 t(1, 0, 0, 0);
+	for (int i = 0; i <= yDiv; i++) {
+		p.y = (float)i / (float)yDiv;
+		u.y = p.y;
+		for (int j = 0; j <= xDiv; j++) {
+			p.x = (float)j / (float)xDiv;
+			u.x = p.x;
+			rectVertices.push_back(VertexFormat(p, n, u, t)); // the P.N.U.T. method
+		}
+	}
+
+	for (int i = 0; i < yDiv; i++) {
+		for (int j = 0; j < xDiv; j++) {
+			unsigned int index = i * (xDiv + 1) + j;
+
+			rectIndices.push_back(index);
+			rectIndices.push_back(index + 1);
+			rectIndices.push_back(index + (xDiv + 1) + 1);
+
+			rectIndices.push_back(index);
+			rectIndices.push_back(index + (xDiv + 1) + 1);
+			rectIndices.push_back(index + (xDiv + 1));
+		}
+	}
+
 	// Implement this method
-	rectTemplate = new Model("Rectangle Template");
+	rectTemplate = new Model("Template rectangle", rectVertices, rectIndices, vec4(1));
 	rectTemplate->source = RECT_TEMPLATE_SOURCE;
 }
 
@@ -232,9 +274,18 @@ ModelClone* Model_Manager::getCubeCopy(string name)
 	return cube;
 }
 
+ModelClone* Model_Manager::getRectCopy(string name)
+{
+	if (rectTemplate == nullptr) {
+		createRectTemplate();
+	}
+	ModelClone* rect = new ModelClone(rectTemplate, name);
+	cloneList[name] = rect;
+	return rect;
+}
+
 void Model_Manager::Draw(IRenderer * renderer)
 {
-
 	for (auto model : modelList) {
 		if (model.second->enabled) {
 			renderer->Render(model.second);
@@ -250,7 +301,7 @@ void Model_Manager::Draw(IRenderer * renderer)
 
 void Model_Manager::Update() {
 	for (auto model : modelList) {
-		//model.second->UpdateMatrices();
+		model.second->Update();
 	}
 }
 
@@ -275,7 +326,43 @@ Model* Model_Manager::PromoteToModel(ModelClone* clone) {
 }
 
 void Model_Manager::LoadFromJSON(json &j) {
+	cout << "Loading Models" << endl;
 
+	for (json::iterator it = j["Models"].begin(); it != j["Models"].end(); ++it) {
+
+		json s = json::parse(ReadFile(*it));
+
+		int numVerts = s["Positions"].size();
+		int numInds = s["Indices"].size();
+
+
+		auto verts = vector<VertexFormat>(numVerts);
+		auto indices = vector<unsigned int>(numInds);
+		auto fragments = unordered_map<string, Fragment*>(s["Fragments"].size());
+		auto calculatedNormals = s["CalculatedNormals"];
+		auto calculatedTangents = s["CalculatedTangents"];
+
+		for (int i = 0; i < numVerts; i++) {
+			vec4 pos = vec4(s["Positions"][i][0], s["Positions"][i][1], s["Positions"][i][2], s["Positions"][i][3]);
+			vec2 uv = vec2(s["UVs"][i][0], s["UVs"][i][0]);
+			vec3 norm = vec3(0);
+			vec4 tan = vec4(0);
+			if (!calculatedNormals) norm = vec3(s["Normals"][i][0], s["Normals"][i][1], s["Normals"][i][2]);
+			if (!calculatedTangents) tan = vec4(s["Tangents"][i][0], s["Tangents"][i][1], s["Tangents"][i][2], s["Tangents"][i][3]);
+			verts[i] = VertexFormat(pos, norm, uv, tan);
+		}
+		
+		for (int i = 0; i < numInds; i++) {
+			indices[i] = j["Indices"][i];
+		}
+
+		Model* model = new Model(it.key(), verts, indices, calculatedNormals, calculatedTangents);
+		
+		for (json::iterator it = s["Fragments"].begin(); it != s["Fragments"].end(); ++it) {
+			
+		}
+	}
+	
 }
 
 void Model_Manager::WriteToJSON(json &j) {
@@ -344,4 +431,20 @@ unordered_map<string, Model*> Model_Manager::GetModelList() {
 
 unordered_map<string, ModelClone*> Model_Manager::GetCloneList() {
 	return cloneList;
+}
+
+string Model_Manager::ReadFile(const string &filename) {
+	ifstream file(filename);
+	string output;
+	if (!file.good()) {
+		cout << "Can't read file " << filename.c_str() << endl;
+		terminate();
+	}
+
+	file.seekg(0, ios::end);
+	output.resize((unsigned int)file.tellg());
+	file.seekg(0, ios::beg);
+	file.read(&output[0], output.size());
+	file.close();
+	return output;
 }

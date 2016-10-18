@@ -7,7 +7,14 @@
 using namespace Managers;
 using namespace std;
 
-unordered_map<string, GLuint> Shader_Manager::programs;
+Shader_Manager* Shader_Manager::instance = nullptr;
+
+Shader_Manager* Shader_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Shader_Manager();
+	}
+	return instance;
+}
 
 const GLuint Shader_Manager::GetShader(const string & shaderName)
 {
@@ -21,9 +28,9 @@ const GLuint Shader_Manager::GetShader(const string & shaderName)
 	}
 }
 
-Shader_Manager::Shader_Manager(void) {}
+Shader_Manager::Shader_Manager() {}
 
-Shader_Manager::~Shader_Manager(void) {
+Shader_Manager::~Shader_Manager() {
 	unordered_map<string, GLuint>::iterator i;
 	for (i = programs.begin(); i != programs.end(); ++i) {
 		GLuint pr = i->second;

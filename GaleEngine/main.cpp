@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
 	Init_GLUT::init(window, context, frameBufferInfo);
 
-	ISceneListener* scene = new Scene_Manager();
+	ISceneListener* scene = Scene_Manager::Get();
 	dynamic_cast<Scene_Manager*>(scene)->SetupTestScene();
 	
 	Init_GLUT::setListener(scene);

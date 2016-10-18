@@ -8,41 +8,47 @@ namespace Physics {
 	}
 	namespace Constraints {
 		class Constraint;
-		class ConstraintGroup;
 	}
 	namespace Forces {
 		class ForceField;
 	}
-	namespace Transmuters {
-		class Transmuter;
+	namespace PhysicsObjects {
+		class PhysicsObject;
 	}
 }
 
 namespace Managers {
 	class Physics_Manager {
 	public:
-		int iterations = 10;
-		float dt;
-		std::vector<Physics::Particles::Particle*> particleList;
-		std::vector<Physics::Constraints::ConstraintGroup*> constraintGroupList;
-		std::vector<Physics::Constraints::Constraint*> constraintList;
-		std::vector<Physics::Forces::ForceField*> extForceList;
-		std::vector<Physics::Transmuters::Transmuter*> transmuterList;
+		static Physics_Manager* Get();
 
-		Physics_Manager();
+		int iterations = 5;
+		float dt;
+		//std::vector<Physics::Particles::Particle*> particleList;
+		//std::vector<Physics::Constraints::Constraint*> constraintList;
+		//std::vector<Physics::Forces::ForceField*> extForceList;
+		std::vector<Physics::PhysicsObjects::PhysicsObject*> physicsObjectList;
+
 		~Physics_Manager();
 
+		void Init();
 		void Update(float dt);
 		void Transmute();
+
+		void AddPhysicsObject(Physics::PhysicsObjects::PhysicsObject* physicsObject);
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
 	private:
+		static Physics_Manager* instance;
+
+		Physics_Manager();
+
 		// Main physics loop functions
 		void initParticles();
 		void applyExtForces(float dt);
 		void predictPositions(float dt);
 		void genCollConstraints();
-		void projectConstraints(float dt, int iterations);
+		void projectConstraints(int iterations);
 		void finalizePositionsAndVelocities(float dt);
 		void velocityUpdate();
 

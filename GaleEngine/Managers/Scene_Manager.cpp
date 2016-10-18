@@ -24,6 +24,13 @@
 #include <iostream>
 #include <fstream>
 
+
+//REMOVE LATER
+#include "../Physics/PhysicsObjects/Solids/Cloth.h"
+#include "../Physics/Forces/ConstantForce.h"
+using Cloth = Physics::PhysicsObjects::Solids::Cloth;
+using ConstantForce = Physics::Forces::ConstantForce;
+
 using namespace Managers;
 using namespace Rendering;
 using namespace GameObjects;
@@ -32,30 +39,36 @@ using namespace Models;
 using namespace Lights;
 using namespace std;
 using namespace glm;
+using namespace chrono;
 using namespace nlohmann;
 
 // TODO: should JSON strings be consts or defined?
+
+Scene_Manager* Scene_Manager::instance = nullptr;
+
+Scene_Manager* Scene_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Scene_Manager();
+	}
+	return instance;
+}
 
 Scene_Manager::Scene_Manager()
 {
 	glEnable(GL_DEPTH_TEST);
 	
-	shader_manager = new Shader_Manager();
-	model_manager = new Model_Manager();
-	texture_manager = new Texture_Manager();
-	material_manager = new Material_Manager();
-	physics_manager = new Physics_Manager();
-	renderer = new ForwardRenderer();
 	sceneInitialized = false;
+
+	renderer = ForwardRenderer::Get();
 }
 
 Scene_Manager::~Scene_Manager() {
-	delete shader_manager;
-	delete model_manager;
-	delete texture_manager;
-	delete material_manager;
-	delete physics_manager;
-	delete renderer;
+	delete Shader_Manager::Get();
+	delete Model_Manager::Get();
+	delete Texture_Manager::Get();
+	delete Material_Manager::Get();
+	delete Physics_Manager::Get();
+	delete ForwardRenderer::Get();
 	delete headNode;
 	for (Camera* cam : cameras) delete cam;
 	for (Light* light : lights) delete light;
@@ -65,7 +78,23 @@ Scene_Manager::~Scene_Manager() {
 void Scene_Manager::notifyBeginFrame() {
 	//model_manager->Update();
 	handleInputs();
+
+	auto timeNow = high_resolution_clock::now();
+	reportFramerate(timeNow);
+
+	if (timeNow > nextPhysicsFrame) {
+		if (!pausePhysics || stepPhysics) {
+			Physics_Manager::Get()->Update(physicsDt);
+			Physics_Manager::Get()->Transmute();
+			stepPhysics = false;
+		}
+		nextPhysicsFrame = timeNow + physicsFramePeriod;
+	}
+
+	prevTime = timeNow;
+
 	headNode->UpdateMatrices();
+	Model_Manager::Get()->Update();
 	renderer->setCamera(activeCam);
 	renderer->setLights(lights);
 }
@@ -75,7 +104,7 @@ void Scene_Manager::notifyDisplayFrame() {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	model_manager->Draw(renderer);
+	Model_Manager::Get()->Draw(renderer);
 }
 
 void Scene_Manager::notifyEndFrame() {
@@ -118,6 +147,12 @@ void Scene_Manager::handleInputs()
 	if (Input_Manager::zoomBack) {
 		activeCam->Zoom(1 + dStrafe);
 	}
+	if (Input_Manager::togglePause) {
+		pausePhysics = !pausePhysics;
+	}
+	if (Input_Manager::step) {
+		stepPhysics = true;
+	}
 	Strafe *= dStrafe;
 	activeCam->Strafe(Strafe.x, Strafe.y);
 	if (Input_Manager::mouseLeftButton == 0) {
@@ -126,7 +161,7 @@ void Scene_Manager::handleInputs()
 		activeCam->Orbit(Strafe.x, Strafe.y, dStrafe);
 	}
 	activeCam->InvalidateMatrices();
-	Input_Manager::update();
+	Input_Manager::Update();
 }
 
 void Scene_Manager::SetRenderer(IRenderer* renderer) {
@@ -139,21 +174,21 @@ void Scene_Manager::BuildSceneFromJSON(string &filename) {
 	json j = json::parse(jsonString);
 
 	//Create shaders
-	shader_manager->CreateProgram("single_color", j["Shaders"]["SingleColor"]["Vertex"], j["Shaders"]["SingleColor"]["Fragment"]);
-	shader_manager->CreateProgram("lambertian", j["Shaders"]["Lambertian"]["Vertex"], j["Shaders"]["Lambertian"]["Fragment"]);
+	Shader_Manager::Get()->CreateProgram("single_color", j["Shaders"]["SingleColor"]["Vertex"], j["Shaders"]["SingleColor"]["Fragment"]);
+	Shader_Manager::Get()->CreateProgram("lambertian", j["Shaders"]["Lambertian"]["Vertex"], j["Shaders"]["Lambertian"]["Fragment"]);
 	
 	//Load textures, materials, models, and physics
-	texture_manager->LoadFromJSON(j);
-	material_manager->LoadFromJSON(j);
-	model_manager->LoadFromJSON(j);
-	physics_manager->LoadFromJSON(j);
+	Texture_Manager::Get()->LoadFromJSON(j);
+	Material_Manager::Get()->LoadFromJSON(j);
+	Model_Manager::Get()->LoadFromJSON(j);
+	Physics_Manager::Get()->LoadFromJSON(j);
 
 	//Container to temporarily hold all the IGameObjects, until we place them in the scene.
 	unordered_map<string, IGameObject*> gameObjects;
-	for (auto kv : model_manager->GetModelList()) {
+	for (auto kv : Model_Manager::Get()->GetModelList()) {
 		gameObjects[kv.first] = kv.second;
 	}
-	for (auto kv : model_manager->GetCloneList()) {
+	for (auto kv : Model_Manager::Get()->GetCloneList()) {
 		gameObjects[kv.first] = kv.second;
 	}
 
@@ -192,11 +227,11 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	j["Shaders"]["SingleColor"]["Fragment"] = "Shaders\\single_color.frag";
 	j["Shaders"]["Lambertian"]["Vertex"] = "Shaders\\standard.vert";
 	j["Shaders"]["Lambertian"]["Fragment"] = "Shaders\\lambertian.frag";
-	texture_manager->WriteToJSON(j);
-	material_manager->WriteToJSON(j);
-	model_manager->WriteToJSON(j);
-	model_manager->WriteModelsToSourceJSON();
-	physics_manager->WriteToJSON(j);
+	Texture_Manager::Get()->WriteToJSON(j);
+	Material_Manager::Get()->WriteToJSON(j);
+	Model_Manager::Get()->WriteToJSON(j);
+	Model_Manager::Get()->WriteModelsToSourceJSON();
+	Physics_Manager::Get()->WriteToJSON(j);
 	for (Camera* camera : cameras) {
 		j["Cameras"][camera->name] = camera->GetSourceJSON();
 	}
@@ -215,8 +250,8 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 void Scene_Manager::SetupTestScene()
 {
 	//Create shaders
-	shader_manager->CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
-	shader_manager->CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
+	Shader_Manager::Get()->CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
+	Shader_Manager::Get()->CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
 
 	//Define some generic transformations
 	vec3 zero(0);
@@ -241,44 +276,90 @@ void Scene_Manager::SetupTestScene()
 		VertexFormat(vec4(1, 1, 1, 1), vec3(0, -1, 0), vec2(1, 1), vec4(1, 0, 0, 1)),
 		VertexFormat(vec4(0, 1, 1, 1), vec3(0, -1, 0), vec2(0, 1), vec4(1, 0, 0, 1)), };
 	vector<unsigned int> indices{ 0, 1, 2, 0, 2, 3 };
-	Model* triangle = model_manager->CreateAndAdd("Triangle", vertices, indices);
+	Model* triangle = Model_Manager::Get()->CreateAndAdd("Triangle", vertices, indices);
 	triangle->source = "ModelSources\\Triangle.json";
-	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one);
-	Texture* tex = texture_manager->LoadandAddTexture("Images\\test.bmp");
+	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one, false);
+	Texture* tex = Texture_Manager::Get()->LoadandAddTexture("Images\\test.bmp");
 	dynamic_cast<Materials::LambertianMaterial*>(triangle->GetFragmentMat("Main"))->diffuseTexture = tex;
 
 	// Get a sphere copy
-	Model* sphere = model_manager->PromoteToModel(model_manager->getSphereCopy("Sphere"));
-	sphere->AddToSceneTree(headNode, vec3(2.0f), aLittleRot, one);
+	Model* sphere = Model_Manager::Get()->PromoteToModel(Model_Manager::Get()->getSphereCopy("Sphere"));
+	sphere->AddToSceneTree(headNode, vec3(2.0f), aLittleRot, one, false);
 	sphere->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 	//Model* sphere2 = model_manager->getSphereCopy("SphereTwo");
 	//sphere2->addToSceneTree(headNode, sphere->name, vec3(0.0f, 3.0f, 1.0f), norot, one);
 
 	// Get a cube copy
-	Model* cube = model_manager->PromoteToModel(model_manager->getCubeCopy("Cube"));
-	cube->AddToSceneTree(headNode, vec3(3, 2, 3), aLittelMoreRot, one);
-	Texture* cubeTex = texture_manager->LoadandAddTexture("Images\\cubeTest.bmp");
+	Model* cube = Model_Manager::Get()->PromoteToModel(Model_Manager::Get()->getCubeCopy("Cube"));
+	cube->AddToSceneTree(headNode, vec3(3, 2, 3), aLittelMoreRot, one, false);
+	Texture* cubeTex = Texture_Manager::Get()->LoadandAddTexture("Images\\cubeTest.bmp");
 	cube->SetFragmentMat("Main", new Materials::LambertianMaterial(vec4(1.0f), cubeTex));
 
 	// Create the main camera
 	activeCam = new PerspectiveCamera("Main Camera");
 	activeCam->AddToSceneTree(headNode, zero, norot, one);
-	activeCam->LookAt(vec3(0.5f, 0, 0.5f), vec3(0.5f, 1, 0.5f), vec3(0, 0, 1));
+	activeCam->LookAt(vec3(-2, -2, 5), vec3(4.5f, 4.5f, 0), vec3(0, 0, 1));
 	cameras.push_back(activeCam);
 
 	// Spam some sphere clones
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			string name = "Sphere" + to_string(10 * i + j);
-			ModelClone* sphere = model_manager->getSphereCopy(name);
-			sphere->AddToSceneTree(headNode, vec3(i, j, 0), norot, one * 0.5f);
-		}
-	}
+	//for (int i = 0; i < 10; i++) {
+	//	for (int j = 0; j < 10; j++) {
+	//		string name = "Sphere" + to_string(10 * i + j);
+	//		ModelClone* sphere = Model_Manager::Get()->getSphereCopy(name);
+	//		sphere->AddToSceneTree(headNode, vec3(i, j, 0), norot, one * 0.5f);
+	//	}
+	//}
 
 	sceneInitialized = true;
-	Input_Manager::registerCallbacks();
+	Input_Manager::RegisterCallbacks();
 	headNode->UpdateMatrices();
-	SaveSceneToJSON("JSON\\testScene.json");
+	//SaveSceneToJSON("JSON\\testScedne.json");
+
+	//Build test cloth
+	Model* clothModel = Model_Manager::Get()->PromoteToModel(Model_Manager::Get()->getRectCopy("ClothModel"));
+	clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(5, 5, 1));
+	clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
+	clothModel->RecalculateNormals();
+	clothModel->InvalidateVBO();
+
+	headNode->UpdateMatrices();
+
+	//Continue building test cloth
+	Cloth* cloth = new Cloth(clothModel, 0, 200);
+	cloth->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
+	Physics_Manager::Get()->AddPhysicsObject(cloth);
+
+	//Physics::PhysicsObjects::Solids::Cloth* cloth = new Physics::PhysicsObjects::Solids::Cloth();
+	//cloth->BuildFromModel(triangle, 0, 2);
+
+	physicsDt = 1.0f / 30.0f;
+	physicsFramePeriod = high_resolution_clock::duration(33333333);
+	pausePhysics = true;
+	stepPhysics = false;
+	Physics_Manager::Get()->Init();
+	cloth->FixParticle(0);
+	cloth->FixParticle(10);
+	cloth->FixParticle(110);
+	cloth->FixParticle(120);
+}
+
+void Scene_Manager::reportFramerate(high_resolution_clock::time_point &timeNow) {
+	modularFrame++;
+	modularFrame %= 100;
+	frameTimes[modularFrame] = duration_cast<microseconds>(timeNow - prevTime).count() / 1000000.0f;
+	float totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += frameTimes[i];
+	}
+
+	float framerate = round(1000.0f / totalTime) / 10.0f;
+
+	cout << "Framerate: " << framerate;
+
+	if (timeNow > nextPhysicsFrame) {
+		cout << ",\tPhysics!";
+	}
+	cout << endl;
 }
 
 void Scene_Manager::buildSceneTreeBranch(IGameObject* node, IGameObject* parent, json branch, unordered_map<string, IGameObject*> &gameObjects) {

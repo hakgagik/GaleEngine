@@ -11,7 +11,17 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
+Material_Manager* Material_Manager::instance = nullptr;
+
+Material_Manager* Material_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Material_Manager();
+	}
+	return instance;
+}
+
 Material_Manager::Material_Manager() {}
+
 Material_Manager::~Material_Manager() {
 	for (auto material : materialList) {
 		delete material.second;
@@ -32,7 +42,7 @@ const void Material_Manager::AddMaterial() {
 	// TODO
 }
 
-void Material_Manager::LoadFromJSON(json &j, Texture_Manager* texture_manager) {
+void Material_Manager::LoadFromJSON(json &j) {
 	for (json::iterator it = j["Materials"].begin(); it != j["Materials"].end(); ++it) {
 		json m = *it;
 		if (m["Type"] == "SingleColor") {
@@ -41,26 +51,26 @@ void Material_Manager::LoadFromJSON(json &j, Texture_Manager* texture_manager) {
 		}
 		else if (m["Type"] = "Lambertian") {
 			vec4 diffuseColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
-			const Texture* diffuseTexture;
+			const Texture* diffuseTexture = nullptr;
 			if (!m["DiffuseTexture"].is_null()) {
-				diffuseTexture = texture_manager->GetTexture(m["DiffuseTexture"]);
+				diffuseTexture = Texture_Manager::Get()->GetTexture(m["DiffuseTexture"]);
 			}
 			materialList[it.key()] = new LambertianMaterial(diffuseColor, diffuseTexture);
 		}
 		else if (m["Type"] = "BlinnPhong") {
 			vec4 diffuseColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
 			vec4 specularColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
-			const Texture* diffuseTexture;
-			const Texture* specularTexture;
-			const Texture* exponentTexture;
+			const Texture* diffuseTexture = nullptr;
+			const Texture* specularTexture = nullptr;
+			const Texture* exponentTexture = nullptr;
 			if (!m["DiffuseTexture"].is_null()) {
-				diffuseTexture = texture_manager->GetTexture(m["DiffuseTexture"]);
+				diffuseTexture = Texture_Manager::Get()->GetTexture(m["DiffuseTexture"]);
 			}
 			if (!m["SpecularTexture"].is_null()) {
-				specularTexture = texture_manager->GetTexture(m["SpecularTexture"]);
+				specularTexture = Texture_Manager::Get()->GetTexture(m["SpecularTexture"]);
 			}
 			if (!m["ExponentTexture"].is_null()) {
-				exponentTexture = texture_manager->GetTexture(m["ExponentTexture"]);
+				exponentTexture = Texture_Manager::Get()->GetTexture(m["ExponentTexture"]);
 			}
 			materialList[it.key()] = new BlinnPhongMaterial(diffuseTexture, specularTexture, exponentTexture, diffuseColor, specularColor, m["Exponent"]);
 		}

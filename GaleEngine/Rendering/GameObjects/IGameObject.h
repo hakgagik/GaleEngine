@@ -14,6 +14,7 @@ namespace Rendering {
 			std::vector<IGameObject*> children;
 			glm::mat4 toParentMatrix;
 			glm::mat4 toWorldMatrix;
+			glm::mat4 toWorldMatrixInv;
 
 			IGameObject(std::string name);
 			virtual ~IGameObject() = 0; // pure virtual destructor!

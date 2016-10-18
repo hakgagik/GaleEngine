@@ -9,15 +9,20 @@ namespace Managers
 {
 	class Shader_Manager {
 	public:
-		static const GLuint GetShader(const std::string&);
+		static Shader_Manager* Get();
 
-		Shader_Manager(void);
-		~Shader_Manager(void);
+		const GLuint GetShader(const std::string&);
+
+		~Shader_Manager();
 
 		void CreateProgram(const std::string& shaderName, const std::string& VertexShaderFilename, const std::string& FragmentShaderFilename);
 
 	private:
-		static std::unordered_map<std::string, GLuint> programs;
+		static Shader_Manager* instance;
+
+		Shader_Manager();
+
+		std::unordered_map<std::string, GLuint> programs;
 
 		std::string readShader(const std::string& filename);
 		GLuint createShader(GLenum shaderType, const std::string& source, const std::string& shaderName);

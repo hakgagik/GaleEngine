@@ -20,18 +20,20 @@ bool Input_Manager::arrowForward = false;
 bool Input_Manager::arrowBack = false;
 bool Input_Manager::zoomForward = false;
 bool Input_Manager::zoomBack = false;
+bool Input_Manager::togglePause = false;
+bool Input_Manager::step = false;
 GLint Input_Manager::mouseLeftButton = GLUT_UP;
 GLint Input_Manager::mouseRightButton = GLUT_UP;
 GLint Input_Manager::mouseMiddleButton = GLUT_UP;
 
-void Input_Manager::registerCallbacks() {
-	glutKeyboardFunc(keyPressed);
-	glutMouseFunc(mousePressed);
-	glutMotionFunc(mouseMoved);
-	glutPassiveMotionFunc(mousePassiveMoved);
+void Input_Manager::RegisterCallbacks() {
+	glutKeyboardFunc(KeyPressed);
+	glutMouseFunc(MousePressed);
+	glutMotionFunc(MouseMoved);
+	glutPassiveMotionFunc(MousePassiveMoved);
 }
 
-void Input_Manager::keyPressed(unsigned char key, int x, int y) {
+void Input_Manager::KeyPressed(unsigned char key, int x, int y) {
 	switch (key)
 	{
 	case 'w':
@@ -61,13 +63,19 @@ void Input_Manager::keyPressed(unsigned char key, int x, int y) {
 	case 't':
 		testKey = true;
 		break;
+	case 'p':
+		togglePause = true;
+		break;
+	case 'o':
+		step = true;
+		break;
 	default:
 		break;
 	}
 	moveMouse(x, y);
 }
 
-void Input_Manager::specialKeyPressed(GLuint key, int x, int y) {
+void Input_Manager::SpecialKeyPressed(GLuint key, int x, int y) {
 	switch (key)
 	{
 	case GLUT_KEY_UP:
@@ -94,7 +102,7 @@ void Input_Manager::moveMouse(int x, int y) {
 	mouseDelta = mousePos - oldMousePos;
 }
 
-void Input_Manager::mousePressed(GLint button, GLint state, int x, int y) {
+void Input_Manager::MousePressed(GLint button, GLint state, int x, int y) {
 	switch (button)
 	{
 	case GLUT_LEFT_BUTTON:
@@ -112,7 +120,7 @@ void Input_Manager::mousePressed(GLint button, GLint state, int x, int y) {
 	moveMouse(x, y);
 }
 
-void Input_Manager::mouseMoved(int x, int y) {
+void Input_Manager::MouseMoved(int x, int y) {
 	if (mouseLeftButton == GLUT_UP && mouseRightButton == GLUT_UP && mouseMiddleButton == GLUT_UP) {
 		cout << "Input Manager: Regular motion func was called even though no mouse button is pressed." << endl;
 	}
@@ -121,7 +129,7 @@ void Input_Manager::mouseMoved(int x, int y) {
 	}
 }
 
-void Input_Manager::mousePassiveMoved(int x, int y) {
+void Input_Manager::MousePassiveMoved(int x, int y) {
 	// Debugging purposes only
 	if (mouseLeftButton == GLUT_DOWN || mouseRightButton == GLUT_DOWN || mouseMiddleButton == GLUT_DOWN) {
 		cout << "Input Manager: Passive motion func was called even though a mouse button is pressed." << endl;
@@ -129,8 +137,8 @@ void Input_Manager::mousePassiveMoved(int x, int y) {
 	moveMouse(x, y);
 }
 
-void Input_Manager::update() {
-	arrowDown = arrowUp = arrowLeft = arrowRight = testKey = arrowForward = arrowBack = zoomForward = zoomBack = false;
+void Input_Manager::Update() {
+	arrowDown = arrowUp = arrowLeft = arrowRight = testKey = arrowForward = arrowBack = zoomForward = zoomBack = step = togglePause = false;
 	mouseDelta = vec2(0, 0);
 	oldMousePos = mousePos;
 }

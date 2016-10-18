@@ -84,16 +84,28 @@
     <ClCompile Include="Managers\Physics_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Physics\Constraints\StretchingConstraintGroup.cpp">
+    <ClCompile Include="Physics\Constraints\FaceBendingConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Physics\Transmuters\ClothTransmuter.cpp">
+    <ClCompile Include="Physics\Particles\Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp">
+    <ClCompile Include="Physics\PhysicsObjects\Solids\Cloth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsObjects\Solids\Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\Forces\ConstantForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsObjects\PhysicsObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,34 +197,40 @@
     <ClInclude Include="Managers\Physics_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\ISceneListener.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\IConstraintGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Physics\Constraints\Constraint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Particles\Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Forces\ForceField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Constraints\StretchingConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Constraints\ConstraintGroup.h">
+    <ClInclude Include="Physics\Constraints\FaceBendingConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Constraints\StretchingConstraintGroup.h">
+    <ClInclude Include="Physics\Particles\Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Transmuters\Transmuter.h">
+    <ClInclude Include="Physics\PhysicsObjects\PhysicsObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Transmuters\ClothTransmuter.h">
+    <ClInclude Include="Physics\PhysicsObjects\Solids\Cloth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ISceneListener.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="Physics\PhysicsObjects\Solids\Triangle.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h">
+    <ClInclude Include="Physics\Forces\Force.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Forces\ConstantForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

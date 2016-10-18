@@ -118,7 +118,9 @@ void PerspectiveCamera::LookAt(vec3 pos, vec3 target, vec3 up) {
 void PerspectiveCamera::Orbit(float dPhi, float dTheta, float boundSize)
 {
 	//updateFrame();
-	vec3 rho = normalize(globalPos - target);
+	vec3 rho = globalPos - target;
+	float distance = length(rho);
+	rho = normalize(rho);
 	vec3 e = normalize(cross(VERTICAL, rho));
 
 	float theta = acos(dot(rho, VERTICAL));
@@ -128,7 +130,7 @@ void PerspectiveCamera::Orbit(float dPhi, float dTheta, float boundSize)
 
 	rho = rotate(rho, dTheta, e);
 	rho = rotate(rho, dPhi, VERTICAL);
-	rho = normalize(rho);
+	rho = normalize(rho) * distance;
 
 	globalPos = target + rho;
 

@@ -24,7 +24,17 @@ using namespace glm;
 const GLenum ForwardRenderer::textureIndexMap[] = { GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7, GL_TEXTURE8 };
 const int ForwardRenderer::MAX_LIGHTS = 40;
 
+ForwardRenderer* ForwardRenderer::instance = nullptr;
+
+ForwardRenderer* ForwardRenderer::Get() {
+	if (instance == nullptr) {
+		instance = new ForwardRenderer();
+	}
+	return instance;
+}
+
 ForwardRenderer::ForwardRenderer() {}
+
 ForwardRenderer::~ForwardRenderer() {}
 
 void ForwardRenderer::Render(Model* model) {
@@ -43,10 +53,10 @@ void ForwardRenderer::calculateOrientationMatrices(IGameObject* gameObject) {
 	MVPMatrix = projectionMatrix*modelViewMatrix;
 }
 
-void ForwardRenderer::renderFromModel(Model* model) {
+void ForwardRenderer::renderFromModel(const Model* model) {
 	vector<string> fragNames = model->GetFragNames();
 	for (string f : fragNames) {
-		Fragment* fragment = model->GetFragment(f);
+		const Fragment* fragment = model->GetFragment(f);
 		if (SingleColorMaterial* singleColorMat = dynamic_cast<SingleColorMaterial*>(fragment->material)) {
 			renderFragment(model, fragment, singleColorMat);
 		}
@@ -58,16 +68,15 @@ void ForwardRenderer::renderFromModel(Model* model) {
 		}
 		else {
 			cout << "Forward Renderer: Can't find material for model  " << model->name << ". Rendering as white SingleColor." << endl;
-			fragment->material = new SingleColorMaterial();
 			renderFragment(model, fragment, new SingleColorMaterial());
 		}
 	}
 }
 
-void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, SingleColorMaterial* mat) {
+void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, SingleColorMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::GetShader("single_color");
+	GLuint program = Shader_Manager::Get()->GetShader("single_color");
 	glUseProgram(program);
 
 	setMatrixUniforms(program);
@@ -77,10 +86,11 @@ void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, SingleCol
 	glUniform4fv(loc, 1, value_ptr(mat->diffuseColor));
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
-void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, LambertianMaterial* mat) {
+
+void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, LambertianMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::GetShader("lambertian");
+	GLuint program = Shader_Manager::Get()->GetShader("lambertian");
 	glUseProgram(program);
 	glBindVertexArray(model->GetVao());
 
@@ -96,10 +106,10 @@ void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, Lambertia
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
 
-void ForwardRenderer::renderFragment(Model* model, Fragment* fragment, BlinnPhongMaterial* mat) {
+void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, BlinnPhongMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::GetShader("blinn_phong");
+	GLuint program = Shader_Manager::Get()->GetShader("blinn_phong");
 	glUseProgram(program);
 	glBindVertexArray(model->GetVao());
 
@@ -163,6 +173,7 @@ void ForwardRenderer::setMatrixUniforms(GLuint program) {
 	loc = glGetUniformLocation(program, "inverseViewMatrix");
 	glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(inverseViewMatrix));
 }
+
 void ForwardRenderer::setLightUniforms(GLuint program) {
 	//TODO figure out if we can use uniform buffers for this
 	//TODO support more than point lights
@@ -182,7 +193,8 @@ void ForwardRenderer::setLightUniforms(GLuint program) {
 	loc = glGetUniformLocation(program, "lightCutoff");
 	glUniform1fv(loc, lightCount, &lightCutoffs[0]);
 }
-void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, const GLchar* hasUniformName, Texture* texture, int textureUnit) {
+
+void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, const GLchar* hasUniformName, const Texture* texture, int textureUnit) {
 	GLint hasTexUniLoc = glGetUniformLocation(program, hasUniformName);
 	GLint texUniLoc = glGetUniformLocation(program, uniformName);
 	if (texture != nullptr && texUniLoc != -1 && hasTexUniLoc != -1) {
@@ -195,5 +207,8 @@ void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, cons
 		glUniform1i(hasTexUniLoc, GL_FALSE);
 	}
 }
-void ForwardRenderer::unuseTexture(GLuint program, Texture* texture) {}
+
+void ForwardRenderer::unuseTexture(GLuint program, Texture* texture) {
+	//TODO ForwardRenderer::unuseTexture
+}
 //void ForwardRenderer::bindPosNorTexTanAttributes(GLuint program, Model* model, Fragment* fragment) {}

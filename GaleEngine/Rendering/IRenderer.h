@@ -16,6 +16,7 @@ namespace Rendering {
 	}
 	class IRenderer {
 	public:
+
 		virtual ~IRenderer() = 0;
 
 		virtual void Render(GameObjects::Models::Model* model) = 0;

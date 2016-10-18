@@ -29,7 +29,8 @@ namespace Rendering {
 
 	class ForwardRenderer : public IRenderer {
 	public:
-		ForwardRenderer();
+		static ForwardRenderer* Get();
+
 		virtual ~ForwardRenderer() override;
 
 		virtual void Render(GameObjects::Models::Model* model) override;
@@ -38,6 +39,10 @@ namespace Rendering {
 		virtual void setLights(std::vector<GameObjects::Lights::Light*> light) override;
 
 	private:
+		static ForwardRenderer* instance;
+
+		ForwardRenderer();
+
 		const static GLenum textureIndexMap[];
 		const static int MAX_LIGHTS;
 
@@ -57,11 +62,11 @@ namespace Rendering {
 		void calculateOrientationMatrices(GameObjects::IGameObject* gameObject);
 		void setMatrixUniforms(GLuint program);
 		void setLightUniforms(GLuint program);
-		void useTexture(GLuint texIndex, const GLchar* uniformName, const GLchar* hasUniformName, Texture* texture, int textureUnit);
+		void useTexture(GLuint texIndex, const GLchar* uniformName, const GLchar* hasUniformName, const Texture* texture, int textureUnit);
 		void unuseTexture(GLuint program, Texture* texture);
-		void renderFromModel(GameObjects::Models::Model* model);
-		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::SingleColorMaterial* mat);
-		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::LambertianMaterial* mat);
-		void renderFragment(GameObjects::Models::Model* model, GameObjects::Models::Fragment* fragment, Rendering::Materials::BlinnPhongMaterial* mat);
+		void renderFromModel(const GameObjects::Models::Model* model);
+		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::SingleColorMaterial* mat);
+		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::LambertianMaterial* mat);
+		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::BlinnPhongMaterial* mat);
 	};
 }

@@ -4,6 +4,7 @@
 #include "../lib/json.hpp"
 #include <vector>
 #include <unordered_map>
+#include <chrono>
 
 
 namespace Rendering {
@@ -28,7 +29,8 @@ namespace Managers {
 
 	class Scene_Manager : public Core::ISceneListener {
 	public:
-		Scene_Manager();
+		static Scene_Manager* Get();
+
 		~Scene_Manager();
 
 		virtual void notifyBeginFrame();
@@ -44,12 +46,16 @@ namespace Managers {
 		std::string ReadFile(const std::string &filename);
 
 	private:
-		Shader_Manager* shader_manager;
-		Model_Manager* model_manager;
-		Texture_Manager* texture_manager;
-		Material_Manager* material_manager;
-		Physics_Manager* physics_manager;
+		static Scene_Manager* instance;
 
+		std::chrono::high_resolution_clock::time_point prevTime;
+		std::chrono::high_resolution_clock::time_point nextPhysicsFrame;
+		std::chrono::high_resolution_clock::duration physicsFramePeriod;
+		float frameTimes[100];
+		int modularFrame;
+		float physicsDt;
+
+		Scene_Manager();
 		Rendering::IRenderer* renderer;
 
 		Rendering::GameObjects::Cameras::Camera* activeCam;
@@ -59,6 +65,10 @@ namespace Managers {
 
 		float dStrafe = 0.1f;
 		float dTheta = 0.01308996939f;
+		bool pausePhysics;
+		bool stepPhysics;
+
+		void reportFramerate(std::chrono::high_resolution_clock::time_point &timeNow);
 
 		//nlohmann::json writeBranchToJSON(Rendering::GameObjects::IGameObject* node);
 		void buildSceneTreeBranch(Rendering::GameObjects::IGameObject* node, Rendering::GameObjects::IGameObject* parent, nlohmann::json branch, std::unordered_map<std::string, Rendering::GameObjects::IGameObject*> &gameObjects);
