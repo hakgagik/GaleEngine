@@ -19,7 +19,7 @@ void Texture::Destroy() {
 
 Texture::Texture(const string &filename) {
 	name = filename;
-	unsigned int dotPos = (unsigned int)filename.find('.');
+	unsigned int dotPos = filename.find('.');
 	string extension = filename.substr(dotPos);
 
 	if (extension == ".bmp" || extension == ".BMP") {

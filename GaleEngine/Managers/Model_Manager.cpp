@@ -22,13 +22,17 @@ const string SPHERE_TEMPLATE_SOURCE = "JSON\\ModelSources\\SphereTemplate.json";
 const string CUBE_TEMPLATE_SOURCE = "JSON\\ModelSources\\CubeTemplate.json";
 const string RECT_TEMPLATE_SOURCE = "JSON\\ModelSources\\RectTemplate.json";
 
-Model_Manager Model_Manager::instance;
+Model_Manager* Model_Manager::instance = nullptr;
 
-Model_Manager& Model_Manager::Get() {
+Model_Manager* Model_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Model_Manager();
+	}
 	return instance;
 }
 
-Model_Manager::Model_Manager() { }
+Model_Manager::Model_Manager() {
+}
 
 Model_Manager::~Model_Manager() {
 	for (auto model : modelList) {
@@ -38,8 +42,6 @@ Model_Manager::~Model_Manager() {
 		delete clone.second;
 	}
 }
-
-void Model_Manager::Init() { }
 
 void Model_Manager::DeleteModel(const string& gameModelName) {
 	Model* model = modelList[gameModelName];
@@ -81,14 +83,14 @@ void Model_Manager::createSphereTemplate(unsigned int thetaDiv, unsigned int phi
 	vec2 u;
 	//ofstream output("out.dat");
 	
-	for (unsigned int i = 0; i <= thetaDiv; i++) {
+	for (int i = 0; i <= thetaDiv; i++) {
 		theta = (float)i / (float)thetaDiv * Pi;
 		u.y = 1.0f - theta/Pi;
 		st = sin(theta);
 		ct = cos(theta);
 		x.z = ct;
 		t.z = -st;
-		for (unsigned int j = 0; j <= phiDiv; j++) {
+		for (int j = 0; j <= phiDiv; j++) {
 			u.x = (float)j / (float)phiDiv;
 			phi = u.x * 2.0f * Pi;
 			sp = sin(phi);
@@ -101,8 +103,8 @@ void Model_Manager::createSphereTemplate(unsigned int thetaDiv, unsigned int phi
 			//output << x.x << '\t' << x.y << '\t' << x.z << endl;
 		}
 	}
-	for (unsigned int i = 0; i < thetaDiv; i++) {
-		for (unsigned int j = 0; j < phiDiv; j++) {
+	for (int i = 0; i < thetaDiv; i++) {
+		for (int j = 0; j < phiDiv; j++) {
 			unsigned int index = i * (phiDiv + 1) + j;
 			indices.push_back(index);
 			indices.push_back(index + (phiDiv + 1));
@@ -224,18 +226,18 @@ void Model_Manager::createRectTemplate(unsigned int xDiv, unsigned int yDiv) {
 	vec3 n(0, 0, 1);
 	vec2 u(0, 0);
 	vec4 t(1, 0, 0, 0);
-	for (unsigned int i = 0; i <= yDiv; i++) {
+	for (int i = 0; i <= yDiv; i++) {
 		p.y = (float)i / (float)yDiv;
 		u.y = p.y;
-		for (unsigned int j = 0; j <= xDiv; j++) {
+		for (int j = 0; j <= xDiv; j++) {
 			p.x = (float)j / (float)xDiv;
 			u.x = p.x;
 			rectVertices.push_back(VertexFormat(p, n, u, t)); // the P.N.U.T. method
 		}
 	}
 
-	for (unsigned int i = 0; i < yDiv; i++) {
-		for (unsigned int j = 0; j < xDiv; j++) {
+	for (int i = 0; i < yDiv; i++) {
+		for (int j = 0; j < xDiv; j++) {
 			unsigned int index = i * (xDiv + 1) + j;
 
 			rectIndices.push_back(index);
@@ -330,8 +332,8 @@ void Model_Manager::LoadFromJSON(json &j) {
 
 		json s = json::parse(ReadFile(*it));
 
-		int numVerts = (int)s["Positions"].size();
-		int numInds = (int)s["Indices"].size();
+		int numVerts = s["Positions"].size();
+		int numInds = s["Indices"].size();
 
 
 		auto verts = vector<VertexFormat>(numVerts);

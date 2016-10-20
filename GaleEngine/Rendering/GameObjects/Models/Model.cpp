@@ -56,7 +56,7 @@ Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &ind
 
 	//SingleColorMaterial* mat = new SingleColorMaterial(color);
 	LambertianMaterial* mat = new LambertianMaterial(color);
-	this->fragments["Main"] = new Fragment(this, mat, 0, (int)indices.size(), 0, (GLuint)verts.size());
+	this->fragments["Main"] = new Fragment(this, mat, 0, indices.size(), 0, verts.size());
 }
 
 Model::~Model() {
@@ -168,8 +168,8 @@ void Model::UpdateTangent(int ind, vec3 &tan) {
 }
 
 void Model::RecalculateNormals() {
-	int numTris = (int)indices.size() / 3;
-	int numVerts = (int)verts.size();
+	int numTris = indices.size() / 3;
+	int numVerts = verts.size();
 	vector<vec3> normals(numVerts);
 	vector<float> adjacentTris(numVerts);
 	
@@ -268,7 +268,7 @@ json Model::GetSourceJSON() const {
 
 	for (auto kv : fragments) {
 		j["Fragments"][kv.first]["PrimitiveType"] = kv.second->primitiveType;
-		j["Fragments"][kv.first]["StartingIndex"] = kv.second->startingIndex;
+		j["Fragments"][kv.first]["IndexStartPointer"] = kv.second->indexStartPointer;
 		j["Fragments"][kv.first]["IndexCount"] = kv.second->indexCount;
 		j["Fragments"][kv.first]["Material"] = kv.second->material->name;
 	}

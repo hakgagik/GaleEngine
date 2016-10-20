@@ -21,7 +21,6 @@ namespace Rendering {
 				const Model* parent;
 
 				int startingVertex;
-				int startingIndex;
 				int vertexCount;
 
 				Fragment(const Fragment &other);

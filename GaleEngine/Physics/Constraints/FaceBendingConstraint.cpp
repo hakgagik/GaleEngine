@@ -101,7 +101,7 @@ float FaceBendingConstraint::getAngle(vec3 &p1, vec3 &p2, vec3 &p3, vec3 &p4) {
 	vec3 n3 = normalize(cross(p12, p13));
 	vec3 n4 = normalize(cross(p12, p14));
 	float d = dot(n3, n4);
-	if (d > 1.0f) { d = 1.0f; }
-	else if (d < -1.0f) { d = -1.0f; }
-	return acos(d);
+	if (d > 1.0f) d = 1.0f;
+	if (d < -1.0f) d = -1.0f;
+	else return acos(d);
 }

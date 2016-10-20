@@ -15,9 +15,12 @@ using namespace glm;
 using namespace std;
 using json = nlohmann::json;
 
-Physics_Manager Physics_Manager::instance;
+Physics_Manager* Physics_Manager::instance = nullptr;
 
-Physics_Manager& Physics_Manager::Get() {
+Physics_Manager* Physics_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Physics_Manager();
+	}
 	return instance;
 }
 
@@ -30,9 +33,7 @@ Physics_Manager::~Physics_Manager() {
 	for (PhysicsObject* physicsObject : physicsObjectList) delete physicsObject;
 }
 
-void Physics_Manager::Init() { }
-
-void Physics_Manager::InitFrame() {
+void Physics_Manager::Init() {
 	initParticles();
 }
 

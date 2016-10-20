@@ -20,7 +20,7 @@ namespace Physics {
 namespace Managers {
 	class Physics_Manager {
 	public:
-		static Physics_Manager& Get();
+		static Physics_Manager* Get();
 
 		int iterations = 5;
 		float dt;
@@ -32,8 +32,6 @@ namespace Managers {
 		~Physics_Manager();
 
 		void Init();
-
-		void InitFrame();
 		void Update(float dt);
 		void Transmute();
 
@@ -41,10 +39,9 @@ namespace Managers {
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
 	private:
-		static Physics_Manager instance;
+		static Physics_Manager* instance;
 
 		Physics_Manager();
-		Physics_Manager(const Physics_Manager &other);
 
 		// Main physics loop functions
 		void initParticles();

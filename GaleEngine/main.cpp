@@ -17,12 +17,13 @@ int main(int argc, char **argv) {
 
 	Init_GLUT::init(window, context, frameBufferInfo);
 
-	ISceneListener* scene = &(Scene_Manager::Get());
+	ISceneListener* scene = Scene_Manager::Get();
 	dynamic_cast<Scene_Manager*>(scene)->SetupTestScene();
 	
 	Init_GLUT::setListener(scene);
 
 	Init_GLUT::run();
 
+	delete scene;
 	return 0;
 }

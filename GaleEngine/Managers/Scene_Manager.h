@@ -29,17 +29,16 @@ namespace Managers {
 
 	class Scene_Manager : public Core::ISceneListener {
 	public:
-		static Scene_Manager& Get();
+		static Scene_Manager* Get();
 
 		~Scene_Manager();
 
-		virtual void NotifyBeginFrame();
-		virtual void NotifyDisplayFrame();
-		virtual void NotifyEndFrame();
-		virtual void NotifyReshape(int width, int height, int previous_width, int previous_height);
-		virtual void HandleInputs();
+		virtual void notifyBeginFrame();
+		virtual void notifyDisplayFrame();
+		virtual void notifyEndFrame();
+		virtual void notifyReshape(int width, int height, int previous_width, int previous_height);
+		virtual void handleInputs();
 
-		void Init();
 		void SetRenderer(Rendering::IRenderer* renderer);
 		void BuildSceneFromJSON(std::string &filename);
 		void SaveSceneToJSON(const std::string &filename);
@@ -47,7 +46,7 @@ namespace Managers {
 		std::string ReadFile(const std::string &filename);
 
 	private:
-		static Scene_Manager instance;
+		static Scene_Manager* instance;
 
 		std::chrono::high_resolution_clock::time_point prevTime;
 		std::chrono::high_resolution_clock::time_point nextPhysicsFrame;
@@ -57,7 +56,6 @@ namespace Managers {
 		float physicsDt;
 
 		Scene_Manager();
-		Scene_Manager(const Scene_Manager &);
 		Rendering::IRenderer* renderer;
 
 		Rendering::GameObjects::Cameras::Camera* activeCam;

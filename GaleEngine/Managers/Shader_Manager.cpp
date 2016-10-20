@@ -7,9 +7,12 @@
 using namespace Managers;
 using namespace std;
 
-Shader_Manager Shader_Manager::instance;
+Shader_Manager* Shader_Manager::instance = nullptr;
 
-Shader_Manager& Shader_Manager::Get() {
+Shader_Manager* Shader_Manager::Get() {
+	if (instance == nullptr) {
+		instance = new Shader_Manager();
+	}
 	return instance;
 }
 
@@ -35,8 +38,6 @@ Shader_Manager::~Shader_Manager() {
 	}
 	programs.clear();
 }
-
-void Shader_Manager::Init() {}
 
 void Shader_Manager::CreateProgram(const string & shaderName, const string & VertexShaderFilename, const string & FragmentShaderFilename)
 {
@@ -95,7 +96,7 @@ GLuint Shader_Manager::createShader(GLenum shaderType, const string & source, co
 
 	GLuint shader = glCreateShader(shaderType); // ask GL to create room for the shader and give us a GLuint to reference it by
 	const char *shader_code_ptr = source.c_str(); // create a pointer to the first char in the shader source
-	const int shader_code_size = (int)source.size(); // size of the shader source
+	const int shader_code_size = source.size(); // size of the shader source
 
 	glShaderSource(shader, 1, &shader_code_ptr, &shader_code_size); // tell GL where to look for the shader source
 	glCompileShader(shader); // compile the shader from the source we just gave

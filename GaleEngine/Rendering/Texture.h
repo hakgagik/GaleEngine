@@ -12,8 +12,8 @@ namespace Rendering {
 		void Destroy();
 
 		unsigned char* data;
-		unsigned int width;
-		unsigned int height;
+		int width;
+		int height;
 		GLuint textureLocation;
 		std::string name;
 	private:
