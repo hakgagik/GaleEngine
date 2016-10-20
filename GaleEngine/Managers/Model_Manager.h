@@ -20,7 +20,7 @@ namespace Rendering {
 namespace Managers {
 	class Model_Manager {
 	public:
-		static Model_Manager* Get();
+		static Model_Manager& Get();
 
 		Rendering::GameObjects::Models::ModelClone* getSphereCopy(std::string name);
 		Rendering::GameObjects::Models::ModelClone* getCubeCopy(std::string name);
@@ -28,6 +28,7 @@ namespace Managers {
 
 		~Model_Manager();
 		
+		void Init();
 		void Draw(Rendering::IRenderer* renderer);
 		void Update();
 		void DeleteModel(const std::string& gameModelName);
@@ -49,9 +50,10 @@ namespace Managers {
 		std::string ReadFile(const std::string &filename);
 
 	private:
-		static Model_Manager* instance;
+		static Model_Manager instance;
 
 		Model_Manager();
+		Model_Manager(const Model_Manager &other);
 		void createSphereTemplate(unsigned int thetaDiv = 16, unsigned int phiDiv = 32);
 		void createCubeTemplate();
 		void createRectTemplate(unsigned int xDiv = 10, unsigned int yDiv = 10);

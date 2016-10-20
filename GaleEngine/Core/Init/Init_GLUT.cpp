@@ -88,19 +88,19 @@ void Init_GLUT::idleCallback(void) {
 
 void Init_GLUT::displayCallback() {
 	if (listener) {
-		listener->notifyBeginFrame();
-		listener->notifyDisplayFrame();
+		listener->NotifyBeginFrame();
+		listener->NotifyDisplayFrame();
 
 		glutSwapBuffers();
 
-		listener->notifyEndFrame();
+		listener->NotifyEndFrame();
 	}
 }
 
 void Init_GLUT::reshapeCallback(int width, int height) {
 	if (windowInfo.isReshapable == true) {
 		if (listener) {
-			listener->notifyReshape(width, height, windowInfo.width, windowInfo.height);
+			listener->NotifyReshape(width, height, windowInfo.width, windowInfo.height);
 			windowInfo.width = width;
 			windowInfo.height = height;
 		}

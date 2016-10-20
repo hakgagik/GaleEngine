@@ -29,17 +29,18 @@ namespace Rendering {
 
 	class ForwardRenderer : public IRenderer {
 	public:
-		static ForwardRenderer* Get();
+		static ForwardRenderer& Get();
 
 		virtual ~ForwardRenderer() override;
-
+		
+		virtual void Init() override;
 		virtual void Render(GameObjects::Models::Model* model) override;
 		virtual void Render(GameObjects::Models::ModelClone* model) override;
 		virtual void setCamera(GameObjects::Cameras::Camera* camera) override;
 		virtual void setLights(std::vector<GameObjects::Lights::Light*> light) override;
 
 	private:
-		static ForwardRenderer* instance;
+		static ForwardRenderer instance;
 
 		ForwardRenderer();
 

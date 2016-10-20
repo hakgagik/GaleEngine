@@ -24,18 +24,17 @@ using namespace glm;
 const GLenum ForwardRenderer::textureIndexMap[] = { GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7, GL_TEXTURE8 };
 const int ForwardRenderer::MAX_LIGHTS = 40;
 
-ForwardRenderer* ForwardRenderer::instance = nullptr;
+ForwardRenderer ForwardRenderer::instance;
 
-ForwardRenderer* ForwardRenderer::Get() {
-	if (instance == nullptr) {
-		instance = new ForwardRenderer();
-	}
+ForwardRenderer& ForwardRenderer::Get() {
 	return instance;
 }
 
 ForwardRenderer::ForwardRenderer() {}
 
 ForwardRenderer::~ForwardRenderer() {}
+
+void ForwardRenderer::Init() { }
 
 void ForwardRenderer::Render(Model* model) {
 	calculateOrientationMatrices(model);
@@ -76,7 +75,7 @@ void ForwardRenderer::renderFromModel(const Model* model) {
 void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, SingleColorMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::Get()->GetShader("single_color");
+	GLuint program = Shader_Manager::Get().GetShader("single_color");
 	glUseProgram(program);
 
 	setMatrixUniforms(program);
@@ -90,7 +89,7 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, LambertianMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::Get()->GetShader("lambertian");
+	GLuint program = Shader_Manager::Get().GetShader("lambertian");
 	glUseProgram(program);
 	glBindVertexArray(model->GetVao());
 
@@ -109,7 +108,7 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, BlinnPhongMaterial* mat) {
 	GLint loc;
 
-	GLuint program = Shader_Manager::Get()->GetShader("blinn_phong");
+	GLuint program = Shader_Manager::Get().GetShader("blinn_phong");
 	glUseProgram(program);
 	glBindVertexArray(model->GetVao());
 

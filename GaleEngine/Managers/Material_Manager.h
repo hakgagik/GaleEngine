@@ -13,10 +13,11 @@ namespace Managers {
 	class Texture_Manager;
 	class Material_Manager {
 	public:
-		static Material_Manager* Get();
+		static Material_Manager& Get();
 
 		~Material_Manager();
 
+		void Init();
 		void DeleteMaterial(const std::string& materialName);
 		void LoadFromJSON(nlohmann::json &j);
 		void WriteToJSON(nlohmann::json &j);
@@ -24,8 +25,9 @@ namespace Managers {
 		const void AddMaterial();
 
 	private:
-		static Material_Manager* instance;
+		static Material_Manager instance;
 		Material_Manager();
+		Material_Manager(const Material_Manager &);
 		std::unordered_map<std::string, Rendering::Materials::IMaterial*> materialList; // I'm a materialList! I'm a materialLIst!
 	};
 }

@@ -19,6 +19,7 @@ namespace Rendering {
 
 		virtual ~IRenderer() = 0;
 
+		virtual void Init() = 0;
 		virtual void Render(GameObjects::Models::Model* model) = 0;
 		virtual void Render(GameObjects::Models::ModelClone* model) = 0;
 		virtual void setLights(std::vector<GameObjects::Lights::Light*> lights) = 0;
