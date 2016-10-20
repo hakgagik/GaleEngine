@@ -50,14 +50,7 @@ Scene_Manager& Scene_Manager::Get() {
 	return instance;
 }
 
-Scene_Manager::Scene_Manager()
-{
-	glEnable(GL_DEPTH_TEST);
-	
-	sceneInitialized = false;
-
-	renderer = &ForwardRenderer::Get();
-}
+Scene_Manager::Scene_Manager() {}
 
 Scene_Manager::~Scene_Manager() {
 	delete headNode;
@@ -155,7 +148,13 @@ void Scene_Manager::HandleInputs()
 	Input_Manager::Update();
 }
 
-void Scene_Manager::Init(){}
+void Scene_Manager::Init() {
+	glEnable(GL_DEPTH_TEST);
+
+	sceneInitialized = false;
+
+	renderer = &ForwardRenderer::Get();
+}
 
 void Scene_Manager::SetRenderer(IRenderer* renderer) {
 	this->renderer = renderer;
@@ -242,6 +241,9 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 
 void Scene_Manager::SetupTestScene()
 {
+	//Initialize rendering settings
+	Init();
+
 	//Create shaders
 	Shader_Manager::Get().CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
 	Shader_Manager::Get().CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
