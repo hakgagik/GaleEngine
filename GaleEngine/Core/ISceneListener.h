@@ -9,10 +9,10 @@ namespace Core {
 		virtual ~ISceneListener() = 0;
 
 		//drawing functions
-		virtual void notifyBeginFrame() = 0;
-		virtual void notifyDisplayFrame() = 0;
-		virtual void notifyEndFrame() = 0;
-		virtual void notifyReshape(int width, int height, int preview_width, int previous_height) = 0;
+		virtual void NotifyBeginFrame() = 0;
+		virtual void NotifyDisplayFrame() = 0;
+		virtual void NotifyEndFrame() = 0;
+		virtual void NotifyReshape(int width, int height, int preview_width, int previous_height) = 0;
 	};
 
 	inline ISceneListener::~ISceneListener() {

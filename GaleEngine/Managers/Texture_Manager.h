@@ -11,10 +11,11 @@ namespace Rendering {
 namespace Managers {
 	class Texture_Manager {
 	public:
-		static Texture_Manager* Get();
+		static Texture_Manager& Get();
 
 		~Texture_Manager();
 		
+		void Init();
 		void DeleteTexture(const std::string& textureName);
 		const Rendering::Texture* GetTexture(const std::string& textureName) const;
 		Rendering::Texture* LoadandAddTexture(const std::string& filename);
@@ -22,9 +23,10 @@ namespace Managers {
 		void WriteToJSON(nlohmann::json &j);
 
 	private:
-		static Texture_Manager* instance;
+		static Texture_Manager instance;
 
 		Texture_Manager();
+		//Texture_Manager(const Texture_Manager &);
 		std::unordered_map<std::string, Rendering::Texture*> textureList;
 	};
 }

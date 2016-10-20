@@ -11,12 +11,11 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-Material_Manager* Material_Manager::instance = nullptr;
+Material_Manager Material_Manager::instance;
 
-Material_Manager* Material_Manager::Get() {
-	if (instance == nullptr) {
-		instance = new Material_Manager();
-	}
+void Material_Manager::Init() { }
+
+Material_Manager& Material_Manager::Get() {
 	return instance;
 }
 
@@ -53,7 +52,7 @@ void Material_Manager::LoadFromJSON(json &j) {
 			vec4 diffuseColor(m["DiffuseColor"][0], m["DiffuseColor"][1], m["DiffuseColor"][2], m["DiffuseColor"][3]);
 			const Texture* diffuseTexture = nullptr;
 			if (!m["DiffuseTexture"].is_null()) {
-				diffuseTexture = Texture_Manager::Get()->GetTexture(m["DiffuseTexture"]);
+				diffuseTexture = Texture_Manager::Get().GetTexture(m["DiffuseTexture"]);
 			}
 			materialList[it.key()] = new LambertianMaterial(diffuseColor, diffuseTexture);
 		}
@@ -64,13 +63,13 @@ void Material_Manager::LoadFromJSON(json &j) {
 			const Texture* specularTexture = nullptr;
 			const Texture* exponentTexture = nullptr;
 			if (!m["DiffuseTexture"].is_null()) {
-				diffuseTexture = Texture_Manager::Get()->GetTexture(m["DiffuseTexture"]);
+				diffuseTexture = Texture_Manager::Get().GetTexture(m["DiffuseTexture"]);
 			}
 			if (!m["SpecularTexture"].is_null()) {
-				specularTexture = Texture_Manager::Get()->GetTexture(m["SpecularTexture"]);
+				specularTexture = Texture_Manager::Get().GetTexture(m["SpecularTexture"]);
 			}
 			if (!m["ExponentTexture"].is_null()) {
-				exponentTexture = Texture_Manager::Get()->GetTexture(m["ExponentTexture"]);
+				exponentTexture = Texture_Manager::Get().GetTexture(m["ExponentTexture"]);
 			}
 			materialList[it.key()] = new BlinnPhongMaterial(diffuseTexture, specularTexture, exponentTexture, diffuseColor, specularColor, m["Exponent"]);
 		}

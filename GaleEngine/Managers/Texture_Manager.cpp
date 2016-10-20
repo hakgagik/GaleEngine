@@ -6,18 +6,15 @@ using namespace Managers;
 using namespace std;
 using json = nlohmann::json;
 
-Texture_Manager* Texture_Manager::instance = nullptr;
+Texture_Manager Texture_Manager::instance;
 
-Texture_Manager* Texture_Manager::Get() {
-	if (instance == nullptr) {
-		instance = new Texture_Manager();
-	}
+void Texture_Manager::Init() { }
+
+Texture_Manager& Texture_Manager::Get() {
 	return instance;
 }
 
-Texture_Manager::Texture_Manager()
-{
-}
+Texture_Manager::Texture_Manager() {}
 
 Texture_Manager::~Texture_Manager()
 {
