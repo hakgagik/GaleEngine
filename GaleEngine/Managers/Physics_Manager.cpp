@@ -32,7 +32,7 @@ Physics_Manager::~Physics_Manager() {
 
 void Physics_Manager::Init() { }
 
-void Physics_Manager::InitFrame() {
+void Physics_Manager::InitializePartiles() {
 	initParticles();
 }
 

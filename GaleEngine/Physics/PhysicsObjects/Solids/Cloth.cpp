@@ -28,9 +28,9 @@ Cloth::Cloth(Model* model, unsigned int indexStart, unsigned int numTriangles, f
 	this->numTriangles = numTriangles;
 	vector<Triangle*> triangleList;
 
-	int indexEnd = indexStart + 3 * numTriangles;
+	unsigned int indexEnd = indexStart + 3 * numTriangles;
 
-	for (int i = indexStart; i < indexEnd; i++) {
+	for (unsigned int i = indexStart; i < indexEnd; i++) {
 		int vertInd = model->GetIndex(i);
 		if (particleList[vertInd] == nullptr) {
 			particleList[vertInd] = new Particle(model->GetVertWorldPos(vertInd));

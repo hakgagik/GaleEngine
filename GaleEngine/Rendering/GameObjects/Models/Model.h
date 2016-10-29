@@ -24,7 +24,6 @@ namespace Rendering {
 			class Fragment;
 
 			class Model : public IGameObject {
-				friend class Physics::PhysicsObjects::PhysicsObject;
 			public:
 				std::string source;
 				

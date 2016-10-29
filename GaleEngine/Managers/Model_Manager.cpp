@@ -8,6 +8,7 @@
 #include "../Rendering/VertexFormat.h"
 #include <unordered_set>
 #include <fstream>
+#include <glm/gtc/constants.hpp>
 
 using namespace Managers;
 using namespace Rendering;
@@ -17,7 +18,7 @@ using namespace glm;
 using namespace std;
 using json = nlohmann::json;
 
-const float Pi = glm::pi<float>();
+const float Pi = pi<float>();
 const string SPHERE_TEMPLATE_SOURCE = "JSON\\ModelSources\\SphereTemplate.json";
 const string CUBE_TEMPLATE_SOURCE = "JSON\\ModelSources\\CubeTemplate.json";
 const string RECT_TEMPLATE_SOURCE = "JSON\\ModelSources\\RectTemplate.json";

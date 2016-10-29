@@ -33,7 +33,7 @@ namespace Managers {
 
 		void Init();
 
-		void InitFrame();
+		void InitializePartiles();
 		void Update(float dt);
 		void Transmute();
 

@@ -153,6 +153,13 @@ void Scene_Manager::Init() {
 
 	sceneInitialized = false;
 
+	Shader_Manager::Get().Init();
+	Texture_Manager::Get().Init();
+	Material_Manager::Get().Init();
+	Model_Manager::Get().Init();
+	Physics_Manager::Get().Init();
+	ForwardRenderer::Get().Init();
+
 	renderer = &ForwardRenderer::Get();
 }
 
@@ -331,7 +338,7 @@ void Scene_Manager::SetupTestScene()
 	physicsFramePeriod = high_resolution_clock::duration(33333333);
 	pausePhysics = true;
 	stepPhysics = false;
-	Physics_Manager::Get().Init();
+	Physics_Manager::Get().InitializePartiles();
 	cloth->FixParticle(0);
 	cloth->FixParticle(10);
 	cloth->FixParticle(110);

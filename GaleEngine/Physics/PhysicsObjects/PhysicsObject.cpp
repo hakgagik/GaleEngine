@@ -1,6 +1,7 @@
 #include "PhysicsObject.h"
 #include "../Particles/Particle.h"
 #include "../Forces/Force.h"
+#include "../AABB.h"
 #include <glm/glm.hpp>
 
 using namespace Physics;
@@ -47,5 +48,34 @@ void PhysicsObject::FinalizeParticles(float dt) {
 		Particle* particle = kv.second;
 		particle->v = (particle->p - particle->x) / dt;
 		particle->x = particle->p;
+	}
+}
+
+void PhysicsObject::UpdateAABB() {
+	vec3 p = particleList.begin()->second->x;
+	boundingBox->xmin = boundingBox->xmax = p.x;
+	boundingBox->ymin = boundingBox->ymax = p.y;
+	boundingBox->zmin = boundingBox->zmax = p.z;
+
+	for (auto kv : particleList) {
+		p = kv.second->x;
+		if (p.x < boundingBox->xmin) {
+			boundingBox->xmin = p.x;
+		}
+		else if (p.x > boundingBox->xmax) {
+			boundingBox->xmax = p.x;
+		}
+		if (p.y < boundingBox->ymin) {
+			boundingBox->ymin = p.y;
+		}
+		else if (p.y > boundingBox->ymax) {
+			boundingBox->ymax = p.y;
+		}
+		if (p.z < boundingBox->zmin) {
+			boundingBox->zmin = p.z;
+		}
+		else if (p.z > boundingBox->zmax) {
+			boundingBox->zmax = p.z;
+		}
 	}
 }
