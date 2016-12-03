@@ -133,6 +133,7 @@
     <ClCompile Include="Managers\Shader_Manager.cpp" />
     <ClCompile Include="Managers\Texture_Manager.cpp" />
     <ClCompile Include="Physics\AABB.cpp" />
+    <ClCompile Include="Physics\Constraints\DensityConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\FaceBendingConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp" />
     <ClCompile Include="Physics\Forces\ConstantForce.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Managers\Texture_Manager.h" />
     <ClInclude Include="Physics\AABB.h" />
     <ClInclude Include="Physics\Collision.h" />
+    <ClInclude Include="Physics\Constraints\DensityConstraint.h" />
     <ClInclude Include="Physics\Forces\ConstantForce.h" />
     <ClInclude Include="Physics\Forces\Force.h" />
     <ClInclude Include="Physics\IConstraintGroup.h" />
