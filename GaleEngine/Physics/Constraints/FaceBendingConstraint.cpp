@@ -14,15 +14,15 @@ FaceBendingConstraint::FaceBendingConstraint(Particle* particle1, Particle* part
 	FaceBendingConstraint(particle1, particle2, particle3, particle4, getAngle(particle1->x0, particle2->x0, particle3->x0, particle4->x0), stiffness) { }
 
 FaceBendingConstraint::FaceBendingConstraint(Particle* particle1, Particle* particle2, Particle* particle3, Particle* particle4, float restAngle, float stiffness) {
-	particleGradients = unordered_map<Particle*, vec3>();
+	ParticleGradients = unordered_map<Particle*, vec3>();
 	this->particle1 = particle1;
 	this->particle2 = particle2;
 	this->particle3 = particle3;
 	this->particle4 = particle4;
-	particleGradients[particle1] = vec3(0);
-	particleGradients[particle2] = vec3(0);
-	particleGradients[particle3] = vec3(0);
-	particleGradients[particle4] = vec3(0);
+	ParticleGradients[particle1] = vec3(0);
+	ParticleGradients[particle2] = vec3(0);
+	ParticleGradients[particle3] = vec3(0);
+	ParticleGradients[particle4] = vec3(0);
 	this->restAngle = restAngle;
 	this->stiffness = stiffness;
 }
@@ -52,10 +52,10 @@ void FaceBendingConstraint::UpdateDerivs() {
 	//J4 = getNormalJacobian(N4);
 	//n3 = normalize(N3);
 	//n4 = normalize(N4);
-	//particleGradients[particle1] = (J3 * cross(p2 - p3, n4) + J4 * cross(p2 - p4, n3)) / -sinPhi;
-	//particleGradients[particle2] = (J3 * cross(p3 - p1, n4) + J4 * cross(p4 - p1, n3)) / -sinPhi;
-	//particleGradients[particle3] = (J3 * cross(p1 - p2, n4)) / -sinPhi;
-	//particleGradients[particle4] = (J4 * cross(p1 - p2, n3)) / -sinPhi;
+	//ParticleGradients[particle1] = (J3 * cross(p2 - p3, n4) + J4 * cross(p2 - p4, n3)) / -sinPhi;
+	//ParticleGradients[particle2] = (J3 * cross(p3 - p1, n4) + J4 * cross(p4 - p1, n3)) / -sinPhi;
+	//ParticleGradients[particle3] = (J3 * cross(p1 - p2, n4)) / -sinPhi;
+	//ParticleGradients[particle4] = (J4 * cross(p1 - p2, n3)) / -sinPhi;
 
 	vec3 p1 = vec3(0);
 	vec3 p2 = particle2->p - particle1->p;
@@ -72,15 +72,15 @@ void FaceBendingConstraint::UpdateDerivs() {
 	float d3 = length(cross(p2, p3))/* * sqrt(1 - d*d)*/;
 	float d4 = length(cross(p2, p4))/* * sqrt(1 - d*d)*/;
 
-	particleGradients[particle3] = (cross(p2, n2) + cross(n1, p2) * d) / d3;
-	particleGradients[particle4] = (cross(p2, n1) + cross(n2, p2) * d) / d4;
-	particleGradients[particle2] = -(cross(p3, n2) + cross(n1, p3) * d) / d3 - (cross(p4, n1) + cross(n2, p4) * d) / d4;
-	particleGradients[particle1] = -(particleGradients[particle2] + particleGradients[particle3] + particleGradients[particle4]);
+	ParticleGradients[particle3] = (cross(p2, n2) + cross(n1, p2) * d) / d3;
+	ParticleGradients[particle4] = (cross(p2, n1) + cross(n2, p2) * d) / d4;
+	ParticleGradients[particle2] = -(cross(p3, n2) + cross(n1, p3) * d) / d3 - (cross(p4, n1) + cross(n2, p4) * d) / d4;
+	ParticleGradients[particle1] = -(ParticleGradients[particle2] + ParticleGradients[particle3] + ParticleGradients[particle4]);
 
-	float sum = particle1->w * dot(particleGradients[particle1], particleGradients[particle1]);
-	sum += particle2->w * dot(particleGradients[particle2], particleGradients[particle2]);
-	sum += particle3->w * dot(particleGradients[particle3], particleGradients[particle3]);
-	sum += particle4->w * dot(particleGradients[particle4], particleGradients[particle4]);
+	float sum = particle1->w * dot(ParticleGradients[particle1], ParticleGradients[particle1]);
+	sum += particle2->w * dot(ParticleGradients[particle2], ParticleGradients[particle2]);
+	sum += particle3->w * dot(ParticleGradients[particle3], ParticleGradients[particle3]);
+	sum += particle4->w * dot(ParticleGradients[particle4], ParticleGradients[particle4]);
 
 	if (sum > -0.000001f && sum < 0.000001f) {
 		this->s = 0;

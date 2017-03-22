@@ -15,8 +15,8 @@ namespace Physics {
 
 			virtual void UpdateDerivs() = 0;
 			virtual bool ContainsParticle(Particles::Particle* particle) = 0;
-			
-			std::unordered_map<Particles::Particle*, glm::vec3> particleGradients;
+
+			std::unordered_map<Particles::Particle*, glm::vec3> ParticleGradients;
 			float stiffness;
 			//float currentValue;
 			float s;

@@ -3,6 +3,7 @@
 #include "../Physics/Constraints/Constraint.h"
 #include "../Physics/IConstraintGroup.h"
 #include "../Physics/PhysicsObjects/PhysicsObject.h"
+#include "../Physics/PhysicsObjects/Fluids/FluidHelper.h"
 #include <glm/glm.hpp>
 
 using namespace Managers;
@@ -11,6 +12,7 @@ using namespace Particles;
 using namespace Forces;
 using namespace Constraints;
 using namespace PhysicsObjects;
+using namespace Fluids;
 using namespace glm;
 using namespace std;
 using json = nlohmann::json;
@@ -32,19 +34,19 @@ Physics_Manager::~Physics_Manager() {
 
 void Physics_Manager::Init() { }
 
-void Physics_Manager::InitializePartiles() {
+void Physics_Manager::InitializeParticles() {
 	initParticles();
 }
 
 void Physics_Manager::Update(float dt) {
 	applyExtForces(dt);
 	predictPositions(dt);
+	FluidHelper::Get().Update();
 	genCollConstraints();
 	for (int i = 0; i < iterations; i++) {
 		projectConstraints(iterations);
 	}
 	finalizePositionsAndVelocities(dt);
-	velocityUpdate();
 }
 
 void Physics_Manager::Transmute() {
@@ -81,6 +83,7 @@ void Physics_Manager::genCollConstraints() {
 void Physics_Manager::projectConstraints(int iterations) {
 	for (PhysicsObject* physObj : physicsObjectList) {
 		physObj->Project(iterations);
+		physObj->CollideWithBounds(bounds);
 	}
 }
 
@@ -88,10 +91,6 @@ void Physics_Manager::finalizePositionsAndVelocities(float dt) {
 	for (PhysicsObject* physObj : physicsObjectList) {
 		physObj->FinalizeParticles(dt);
 	}
-}
-
-void Physics_Manager::velocityUpdate() {
-
 }
 
 void Physics_Manager::AddPhysicsObject(PhysicsObject* physicsObject) {

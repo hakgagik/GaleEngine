@@ -27,8 +27,11 @@
 
 //REMOVE LATER
 #include "../Physics/PhysicsObjects/Solids/Cloth.h"
+#include "../Physics/PhysicsObjects/Fluids/Fluid.h"
 #include "../Physics/Forces/ConstantForce.h"
+#include "GL/freeglut.h"
 using Cloth = Physics::PhysicsObjects::Solids::Cloth;
+using Fluid = Physics::PhysicsObjects::Fluids::Fluid;
 using ConstantForce = Physics::Forces::ConstantForce;
 
 using namespace Managers;
@@ -79,16 +82,27 @@ void Scene_Manager::NotifyBeginFrame() {
 
 	headNode->UpdateMatrices();
 	Model_Manager::Get().Update();
-	renderer->setCamera(activeCam);
-	renderer->setLights(lights);
+	renderer->SetCamera(activeCam);
+	renderer->SetLights(lights);
 }
 
 // Anything with GL calls that draw to a framebuffer goes here
 void Scene_Manager::NotifyDisplayFrame() {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (!pauseFrame || stepFrame) {
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Model_Manager::Get().Draw(renderer);
+		Model_Manager::Get().Draw(renderer);
+
+		float sx = 2.0 / glutGet(GLUT_WINDOW_WIDTH);
+		float sy = 2.0 / glutGet(GLUT_WINDOW_HEIGHT);
+
+		renderer->RenderText(string("The quick brown fox jumps over the laxy dog."), -1 + 8 * sx, 1 - 50 * sy, sx, sy);
+
+		glutSwapBuffers();
+
+		stepFrame = false;
+	}
 }
 
 void Scene_Manager::NotifyEndFrame() {
@@ -131,11 +145,17 @@ void Scene_Manager::HandleInputs()
 	if (Input_Manager::zoomBack) {
 		activeCam->Zoom(1 + dStrafe);
 	}
-	if (Input_Manager::togglePause) {
+	if (Input_Manager::togglePhysicsPause) {
 		pausePhysics = !pausePhysics;
 	}
-	if (Input_Manager::step) {
+	if (Input_Manager::stepPhysics) {
 		stepPhysics = true;
+	}
+	if (Input_Manager::toggleFramePause) {
+		pauseFrame = !pauseFrame;
+	}
+	if (Input_Manager::stepFrame) {
+		stepFrame = true;
 	}
 	Strafe *= dStrafe;
 	activeCam->Strafe(Strafe.x, Strafe.y);
@@ -254,6 +274,8 @@ void Scene_Manager::SetupTestScene()
 	//Create shaders
 	Shader_Manager::Get().CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
 	Shader_Manager::Get().CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
+	Shader_Manager::Get().CreateProgram("multi_lambertian", "Shaders\\offset.vert", "Shaders\\lambertian.frag");
+	Shader_Manager::Get().CreateProgram("text", "Shaders\\text.vert", "Shaders\\text.frag");
 
 	//Define some generic transformations
 	vec3 zero(0);
@@ -280,22 +302,22 @@ void Scene_Manager::SetupTestScene()
 	vector<unsigned int> indices{ 0, 1, 2, 0, 2, 3 };
 	Model* triangle = Model_Manager::Get().CreateAndAdd("Triangle", vertices, indices);
 	triangle->source = "ModelSources\\Triangle.json";
-	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one * 3.0f, true);
+	//triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one * 3.0f, true);
 	Texture* tex = Texture_Manager::Get().LoadandAddTexture("Images\\test.bmp");
 	dynamic_cast<Materials::LambertianMaterial*>(triangle->GetFragmentMat("Main"))->diffuseTexture = tex;
 
-	// Get a sphere copy
-	Model* sphere = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getSphereCopy("Sphere"));
-	sphere->AddToSceneTree(headNode, vec3(2.0f), aLittleRot, one, true);
-	sphere->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
+	//// Get a sphere copy
+	//Model* sphere = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getSphereCopy("Sphere"));
+	//sphere->AddToSceneTree(headNode, vec3(2.0f), aLittleRot, one, true);
+	//sphere->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 	//Model* sphere2 = model_manager->getSphereCopy("SphereTwo");
 	//sphere2->addToSceneTree(headNode, sphere->name, vec3(0.0f, 3.0f, 1.0f), norot, one);
 
-	// Get a cube copy
-	Model* cube = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getCubeCopy("Cube"));
-	cube->AddToSceneTree(headNode, vec3(3, 2, 3), aLittelMoreRot, one, true);
-	Texture* cubeTex = Texture_Manager::Get().LoadandAddTexture("Images\\cubeTest.bmp");
-	cube->SetFragmentMat("Main", new Materials::LambertianMaterial(vec4(1.0f), cubeTex));
+	//// Get a cube copy
+	//Model* cube = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getCubeCopy("Cube"));
+	//cube->AddToSceneTree(headNode, vec3(3, 2, 3), aLittelMoreRot, one, true);
+	//Texture* cubeTex = Texture_Manager::Get().LoadandAddTexture("Images\\cubeTest.bmp");
+	//cube->SetFragmentMat("Main", new Materials::LambertianMaterial(vec4(1.0f), cubeTex));
 
 	// Create the main camera
 	activeCam = new PerspectiveCamera("Main Camera");
@@ -313,6 +335,8 @@ void Scene_Manager::SetupTestScene()
 	//}
 
 	sceneInitialized = true;
+	pauseFrame = true;
+	stepFrame = false;
 	Input_Manager::RegisterCallbacks();
 	headNode->UpdateMatrices();
 	//SaveSceneToJSON("JSON\\testScedne.json");
@@ -321,8 +345,6 @@ void Scene_Manager::SetupTestScene()
 	Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getRectCopy("ClothModel"));
 	clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(5, 5, 1), true);
 	clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
-	clothModel->RecalculateNormals();
-	clothModel->InvalidateVBO();
 
 	headNode->UpdateMatrices();
 
@@ -330,19 +352,37 @@ void Scene_Manager::SetupTestScene()
 	Cloth* cloth = new Cloth(clothModel, 0, 200);
 	cloth->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
 	Physics_Manager::Get().AddPhysicsObject(cloth);
+	
+	//Build test fluid
+	//Model* fluidModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().getSphereCopy("FluidModel"));
+	//fluidModel->AddToSceneTree(headNode, vec3(0, 0, 0), norot, vec3(0.1, 0.1, 0.1), true);
+	//fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
-	//Physics::PhysicsObjects::Solids::Cloth* cloth = new Physics::PhysicsObjects::Solids::Cloth();
-	//cloth->BuildFromModel(triangle, 0, 2);
+	//vector<vec3> positions;
+	//for (float z = 0; z <= 1; z += 0.1f) {
+	//	for (float y = 0; y <= 1; y += 0.1f) {
+	//		for (float x = 0; x <= 1; x += 0.1f) {
+	//			positions.push_back(vec3(x, y, z));
+	//		}
+	//	}
+	//}
 
+	//Fluid* fluid = new Fluid(fluidModel, positions);
+	//Physics_Manager::Get().AddPhysicsObject(fluid);
+
+
+	//Physics manager setup code
 	physicsDt = 1.0f / 30.0f;
 	physicsFramePeriod = high_resolution_clock::duration(33333333);
 	pausePhysics = true;
 	stepPhysics = false;
-	Physics_Manager::Get().InitializePartiles();
+	Physics_Manager::Get().InitializeParticles();
+	//TODO: InitializeParticles should respect fixed particles
 	cloth->FixParticle(0);
 	cloth->FixParticle(10);
 	cloth->FixParticle(110);
 	cloth->FixParticle(120);
+	Physics_Manager::Get().Transmute();
 }
 
 void Scene_Manager::reportFramerate(high_resolution_clock::time_point &timeNow) {

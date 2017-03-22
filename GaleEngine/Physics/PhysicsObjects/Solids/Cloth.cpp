@@ -20,7 +20,15 @@ using json = nlohmann::json;
 
 Cloth::Cloth() : PhysicsObject() { }
 
-Cloth::~Cloth() { }
+Cloth::~Cloth() {
+	for (StretchingConstraint* s : stretchingConstraintList) {
+		delete s;
+	}
+
+	for (FaceBendingConstraint* f : faceBendingConstraintList) {
+		delete f;
+	}
+}
 
 Cloth::Cloth(Model* model, unsigned int indexStart, unsigned int numTriangles, float stretchingStiffness, float bendingStiffness) : PhysicsObject() {
 	this->model = model;
@@ -101,14 +109,14 @@ void Cloth::Project(int iterations) {
 	for (StretchingConstraint* constraint : stretchingConstraintList) {
 		constraint->UpdateDerivs();
 		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
-		for (auto pg_pair : constraint->particleGradients) {
+		for (auto pg_pair : constraint->ParticleGradients) {
 			pg_pair.first->p += -iter_stiffness * constraint->s * pg_pair.first->w * pg_pair.second;
 		}
 	}
 	for (FaceBendingConstraint* constraint : faceBendingConstraintList) {
 		constraint->UpdateDerivs();
 		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
-		for (auto pg_pair : constraint->particleGradients) {
+		for (auto pg_pair : constraint->ParticleGradients) {
 			glm::vec3 blah = pg_pair.second * constraint->s;
 			if (isnan(blah.z)) {
 				int a = 0;

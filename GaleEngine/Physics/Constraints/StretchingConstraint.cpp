@@ -12,11 +12,11 @@ StretchingConstraint::StretchingConstraint(Particles::Particle* particle1, Parti
 	StretchingConstraint::StretchingConstraint(particle1, particle2, length(particle1->x0 - particle2->x0), stiffness) { }
 
 StretchingConstraint::StretchingConstraint(Particles::Particle* particle1, Particles::Particle* particle2, float restDistance, float stiffness) {
-	particleGradients = unordered_map<Particle*, vec3>();
+	ParticleGradients = unordered_map<Particle*, vec3>();
 	this->particle1 = particle1;
 	this->particle2 = particle2;
-	particleGradients[particle1] = vec3(0);
-	particleGradients[particle2] = vec3(0);
+	ParticleGradients[particle1] = vec3(0);
+	ParticleGradients[particle2] = vec3(0);
 	this->restDistance = restDistance;
 	this->stiffness = stiffness;
 }
@@ -25,8 +25,8 @@ void StretchingConstraint::UpdateDerivs() {
 	vec3 n = particle1->p - particle2->p;
 	float distance = length(n);
 	normalize(n);
-	particleGradients[particle1] = n;
-	particleGradients[particle2] = -n;
+	ParticleGradients[particle1] = n;
+	ParticleGradients[particle2] = -n;
 	this->s = (distance - restDistance) / (particle1->w + particle2->w);
 }
 

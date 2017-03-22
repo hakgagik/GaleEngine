@@ -20,8 +20,10 @@ bool Input_Manager::arrowForward = false;
 bool Input_Manager::arrowBack = false;
 bool Input_Manager::zoomForward = false;
 bool Input_Manager::zoomBack = false;
-bool Input_Manager::togglePause = false;
-bool Input_Manager::step = false;
+bool Input_Manager::togglePhysicsPause = false;
+bool Input_Manager::stepPhysics = false;
+bool Input_Manager::toggleFramePause = false;
+bool Input_Manager::stepFrame = false;
 GLint Input_Manager::mouseLeftButton = GLUT_UP;
 GLint Input_Manager::mouseRightButton = GLUT_UP;
 GLint Input_Manager::mouseMiddleButton = GLUT_UP;
@@ -64,10 +66,16 @@ void Input_Manager::KeyPressed(unsigned char key, int x, int y) {
 		testKey = true;
 		break;
 	case 'p':
-		togglePause = true;
+		togglePhysicsPause = true;
 		break;
 	case 'o':
-		step = true;
+		stepPhysics = true;
+		break;
+	case 'l':
+		toggleFramePause = true;
+		break;
+	case 'k':
+		stepFrame = true;
 		break;
 	default:
 		break;
@@ -138,7 +146,7 @@ void Input_Manager::MousePassiveMoved(int x, int y) {
 }
 
 void Input_Manager::Update() {
-	arrowDown = arrowUp = arrowLeft = arrowRight = testKey = arrowForward = arrowBack = zoomForward = zoomBack = step = togglePause = false;
+	arrowDown = arrowUp = arrowLeft = arrowRight = testKey = arrowForward = arrowBack = zoomForward = zoomBack = stepPhysics = togglePhysicsPause = stepFrame = toggleFramePause = false;
 	mouseDelta = vec2(0, 0);
 	oldMousePos = mousePos;
 }

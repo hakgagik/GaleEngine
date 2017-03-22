@@ -25,7 +25,7 @@ namespace Rendering {
 				int vertexCount;
 
 				Fragment(const Fragment &other);
-				Fragment(Fragment &other, Model* parent);
+				Fragment(Fragment* other, Model* parent);
 				Fragment(Models::Model* parent, Rendering::Materials::IMaterial* material, int startingIndex, GLuint indexCount, int startingVertex, int vertexCount, GLuint primitiveType = GL_TRIANGLES);
 				~Fragment();
 			};

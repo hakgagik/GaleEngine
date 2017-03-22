@@ -1,4 +1,5 @@
 #include "ForwardRenderer.h"
+#include "GlyphTexture.h"
 #include "GameObjects/IGameObject.h"
 #include "GameObjects/Models/Model.h"
 #include "GameObjects/Models/ModelClone.h"
@@ -6,6 +7,7 @@
 #include "Materials/IMaterial.h"
 #include "Materials/MaterialsHeader.h"
 #include "../Managers/Shader_Manager.h"
+#include "../Managers/Texture_Manager.h"
 #include "GameObjects/Cameras/Camera.h"
 #include "GameObjects/Lights/Light.h"
 #include <iostream>
@@ -30,9 +32,9 @@ ForwardRenderer& ForwardRenderer::Get() {
 	return instance;
 }
 
-ForwardRenderer::ForwardRenderer() {}
+ForwardRenderer::ForwardRenderer() { }
 
-ForwardRenderer::~ForwardRenderer() {}
+ForwardRenderer::~ForwardRenderer() { }
 
 void ForwardRenderer::Init() { }
 
@@ -47,7 +49,8 @@ void ForwardRenderer::Render(ModelClone* model) {
 }
 
 void ForwardRenderer::calculateOrientationMatrices(IGameObject* gameObject) {
-	modelViewMatrix = viewMatrix * gameObject->toWorldMatrix;
+	modelMatrix = gameObject->toWorldMatrix;
+	modelViewMatrix = viewMatrix * modelMatrix;
 	normalMatrix = transpose(inverse(mat3(modelViewMatrix)));
 	MVPMatrix = projectionMatrix*modelViewMatrix;
 }
@@ -64,6 +67,9 @@ void ForwardRenderer::renderFromModel(const Model* model) {
 		}
 		else if (BlinnPhongMaterial* blinnPhongMat = dynamic_cast<BlinnPhongMaterial*>(fragment->material)) {
 			renderFragment(model, fragment, blinnPhongMat);
+		}
+		else if (SphereFluidMaterial* sphereFluidMat = dynamic_cast<SphereFluidMaterial*>(fragment->material)) {
+			renderFragment(model, fragment, sphereFluidMat);
 		}
 		else {
 			cout << "Forward Renderer: Can't find material for model  " << model->name << ". Rendering as white SingleColor." << endl;
@@ -83,6 +89,7 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 
 	loc = glGetUniformLocation(program, "color");
 	glUniform4fv(loc, 1, value_ptr(mat->diffuseColor));
+
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
 
@@ -97,7 +104,6 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 	setLightUniforms(program);
 
 	loc = glGetUniformLocation(program, "diffuseColor");
-	
 	glUniform4fv(loc, 1, value_ptr(mat->diffuseColor));
 
 	useTexture(program, "diffuseTexture", "hasDiffuseTexture", mat->diffuseTexture, 0);
@@ -132,14 +138,33 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
 
-void ForwardRenderer::setCamera(Camera* camera) {
+void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, SphereFluidMaterial* mat) {
+	GLint loc;
+	GLuint program = Shader_Manager::Get().GetShader("multi_lambertian");
+	glUseProgram(program);
+	glBindVertexArray(model->GetVao());
+
+	setMatrixUniforms(program);
+	setLightUniforms(program);
+
+	loc = glGetUniformLocation(program, "diffuseColor");
+	glUniform4fv(loc, 1, value_ptr(mat->diffuseColor));
+
+	for (vec3 position : mat->positions) {
+		loc = glGetUniformLocation(program, "offset");
+		glUniform3fv(loc, 1, value_ptr(position));
+		glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
+	}
+}
+
+void ForwardRenderer::SetCamera(Camera* camera) {
 	this->camera = camera;
 	projectionMatrix = camera->GetProjMatrix();
 	viewMatrix = camera->GetViewMatrix();
 	inverseViewMatrix = inverse(viewMatrix);
 }
 
-void ForwardRenderer::setLights(vector<Light*> lights) {
+void ForwardRenderer::SetLights(vector<Light*> lights) {
 	mat4 view = camera->GetViewMatrix();
 	this->lights.clear();
 	this->lightPositions.clear();
@@ -157,8 +182,53 @@ void ForwardRenderer::setLights(vector<Light*> lights) {
 	}
 }
 
+void ForwardRenderer::RenderText(string& text, float x, float y, float sx, float sy) {
+	GLuint program = Shader_Manager::Get().GetShader("text");
+	glUseProgram(program);
+	//glBindVertexArray(1);
+	for (char p : text) {
+		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
+
+		if (glyphTex->width != 0 && glyphTex->height != 0)
+		{
+			float x2 = x + glyphTex->bitmap_left * sx;
+			float y2 = -y - glyphTex->bitmap_top * sy;
+			float w = glyphTex->width * sx;
+			float h = glyphTex->height * sy;
+
+			GLfloat box[4][4] = {
+				{x2, -y2, 0, 0},
+				{x2 + w, -y2, 1, 0},
+				{x2, -y2 - h, 0, 1},
+				{x2 + w, -y2 - h, 1, 1}
+			};
+
+			useTexture(program, "tex", "null", glyphTex, 0);
+			
+			glBegin(GL_TRIANGLE_STRIP);
+			glVertex4f(box[0][0], box[0][1], box[0][2], box[0][3]);
+			glVertex4f(box[1][0], box[1][1], box[1][2], box[1][3]);
+			glVertex4f(box[2][0], box[2][1], box[2][2], box[2][3]);
+			glVertex4f(box[3][0], box[3][1], box[3][2], box[3][3]);
+			glEnd();
+			
+			//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		}
+
+		x += glyphTex->advance_x / 64 * sx;
+		y += glyphTex->advance_y / 64 * sy;
+	}
+}
+
 void ForwardRenderer::setMatrixUniforms(GLuint program) {
 	GLint loc;
+	loc = glGetUniformLocation(program, "modelMatrix");
+	glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(modelMatrix));
+	loc = glGetUniformLocation(program, "viewMatrix");
+	glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(viewMatrix));
+	loc = glGetUniformLocation(program, "projectionMatrix");
+	glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(projectionMatrix));
 	loc = glGetUniformLocation(program, "MVPMatrix");
 	glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(MVPMatrix));
 	loc = glGetUniformLocation(program, "modelViewMatrix");
@@ -196,7 +266,7 @@ void ForwardRenderer::setLightUniforms(GLuint program) {
 void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, const GLchar* hasUniformName, const Texture* texture, int textureUnit) {
 	GLint hasTexUniLoc = glGetUniformLocation(program, hasUniformName);
 	GLint texUniLoc = glGetUniformLocation(program, uniformName);
-	if (texture != nullptr && texUniLoc != -1 && hasTexUniLoc != -1) {
+	if (texture != nullptr /*&& texUniLoc != -1 && hasTexUniLoc != -1*/) {
 		glActiveTexture(textureIndexMap[textureUnit]);
 		glBindTexture(GL_TEXTURE_2D, texture->textureLocation);
 		glUniform1i(texUniLoc, textureUnit);

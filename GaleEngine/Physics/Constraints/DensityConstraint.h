@@ -1,5 +1,6 @@
 #pragma once
 #include "Constraint.h"
+//#include "../PhysicsObjects/Fluids/FluidHelper.h"
 #include <glm/glm.hpp>
 
 namespace Physics {
@@ -7,26 +8,48 @@ namespace Physics {
 		class Particle;
 	}
 
+	namespace PhysicsObjects {
+		namespace Fluids {
+			class FluidHelper;
+		}
+	}
+
 	namespace Constraints {
 		class DensityConstraint : public Constraint {
 		public:
-			static float SetH(float newH);
-			static float Poly6Kernel(float r);
-			static float SpikeyKernel(float r);
-			static float DelSpikeyKernel(float r);
+			static void SetH(float newH);
+			static float Poly6Kernel(float &r);
+			static float SpikeyKernel(float &r);
+			static float DelSpikeyKernel(float &r);
 
-			DensityConstraint(Particles::Particle* center, float density);
+			DensityConstraint(Particles::Particle* center, float restDensity);
 			
 			virtual void UpdateDerivs() override;
 			virtual bool ContainsParticle(Particles::Particle* particle) override;
+			void FindNeighbors(Physics::PhysicsObjects::Fluids::FluidHelper &fluidHelper);
+			void CalculateOnlyDensity();
+			void SetRestDensity(float newDensity);
+			glm::vec3 GetDP();
+			glm::vec3 GetDV();
+			glm::vec3 GetFVC();
+
+			float CurrentDensity;
+			float RestDensity;
+			float Lambda;
+			float Omega;
+			Particles::Particle* Center;
+			glm::vec3 CenterDeriv;
 		private:
-			static glm::vec3 h;
+			static float h;
+			static float epsilon;
 			static float poly6Factor;
 			static float spikyFactor;
 			static float delSpikyFactor;
-
-			float density;
-			Particles::Particle* center;
+			static float k;
+			static float n;
+			static float q;
+			static float sCorrDenom;
+			static float c;
 		};
 	}
 }

@@ -69,6 +69,8 @@ namespace Managers {
 		float dTheta = 0.01308996939f;
 		bool pausePhysics;
 		bool stepPhysics;
+		bool pauseFrame;
+		bool stepFrame;
 
 		void reportFramerate(std::chrono::high_resolution_clock::time_point &timeNow);
 

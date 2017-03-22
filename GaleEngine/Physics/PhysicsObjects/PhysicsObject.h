@@ -2,6 +2,7 @@
 #include "../IConstraintGroup.h"
 #include "../../lib/json.hpp"
 #include <unordered_map>
+#include <vector>
 
 namespace Rendering {
 	namespace GameObjects {
@@ -30,6 +31,7 @@ namespace Physics {
 			virtual void PredictPositions(float dt);
 			virtual void GenerateConstraints(float dt) override;
 			virtual void Project(int iterations) override = 0;
+			virtual void CollideWithBounds(std::vector<float> &bounds);
 			virtual void FinalizeParticles(float dt);
 			virtual void Transmute() = 0;
 			virtual void UpdateAABB();
@@ -43,6 +45,5 @@ namespace Physics {
 			Rendering::GameObjects::Models::Model* model;
 			AABB* boundingBox;
 		};
-		inline PhysicsObject::~PhysicsObject() { }
 	}
 }

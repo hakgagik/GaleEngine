@@ -28,12 +28,13 @@ namespace Managers {
 		//std::vector<Physics::Constraints::Constraint*> constraintList;
 		//std::vector<Physics::Forces::ForceField*> extForceList;
 		std::vector<Physics::PhysicsObjects::PhysicsObject*> physicsObjectList;
+		std::vector <float> bounds = { 0, 10, 0, 10, 0, 10 };
 
 		~Physics_Manager();
 
 		void Init();
 
-		void InitializePartiles();
+		void InitializeParticles();
 		void Update(float dt);
 		void Transmute();
 
@@ -53,7 +54,6 @@ namespace Managers {
 		void genCollConstraints();
 		void projectConstraints(int iterations);
 		void finalizePositionsAndVelocities(float dt);
-		void velocityUpdate();
 
 		// Loading methods
 		void createCloth(nlohmann::json j);

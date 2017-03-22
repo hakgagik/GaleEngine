@@ -90,9 +90,6 @@ void Init_GLUT::displayCallback() {
 	if (listener) {
 		listener->NotifyBeginFrame();
 		listener->NotifyDisplayFrame();
-
-		glutSwapBuffers();
-
 		listener->NotifyEndFrame();
 	}
 }

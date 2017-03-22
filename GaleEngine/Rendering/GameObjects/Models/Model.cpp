@@ -24,7 +24,7 @@ Model::Model(const Model* other, string name) : IGameObject(name) {
 	this->verts = other->verts;
 	this->indices = other->indices;
 	for (auto kv : other->fragments) {
-		fragments[kv.first] = kv.second;
+		fragments[kv.first] = new Fragment(kv.second, this);
 	}
 
 	GenerateVAO();
@@ -82,6 +82,7 @@ void Model::Update() {
 
 void Model::UpdateVBO(bool force) {
 	if (vboInvalid || force) {
+		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexFormat), &verts[0], GL_STATIC_DRAW);
 		vboInvalid = false;

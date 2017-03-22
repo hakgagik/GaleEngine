@@ -27,8 +27,10 @@ namespace Managers {
 		static bool arrowBack;
 		static bool zoomForward;
 		static bool zoomBack;
-		static bool togglePause;
-		static bool step;
+		static bool togglePhysicsPause;
+		static bool stepPhysics;
+		static bool toggleFramePause;
+		static bool stepFrame;
 		static bool testKey;
 	private:
 		Input_Manager();

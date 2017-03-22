@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 namespace Rendering {
 	namespace GameObjects {
@@ -22,8 +23,9 @@ namespace Rendering {
 		virtual void Init() = 0;
 		virtual void Render(GameObjects::Models::Model* model) = 0;
 		virtual void Render(GameObjects::Models::ModelClone* model) = 0;
-		virtual void setLights(std::vector<GameObjects::Lights::Light*> lights) = 0;
-		virtual void setCamera(GameObjects::Cameras::Camera* camera) = 0;
+		virtual void SetLights(std::vector<GameObjects::Lights::Light*> lights) = 0;
+		virtual void SetCamera(GameObjects::Cameras::Camera* camera) = 0;
+		virtual void RenderText(std::string& text, float x, float y, float sx, float sy) = 0;
 
 	protected:
 		std::vector<GameObjects::Lights::Light*> lights;

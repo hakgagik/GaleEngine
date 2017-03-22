@@ -114,6 +114,18 @@
     <ClCompile Include="Physics\Constraints\DensityConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\PhysicsObjects\Fluids\FluidHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics\PhysicsObjects\Fluids\Fluid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\UI_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\GlyphTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Init\Init_GLEW.h">
@@ -248,11 +260,34 @@
     <ClInclude Include="Physics\Constraints\DensityConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Physics\PhysicsObjects\Fluids\Fluid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\PhysicsObjects\Fluids\FluidHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\Materials\SphereFluidMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\offset.vert">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Recycle Bin\Boundary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\UI_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GlyphTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\single_color.frag" />
     <None Include="Shaders\lambertian.frag" />
     <None Include="Shaders\standard.vert" />
+    <None Include="Shaders\text.vert" />
+    <None Include="Shaders\text.frag" />
   </ItemGroup>
 </Project>

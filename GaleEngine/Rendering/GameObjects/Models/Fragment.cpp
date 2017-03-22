@@ -15,13 +15,13 @@ Fragment::Fragment(const Fragment &other) {
 	this->primitiveType = other.primitiveType;
 }
 
-Fragment::Fragment(Fragment &other, Model* parent) {
+Fragment::Fragment(Fragment* other, Model* parent) {
 	this->parent = parent;
-	this->material = other.material;
-	this->startingIndex = other.startingIndex;
-	this->indexStartPointer = other.indexStartPointer;
-	this->indexCount = other.indexCount;
-	this->primitiveType = other.primitiveType;
+	this->material = other->material;
+	this->startingIndex = other->startingIndex;
+	this->indexStartPointer = other->indexStartPointer;
+	this->indexCount = other->indexCount;
+	this->primitiveType = other->primitiveType;
 }
 
 Fragment::Fragment(Model * parent, IMaterial * material, int startingIndex, GLuint indexCount, int startingVertex, int vertexCount, GLuint primitiveType)

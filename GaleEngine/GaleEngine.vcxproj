@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\GLMathematics.0.9.5.4\build\native\GLMathematics.props" Condition="Exists('..\packages\GLMathematics.0.9.5.4\build\native\GLMathematics.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -132,11 +133,14 @@
     <ClCompile Include="Managers\Scene_Manager.cpp" />
     <ClCompile Include="Managers\Shader_Manager.cpp" />
     <ClCompile Include="Managers\Texture_Manager.cpp" />
+    <ClCompile Include="Managers\UI_Manager.cpp" />
     <ClCompile Include="Physics\AABB.cpp" />
     <ClCompile Include="Physics\Constraints\DensityConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\FaceBendingConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp" />
     <ClCompile Include="Physics\Forces\ConstantForce.cpp" />
+    <ClCompile Include="Physics\PhysicsObjects\Fluids\Fluid.cpp" />
+    <ClCompile Include="Physics\PhysicsObjects\Fluids\FluidHelper.cpp" />
     <ClCompile Include="Physics\PhysicsObjects\PhysicsObject.cpp" />
     <ClCompile Include="Physics\PhysicsObjects\Solids\Cloth.cpp" />
     <ClCompile Include="Physics\Particles\Particle.cpp" />
@@ -150,6 +154,7 @@
     <ClCompile Include="Rendering\GameObjects\Models\Model.cpp" />
     <ClCompile Include="Managers\Model_Manager.cpp" />
     <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp" />
+    <ClCompile Include="Rendering\GlyphTexture.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,13 +171,17 @@
     <ClInclude Include="Managers\Shader_Manager.h" />
     <ClInclude Include="Core\WindowInfo.h" />
     <ClInclude Include="Managers\Texture_Manager.h" />
+    <ClInclude Include="Managers\UI_Manager.h" />
     <ClInclude Include="Physics\AABB.h" />
     <ClInclude Include="Physics\Collision.h" />
+    <ClInclude Include="Physics\Recycle Bin\Boundary.h" />
     <ClInclude Include="Physics\Constraints\DensityConstraint.h" />
     <ClInclude Include="Physics\Forces\ConstantForce.h" />
     <ClInclude Include="Physics\Forces\Force.h" />
     <ClInclude Include="Physics\IConstraintGroup.h" />
     <ClInclude Include="Physics\Constraints\Constraint.h" />
+    <ClInclude Include="Physics\PhysicsObjects\Fluids\Fluid.h" />
+    <ClInclude Include="Physics\PhysicsObjects\Fluids\FluidHelper.h" />
     <ClInclude Include="Physics\PhysicsObjects\Solids\Cloth.h" />
     <ClInclude Include="Physics\PhysicsObjects\Solids\Triangle.h" />
     <ClInclude Include="Physics\PhysicsObjects\PhysicsObject.h" />
@@ -186,8 +195,10 @@
     <ClInclude Include="Rendering\GameObjects\Models\Fragment.h" />
     <ClInclude Include="Rendering\GameObjects\IGameObject.h" />
     <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h" />
+    <ClInclude Include="Rendering\GlyphTexture.h" />
     <ClInclude Include="Rendering\IRenderer.h" />
     <ClInclude Include="Rendering\GameObjects\Lights\Light.h" />
+    <ClInclude Include="Rendering\Materials\SphereFluidMaterial.h" />
     <ClInclude Include="Rendering\Materials\BlinnPhongMaterial.h" />
     <ClInclude Include="Rendering\Materials\IMaterial.h" />
     <ClInclude Include="Rendering\Materials\LambertianMaterial.h" />
@@ -197,18 +208,22 @@
     <ClInclude Include="Managers\Model_Manager.h" />
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\VertexFormat.h" />
+    <ClInclude Include="Shaders\offset.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\lambertian.frag" />
     <None Include="Shaders\single_color.frag" />
     <None Include="Shaders\standard.vert" />
+    <None Include="Shaders\text.frag" />
+    <None Include="Shaders\text.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
     <Import Project="..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
-    <Import Project="..\packages\glm.0.9.7.1\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.7.1\build\native\glm.targets')" />
+    <Import Project="..\packages\freetype.redist.2.7.1.1\build\native\freetype.redist.targets" Condition="Exists('..\packages\freetype.redist.2.7.1.1\build\native\freetype.redist.targets')" />
+    <Import Project="..\packages\freetype.2.7.1.1\build\native\freetype.targets" Condition="Exists('..\packages\freetype.2.7.1.1\build\native\freetype.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -216,6 +231,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
     <Error Condition="!Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
-    <Error Condition="!Exists('..\packages\glm.0.9.7.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.7.1\build\native\glm.targets'))" />
+    <Error Condition="!Exists('..\packages\GLMathematics.0.9.5.4\build\native\GLMathematics.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GLMathematics.0.9.5.4\build\native\GLMathematics.props'))" />
+    <Error Condition="!Exists('..\packages\freetype.redist.2.7.1.1\build\native\freetype.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.redist.2.7.1.1\build\native\freetype.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\freetype.2.7.1.1\build\native\freetype.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.2.7.1.1\build\native\freetype.targets'))" />
   </Target>
 </Project>

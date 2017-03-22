@@ -2,7 +2,6 @@
 #include "IRenderer.h"
 #include "GL/glew.h"
 #include <glm/glm.hpp>
-#include <string>
 
 namespace Rendering {
 
@@ -25,6 +24,7 @@ namespace Rendering {
 		struct SingleColorMaterial;
 		struct LambertianMaterial;
 		struct BlinnPhongMaterial;
+		struct SphereFluidMaterial;
 	}
 
 	class ForwardRenderer : public IRenderer {
@@ -36,9 +36,9 @@ namespace Rendering {
 		virtual void Init() override;
 		virtual void Render(GameObjects::Models::Model* model) override;
 		virtual void Render(GameObjects::Models::ModelClone* model) override;
-		virtual void setCamera(GameObjects::Cameras::Camera* camera) override;
-		virtual void setLights(std::vector<GameObjects::Lights::Light*> light) override;
-
+		virtual void SetCamera(GameObjects::Cameras::Camera* camera) override;
+		virtual void SetLights(std::vector<GameObjects::Lights::Light*> light) override;
+		virtual void RenderText(std::string& text, float x, float y, float sx, float sy) override;
 	private:
 		static ForwardRenderer instance;
 
@@ -50,6 +50,7 @@ namespace Rendering {
 		glm::mat4 MVPMatrix;
 		glm::mat4 projectionMatrix;
 		glm::mat4 viewMatrix;
+		glm::mat4 modelMatrix;
 		glm::mat3 normalMatrix;
 		glm::mat4 modelViewMatrix;
 		glm::mat4 inverseViewMatrix;
@@ -69,5 +70,6 @@ namespace Rendering {
 		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::SingleColorMaterial* mat);
 		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::LambertianMaterial* mat);
 		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::BlinnPhongMaterial* mat);
+		void renderFragment(const GameObjects::Models::Model* model, const GameObjects::Models::Fragment* fragment, Rendering::Materials::SphereFluidMaterial* mat);
 	};
 }

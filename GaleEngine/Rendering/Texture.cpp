@@ -34,10 +34,10 @@ Texture::Texture(const string &filename) {
 	glBindTexture(GL_TEXTURE_2D, textureLocation); // bind it as the current one being edited.
 
 	// Using mipmap settings for now, until I figure out how to actually set this stuff up.
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// Set maximum anisotropy to the maximum value allowed by our GPU/OpenGL implementation
 	float maxAniso;
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
@@ -56,9 +56,10 @@ Texture::Texture(const string &filename) {
 	// target: the texture target this can be GL_TEXTURE_2D or any one of the six cubemap textures
 	// level: specifies the mipmap level to load to (0 being unscaled image)
 	// internalformat: how to store pixel data. Can be one of: GL_ALPHA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA
-	// width/heigh: self-explanatory
+	// width/heigh: width/height of the texture in pixels
 	// boder: width of the border (?), but this value must be 0
 	// format: specifies how the data is stored in the buffer. must match internalFormat
+	// type: tells GL what data type to treat data as (e.g. GL_UNSIGNED_BYTE = 8 bit char => 0-255)
 	// data: actual source of the data in an array (pointer to the first element)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 

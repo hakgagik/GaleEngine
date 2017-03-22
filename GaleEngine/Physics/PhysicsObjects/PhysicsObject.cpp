@@ -9,6 +9,9 @@ using namespace Particles;
 using namespace PhysicsObjects;
 using namespace Forces;
 using namespace glm;
+using namespace std;
+
+PhysicsObject::~PhysicsObject() { }
 
 void PhysicsObject::AddForce(Force* force) {
 	this->forceList.push_back(force);
@@ -42,6 +45,31 @@ void PhysicsObject::PredictPositions(float dt) {
 }
 
 void PhysicsObject::GenerateConstraints(float dt) { }
+
+void PhysicsObject::CollideWithBounds(vector<float> &bounds) {
+	float xmin = bounds[0];
+	float xmax = bounds[1];
+	float ymin = bounds[2];
+	float ymax = bounds[3];
+	float zmin = bounds[4];
+	float zmax = bounds[5];
+
+	for (auto kv : particleList) {
+		vec3 &p = kv.second->x;
+		if (p.x < xmin)
+			p.x = xmin + xmin - p.x;
+		if (p.x > xmax) 
+			p.x = xmax + xmax - p.x;
+		if (p.y < ymin) 
+			p.y = ymin + ymin - p.y;
+		if (p.y > ymax) 
+			p.y = ymax + ymax - p.y;
+		if (p.z < zmin) 
+			p.z = zmin + zmin - p.z;
+		if (p.z > zmax) 
+			p.z = zmax + zmax - p.z;
+	}
+}
 
 void PhysicsObject::FinalizeParticles(float dt) {
 	for (auto kv : particleList) {
