@@ -9,7 +9,7 @@ using namespace Particles;
 using namespace PhysicsObjects::Fluids;
 using namespace glm;
 
-float DensityConstraint::h = 0.1f;
+float DensityConstraint::h = 0.2f;
 float DensityConstraint::epsilon = 600.0f;
 float DensityConstraint::poly6Factor = 315.0f / (64.0f * pi<float>() * h * h * h * h * h * h);
 float DensityConstraint::spikyFactor = 15.0f / (pi<float>() * h * h * h * h);
@@ -52,9 +52,10 @@ float DensityConstraint::DelSpikeyKernel(float &r) {
 	return 0;
 }
 
-DensityConstraint::DensityConstraint(Particle* center, float restDensity) {
+DensityConstraint::DensityConstraint(Particle* center, float restDensity, float stiffness) {
 	this->Center = center;
 	this->RestDensity = restDensity;
+	this->stiffness = stiffness;
 }
 
 void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {

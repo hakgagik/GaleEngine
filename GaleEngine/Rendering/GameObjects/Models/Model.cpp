@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "../../Materials/SingleColorMaterial.h"
 #include "../../Materials/LambertianMaterial.h"
+#include "../../Materials/ScreenQuadMaterial.h"
 #include "Fragment.h"
 #include <glm/gtc/constants.hpp>
 #include <iostream>
@@ -13,9 +14,9 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-Model::Model(string name) : IGameObject(name) {}
+Model::Model(string name) : GameObject(name) {}
 
-Model::Model(const Model* other, string name) : IGameObject(name) {
+Model::Model(const Model* other, string name) : GameObject(name) {
 	cout << "Model: Copying " << other->name << " into " << name << ". This is very resource intensive. Should this be a clone instead?" << endl;
 	this->position = other->position;
 	this->orientation = other->orientation;
@@ -32,7 +33,7 @@ Model::Model(const Model* other, string name) : IGameObject(name) {
 	UpdateIBO(true);
 }
 
-Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, bool calculatedNormals, bool calculatedTangents) : IGameObject(name)
+Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, bool calculatedNormals, bool calculatedTangents) : GameObject(name)
 {
 	this->verts = verts;
 	this->indices = indices;
@@ -45,7 +46,7 @@ Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &ind
 	UpdateIBO(true);
 }
 
-Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color) : IGameObject(name)
+Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &indices, vec4 color) : GameObject(name)
 {
 	this->verts = verts;
 	this->indices = indices;
@@ -57,6 +58,19 @@ Model::Model(string name, vector<VertexFormat> &verts, vector<unsigned int> &ind
 	//SingleColorMaterial* mat = new SingleColorMaterial(color);
 	LambertianMaterial* mat = new LambertianMaterial(color);
 	this->fragments["Main"] = new Fragment(this, mat, 0, (int)indices.size(), 0, (GLuint)verts.size());
+}
+
+Model::Model(bool isScreenQuad, string name) : GameObject(name) {
+	GenerateScreenQuadVAO();
+	vector<vec2> sqverts = { vec2(0, 0), vec2(0, 1), vec2(1,1), vec2(1, 0) };
+	vector<unsigned int> sqinds = { 0, 1, 2, 3 };
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+	glBufferData(GL_ARRAY_BUFFER, sqverts.size() * sizeof(vector<vec2>), &sqverts[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sqinds.size() * sizeof(vector<unsigned int>), &sqinds[0], GL_STATIC_DRAW);
+	ScreenQuadMaterial* mat = new ScreenQuadMaterial();
+	this->fragments["Main"] = new Fragment(this, mat, 0, (int)sqinds.size(), 0, (int)sqverts.size(), GL_TRIANGLE_FAN);
 }
 
 Model::~Model() {
@@ -85,14 +99,18 @@ void Model::UpdateVBO(bool force) {
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexFormat), &verts[0], GL_STATIC_DRAW);
+		glBindVertexArray(0);
 		vboInvalid = false;
 	}
 }
 
 void Model::UpdateIBO(bool force) {
 	if (iboInvalid || force) {
+		glBindVertexArray(vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		glBindVertexArray(0);
+		iboInvalid = false;
 	}
 }
 
@@ -132,13 +150,35 @@ const std::vector<GLuint>& Model::GetVbos() const {
 	return vbos;
 }
 
+void Model::GenerateScreenQuadVAO() {
+	GLuint vao;
+	GLuint vbo;
+	GLuint ibo;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindVertexArray(0);
+	this->vao = vao;
+	this->vbos.push_back(vbo);
+	this->vbos.push_back(ibo);
+}
+
 void Model::InvalidateVBO()
 {
 	vboInvalid = true;
 }
 
 void Model::Destroy() {
-	IGameObject::Destroy();
+	GameObject::Destroy();
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers((GLsizei)vbos.size(), &vbos[0]);
 	vbos.clear();
@@ -241,7 +281,7 @@ void Model::DeleteFragment(string fragName) {
 }
 
 json Model::GetSourceJSON() const {
-	json j = IGameObject::GetSourceJSON();
+	json j = GameObject::GetSourceJSON();
 
 	j["CalculatedNormals"] = this->calculatedNormals;
 	j["CalculatedTangents"] = this->calculatedTangents;

@@ -148,7 +148,7 @@
     <ClCompile Include="Rendering\GameObjects\Cameras\PerspectiveCamera.cpp" />
     <ClCompile Include="Rendering\ForwardRenderer.cpp" />
     <ClCompile Include="Rendering\GameObjects\HeadNode.cpp" />
-    <ClCompile Include="Rendering\GameObjects\IGameObject.cpp" />
+    <ClCompile Include="Rendering\GameObjects\GameObject.cpp" />
     <ClCompile Include="Rendering\GameObjects\Lights\Light.cpp" />
     <ClCompile Include="Rendering\GameObjects\Models\Fragment.cpp" />
     <ClCompile Include="Rendering\GameObjects\Models\Model.cpp" />
@@ -161,6 +161,7 @@
     <ClInclude Include="Core\ContextInfo.h" />
     <ClInclude Include="Core\DebugOutput.h" />
     <ClInclude Include="Core\FrameBufferInfo.h" />
+    <ClInclude Include="Core\IDebuggable.h" />
     <ClInclude Include="Core\ISceneListener.h" />
     <ClInclude Include="Core\Init\Init_GLEW.h" />
     <ClInclude Include="Core\Init\Init_GLUT.h" />
@@ -193,11 +194,12 @@
     <ClInclude Include="Rendering\ForwardRenderer.h" />
     <ClInclude Include="Rendering\GameObjects\HeadNode.h" />
     <ClInclude Include="Rendering\GameObjects\Models\Fragment.h" />
-    <ClInclude Include="Rendering\GameObjects\IGameObject.h" />
+    <ClInclude Include="Rendering\GameObjects\GameObject.h" />
     <ClInclude Include="Rendering\GameObjects\Models\ModelClone.h" />
     <ClInclude Include="Rendering\GlyphTexture.h" />
     <ClInclude Include="Rendering\IRenderer.h" />
     <ClInclude Include="Rendering\GameObjects\Lights\Light.h" />
+    <ClInclude Include="Rendering\Materials\ScreenQuadMaterial.h" />
     <ClInclude Include="Rendering\Materials\SphereFluidMaterial.h" />
     <ClInclude Include="Rendering\Materials\BlinnPhongMaterial.h" />
     <ClInclude Include="Rendering\Materials\IMaterial.h" />
@@ -215,8 +217,8 @@
     <None Include="Shaders\lambertian.frag" />
     <None Include="Shaders\single_color.frag" />
     <None Include="Shaders\standard.vert" />
-    <None Include="Shaders\text.frag" />
-    <None Include="Shaders\text.vert" />
+    <None Include="Shaders\screen_quad.frag" />
+    <None Include="Shaders\screen_quad.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

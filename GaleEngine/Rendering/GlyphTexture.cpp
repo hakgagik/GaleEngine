@@ -21,5 +21,7 @@ GlyphTexture::GlyphTexture(FT_Face face, char c) {
 	height = b.rows;
 	bitmap_left = g->bitmap_left;
 	bitmap_top = g->bitmap_top;
+	advance_x = (float)g->advance.x;
+	advance_y = (float)g->advance.y;
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, b.width, b.rows, 0, GL_RED, GL_UNSIGNED_BYTE, b.buffer);
 }

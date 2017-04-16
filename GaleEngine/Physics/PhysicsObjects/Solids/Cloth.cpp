@@ -157,6 +157,10 @@ void Cloth::Transmute() {
 	model->InvalidateVBO();
 }
 
+vector<string> Cloth::GetDebugOutput() {
+	return { "Cloth: Nothing to display." };
+}
+
 void Cloth::FixParticle(unsigned int particleIndex) {
 	particleList[particleIndex]->Fix();
 }

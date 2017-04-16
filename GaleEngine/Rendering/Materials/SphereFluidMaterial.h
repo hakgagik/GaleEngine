@@ -5,7 +5,7 @@
 
 namespace Rendering {
 	namespace Materials {
-		struct SphereFluidMaterial : IMaterial {
+		struct SphereFluidMaterial : public IMaterial {
 		public:
 			virtual ~SphereFluidMaterial() override {}
 			glm::vec4 diffuseColor = glm::vec4(0.0, 0.2, 1.0, 1.0);

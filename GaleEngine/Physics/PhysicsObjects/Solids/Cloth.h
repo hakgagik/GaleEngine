@@ -25,6 +25,7 @@ namespace Physics {
 				virtual void Project(int iterations) override;
 				virtual void DeleteParticle(Particles::Particle* particle) override;
 				virtual void Transmute();
+				virtual std::vector<std::string> GetDebugOutput() override;
 				void FixParticle(unsigned int particleIndex);
 				virtual nlohmann::json GetJSON() override;
 

@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 Texture_Manager Texture_Manager::instance;
 
-const string allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!.:;, ";
+const string allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789[]{}?-_=+!.:;, ";
 
 void Texture_Manager::Init() {
 	buildFontTextures();

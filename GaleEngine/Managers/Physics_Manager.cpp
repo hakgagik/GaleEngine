@@ -32,7 +32,9 @@ Physics_Manager::~Physics_Manager() {
 	for (PhysicsObject* physicsObject : physicsObjectList) delete physicsObject;
 }
 
-void Physics_Manager::Init() { }
+void Physics_Manager::Init() {
+	FluidHelper::Init();
+}
 
 void Physics_Manager::InitializeParticles() {
 	initParticles();

@@ -1,11 +1,11 @@
 #pragma once
-#include "../IGameObject.h"
+#include "../GameObject.h"
 #include <glm/glm.hpp>
 
 namespace Rendering {
 	namespace GameObjects {
 		namespace Lights {
-			class Light : public IGameObject {
+			class Light : public GameObject {
 			public:
 				glm::float32 cutoff;
 				glm::vec3 color;

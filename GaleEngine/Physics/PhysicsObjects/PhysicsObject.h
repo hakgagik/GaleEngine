@@ -35,6 +35,7 @@ namespace Physics {
 			virtual void FinalizeParticles(float dt);
 			virtual void Transmute() = 0;
 			virtual void UpdateAABB();
+			virtual std::vector<std::string> GetDebugOutput() override = 0;
 
 			virtual void DeleteParticle(Particles::Particle* particle) override = 0;
 			virtual nlohmann::json GetJSON() = 0;

@@ -254,7 +254,7 @@ void Model_Manager::createRectTemplate(unsigned int xDiv, unsigned int yDiv) {
 	rectTemplate->source = RECT_TEMPLATE_SOURCE;
 }
 
-ModelClone* Model_Manager::getSphereCopy(string name) {
+ModelClone* Model_Manager::GetSphereCopy(string name) {
 	if (sphereTemplate == nullptr) {
 		createSphereTemplate();
 	}
@@ -263,7 +263,7 @@ ModelClone* Model_Manager::getSphereCopy(string name) {
 	return sphere;
 }
 
-ModelClone* Model_Manager::getCubeCopy(string name)
+ModelClone* Model_Manager::GetCubeCopy(string name)
 {
 	if (cubeTemplate == nullptr) {
 		createCubeTemplate();
@@ -273,7 +273,7 @@ ModelClone* Model_Manager::getCubeCopy(string name)
 	return cube;
 }
 
-ModelClone* Model_Manager::getRectCopy(string name)
+ModelClone* Model_Manager::GetRectCopy(string name)
 {
 	if (rectTemplate == nullptr) {
 		createRectTemplate();

@@ -7,7 +7,7 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-Light::Light(string name, vec3 color, vec3 attenuation, float32 cutoff) : IGameObject(name) {
+Light::Light(string name, vec3 color, vec3 attenuation, float32 cutoff) : GameObject(name) {
 	this->color = color;
 	this->attenuation = attenuation;
 	this->cutoff = cutoff;
@@ -16,11 +16,11 @@ Light::Light(string name, vec3 color, vec3 attenuation, float32 cutoff) : IGameO
 Light::~Light() {}
 
 void Light::Destroy() {
-	IGameObject::Destroy();
+	GameObject::Destroy();
 }
 
 json Light::GetSourceJSON() const {
-	json j = IGameObject::GetSourceJSON();
+	json j = GameObject::GetSourceJSON();
 	j["Type"] = "PointLight";
 	j["Cutoff"] = cutoff;
 	j["Color"] = { color.x, color.y, color.z };

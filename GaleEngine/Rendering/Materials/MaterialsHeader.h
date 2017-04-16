@@ -3,3 +3,4 @@
 #include "LambertianMaterial.h"
 #include "BlinnPhongMaterial.h"
 #include "SphereFluidMaterial.h"
+#include "ScreenQuadMaterial.h"

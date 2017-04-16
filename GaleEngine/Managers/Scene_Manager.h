@@ -10,7 +10,7 @@
 namespace Rendering {
 	class IRenderer;
 	namespace GameObjects {
-		class IGameObject;
+		class GameObject;
 		namespace Cameras {
 			class Camera;
 		}
@@ -63,7 +63,7 @@ namespace Managers {
 		Rendering::GameObjects::Cameras::Camera* activeCam;
 		std::vector<Rendering::GameObjects::Cameras::Camera*> cameras; // May need to switch this to a camera manager at some point
 		std::vector<Rendering::GameObjects::Lights::Light*> lights;
-		Rendering::GameObjects::IGameObject* headNode;
+		Rendering::GameObjects::GameObject* headNode;
 
 		float dStrafe = 0.1f;
 		float dTheta = 0.01308996939f;
@@ -72,9 +72,9 @@ namespace Managers {
 		bool pauseFrame;
 		bool stepFrame;
 
-		void reportFramerate(std::chrono::high_resolution_clock::time_point &timeNow);
+		float calculateFramerate(std::chrono::high_resolution_clock::time_point &timeNow);
 
-		//nlohmann::json writeBranchToJSON(Rendering::GameObjects::IGameObject* node);
-		void buildSceneTreeBranch(Rendering::GameObjects::IGameObject* node, Rendering::GameObjects::IGameObject* parent, nlohmann::json branch, std::unordered_map<std::string, Rendering::GameObjects::IGameObject*> &gameObjects);
+		//nlohmann::json writeBranchToJSON(Rendering::GameObjects::GameObject* node);
+		void buildSceneTreeBranch(Rendering::GameObjects::GameObject* node, Rendering::GameObjects::GameObject* parent, nlohmann::json branch, std::unordered_map<std::string, Rendering::GameObjects::GameObject*> &gameObjects);
 	};
 }

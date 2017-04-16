@@ -22,7 +22,7 @@ PerspectiveCamera::~PerspectiveCamera() {
 }
 
 void PerspectiveCamera::Destroy() {
-	IGameObject::Destroy();
+	GameObject::Destroy();
 }
 
 PerspectiveCamera::PerspectiveCamera(string name, float near, float far, float aspect, float fovy) : Camera(name) {
@@ -168,7 +168,7 @@ void PerspectiveCamera::Strafe(float dx, float dy)
 }
 
 json PerspectiveCamera::GetSourceJSON() const {
-	json j = IGameObject::GetSourceJSON();
+	json j = GameObject::GetSourceJSON();
 	j["Type"] = "PerspectiveCamera";
 	j["FoVy"] = fovy;
 	j["Target"] = { target.x, target.y, target.z };

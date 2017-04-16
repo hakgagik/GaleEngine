@@ -22,9 +22,9 @@ namespace Managers {
 	public:
 		static Model_Manager& Get();
 
-		Rendering::GameObjects::Models::ModelClone* getSphereCopy(std::string name);
-		Rendering::GameObjects::Models::ModelClone* getCubeCopy(std::string name);
-		Rendering::GameObjects::Models::ModelClone* getRectCopy(std::string name);
+		Rendering::GameObjects::Models::ModelClone* GetSphereCopy(std::string name);
+		Rendering::GameObjects::Models::ModelClone* GetCubeCopy(std::string name);
+		Rendering::GameObjects::Models::ModelClone* GetRectCopy(std::string name);
 
 		~Model_Manager();
 		

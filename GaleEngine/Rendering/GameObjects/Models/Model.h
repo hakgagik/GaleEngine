@@ -1,5 +1,5 @@
 #pragma once
-#include "../IGameObject.h"
+#include "../GameObject.h"
 #include "../../VertexFormat.h"
 #include "../../../lib/json.hpp"
 #include "GL/glew.h"
@@ -23,7 +23,7 @@ namespace Rendering {
 		namespace Models {
 			class Fragment;
 
-			class Model : public IGameObject {
+			class Model : public GameObject {
 			public:
 				std::string source;
 				
@@ -31,12 +31,14 @@ namespace Rendering {
 				Model(const Model* other, std::string name);
 				Model(std::string name, std::vector<VertexFormat> &verts, std::vector<unsigned int> &indices, glm::vec4 color);
 				Model(std::string name, std::vector<VertexFormat> &verts, std::vector<unsigned int> &indices, bool calculatedNormals = false, bool calculatedTangents = false);
+				Model(bool isScreenQuad, std::string name);
 				virtual ~Model();
 
 				virtual void Destroy() override;
 
 				GLuint GetVao() const;
 				void GenerateVAO();
+				void GenerateScreenQuadVAO();
 				const std::vector<GLuint>& GetVbos() const;
 				void InvalidateVBO();	
 

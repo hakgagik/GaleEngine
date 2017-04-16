@@ -6,6 +6,8 @@
 #include "../../../Rendering/GameObjects/Models/Fragment.h"
 #include "../../../Rendering/Materials/SphereFluidMaterial.h"
 #include <unordered_map>
+#include <sstream>
+#include <iomanip>
 
 using namespace Physics;
 using namespace Particles;
@@ -21,16 +23,17 @@ Fluid::Fluid() : PhysicsObject() {}
 
 Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float restDensity, float densityStiffness)
 {
-	// TODO: populate particleList
-
-
 	this->model = model;
 	this->restDensity = restDensity;
-
+	this->densityStiffness = densityStiffness;
+	
+	int tick = 0;
 	for (vec3 pos : positions) {
 		Particle* p = new Particle(pos, vec3(0), particleMass);
-		DensityConstraint* c = new DensityConstraint(p, this->restDensity);
+		DensityConstraint* c = new DensityConstraint(p, this->restDensity, this->densityStiffness);
 		densityConstraintList.push_back(c);
+		particleList[tick] = c->Center;
+		tick++;
 	}
 
 	if (restDensity < 0) {
@@ -62,7 +65,6 @@ Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float re
 	}
 
 	FluidHelper::Get().AddParticles(densityConstraintList);
-
 }
 
 Fluid::~Fluid() {
@@ -71,9 +73,16 @@ Fluid::~Fluid() {
 	}
 }
 
+void Fluid::GenerateConstraints(float dt) {
+	for (DensityConstraint* constraint : densityConstraintList) {
+		constraint->FindNeighbors(FluidHelper::Get());
+	}
+}
+
 void Fluid::Project(int iterations) {
 	for (DensityConstraint* constraint : densityConstraintList) {
 		vec3 dp;
+		constraint->UpdateDerivs();
 		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
 		for (auto kv : constraint->ParticleGradients) {
 			constraint->Center->p += iter_stiffness * constraint->GetDP();
@@ -120,6 +129,25 @@ void Fluid::Transmute() {
 	for (DensityConstraint* constraint : densityConstraintList) {
 		mat->positions.push_back(constraint->Center->x);
 	}
+}
+
+vector<string> Fluid::GetDebugOutput() {
+	vector<string> output(3);
+	stringstream ss;
+	ss << fixed << setprecision(2);
+
+	ss << "Fluid " << model->name << ":";
+	output[0] = ss.str();
+
+	ss.str("");
+	ss << "Rho_0: " << restDensity;
+	output[1] = ss.str();
+	
+	ss.str("");
+	ss << "Rho_center: " << densityConstraintList[densityConstraintList.size() / 2]->CurrentDensity;
+	output[2] = ss.str();
+
+	return output;
 }
 
 json Fluid::GetJSON() {

@@ -17,12 +17,12 @@ namespace Physics {
 	namespace Constraints {
 		class DensityConstraint : public Constraint {
 		public:
-			static void SetH(float newH);
+			//static void SetH(float newH);
 			static float Poly6Kernel(float &r);
 			static float SpikeyKernel(float &r);
 			static float DelSpikeyKernel(float &r);
 
-			DensityConstraint(Particles::Particle* center, float restDensity);
+			DensityConstraint(Particles::Particle* center, float restDensity, float stiffness);
 			
 			virtual void UpdateDerivs() override;
 			virtual bool ContainsParticle(Particles::Particle* particle) override;

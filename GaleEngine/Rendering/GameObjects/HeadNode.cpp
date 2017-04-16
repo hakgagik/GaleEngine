@@ -7,7 +7,7 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-HeadNode::HeadNode(string name) : IGameObject(name) {
+HeadNode::HeadNode(string name) : GameObject(name) {
 
 }
 
@@ -15,11 +15,11 @@ HeadNode::~HeadNode() {
 	Destroy();
 }
 
-void HeadNode::UpdateParent(IGameObject* parent) {
+void HeadNode::UpdateParent(GameObject* parent) {
 	cout << "GameObject " << name << ": The parent of a HeadNode was attempted to be updated. This should not happen." << endl;
 }
 
-void HeadNode::AddToSceneTree(IGameObject* parent, vec3 &position, quat &orientation, vec3 &scale, bool enabled = true) {
+void HeadNode::AddToSceneTree(GameObject* parent, vec3 &position, quat &orientation, vec3 &scale, bool enabled = true) {
 	if (parent != nullptr) cout << "GameObject " << name << ": Cannot add HeadNode as a child object. Setting parent to null." << endl;
 	this->parent = nullptr;
 	this->position = position;
@@ -36,6 +36,6 @@ void HeadNode::updateLocalMatrices() {
 }
 
 json HeadNode::GetSourceJSON() const {
-	json j = IGameObject::GetSourceJSON();
+	json j = GameObject::GetSourceJSON();
 	return j;
 }

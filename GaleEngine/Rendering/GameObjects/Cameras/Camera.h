@@ -1,11 +1,11 @@
 #pragma once
-#include "../IGameObject.h"
+#include "../GameObject.h"
 #include <glm/glm.hpp>
 
 namespace Rendering {
 	namespace GameObjects {
 		namespace Cameras {
-			class Camera : public IGameObject {
+			class Camera : public GameObject {
 			protected:
 				glm::vec3 target;
 				glm::vec3 up;
@@ -18,7 +18,7 @@ namespace Rendering {
 				float farClip;
 				float aspect;
 
-				Camera(std::string name) : IGameObject(name) { };
+				Camera(std::string name) : GameObject(name) { };
 				virtual glm::mat4 GetProjMatrix() = 0;
 				virtual glm::mat4 GetViewMatrix() = 0;
 				virtual void Destroy() override = 0;

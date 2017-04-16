@@ -1,6 +1,6 @@
 #include "ForwardRenderer.h"
 #include "GlyphTexture.h"
-#include "GameObjects/IGameObject.h"
+#include "GameObjects/GameObject.h"
 #include "GameObjects/Models/Model.h"
 #include "GameObjects/Models/ModelClone.h"
 #include "GameObjects/Models/fragment.h"
@@ -23,7 +23,6 @@ using namespace Managers;
 using namespace std;
 using namespace glm;
 
-const GLenum ForwardRenderer::textureIndexMap[] = { GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7, GL_TEXTURE8 };
 const int ForwardRenderer::MAX_LIGHTS = 40;
 
 ForwardRenderer ForwardRenderer::instance;
@@ -48,7 +47,7 @@ void ForwardRenderer::Render(ModelClone* model) {
 	renderFromModel(model->source);
 }
 
-void ForwardRenderer::calculateOrientationMatrices(IGameObject* gameObject) {
+void ForwardRenderer::calculateOrientationMatrices(GameObject* gameObject) {
 	modelMatrix = gameObject->toWorldMatrix;
 	modelViewMatrix = viewMatrix * modelMatrix;
 	normalMatrix = transpose(inverse(mat3(modelViewMatrix)));
@@ -70,6 +69,9 @@ void ForwardRenderer::renderFromModel(const Model* model) {
 		}
 		else if (SphereFluidMaterial* sphereFluidMat = dynamic_cast<SphereFluidMaterial*>(fragment->material)) {
 			renderFragment(model, fragment, sphereFluidMat);
+		}
+		else if (ScreenQuadMaterial* screenQuadMat = dynamic_cast<ScreenQuadMaterial*>(fragment->material)) {
+			renderFragment(model, fragment, screenQuadMat);
 		}
 		else {
 			cout << "Forward Renderer: Can't find material for model  " << model->name << ". Rendering as white SingleColor." << endl;
@@ -157,6 +159,22 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 	}
 }
 
+void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragment, ScreenQuadMaterial* mat) {
+	GLuint loc;
+	GLuint program = Shader_Manager::Get().GetShader("screen_quad");
+	glUseProgram(program);
+	glBindVertexArray(model->GetVao());
+
+	loc = glGetUniformLocation(program, "tint");
+	glUniform4fv(loc, 1, value_ptr(mat->tint));
+	
+	loc = glGetUniformLocation(program, "posAndScale");
+	glUniform4fv(loc, 1, value_ptr(mat->posAndScale));
+
+	useTexture(program, "tex", "hasTex", mat->texture, 0);
+	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
+}
+
 void ForwardRenderer::SetCamera(Camera* camera) {
 	this->camera = camera;
 	projectionMatrix = camera->GetProjMatrix();
@@ -182,44 +200,44 @@ void ForwardRenderer::SetLights(vector<Light*> lights) {
 	}
 }
 
-void ForwardRenderer::RenderText(string& text, float x, float y, float sx, float sy) {
-	GLuint program = Shader_Manager::Get().GetShader("text");
-	glUseProgram(program);
-	//glBindVertexArray(1);
-	for (char p : text) {
-		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
-
-		if (glyphTex->width != 0 && glyphTex->height != 0)
-		{
-			float x2 = x + glyphTex->bitmap_left * sx;
-			float y2 = -y - glyphTex->bitmap_top * sy;
-			float w = glyphTex->width * sx;
-			float h = glyphTex->height * sy;
-
-			GLfloat box[4][4] = {
-				{x2, -y2, 0, 0},
-				{x2 + w, -y2, 1, 0},
-				{x2, -y2 - h, 0, 1},
-				{x2 + w, -y2 - h, 1, 1}
-			};
-
-			useTexture(program, "tex", "null", glyphTex, 0);
-			
-			glBegin(GL_TRIANGLE_STRIP);
-			glVertex4f(box[0][0], box[0][1], box[0][2], box[0][3]);
-			glVertex4f(box[1][0], box[1][1], box[1][2], box[1][3]);
-			glVertex4f(box[2][0], box[2][1], box[2][2], box[2][3]);
-			glVertex4f(box[3][0], box[3][1], box[3][2], box[3][3]);
-			glEnd();
-			
-			//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		}
-
-		x += glyphTex->advance_x / 64 * sx;
-		y += glyphTex->advance_y / 64 * sy;
-	}
-}
+//void ForwardRenderer::RenderText(string& text, float x, float y, float sx, float sy) {
+//	GLuint program = Shader_Manager::Get().GetShader("text");
+//	glUseProgram(program);
+//	//glBindVertexArray(1);
+//	for (char p : text) {
+//		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
+//
+//		if (glyphTex->width != 0 && glyphTex->height != 0)
+//		{
+//			float x2 = x + glyphTex->bitmap_left * sx;
+//			float y2 = -y - glyphTex->bitmap_top * sy;
+//			float w = glyphTex->width * sx;
+//			float h = glyphTex->height * sy;
+//
+//			GLfloat box[4][4] = {
+//				{x2, -y2, 0, 0},
+//				{x2 + w, -y2, 1, 0},
+//				{x2, -y2 - h, 0, 1},
+//				{x2 + w, -y2 - h, 1, 1}
+//			};
+//
+//			useTexture(program, "tex", "null", glyphTex, 0);
+//			
+//			glBegin(GL_TRIANGLE_STRIP);
+//			glVertex4f(box[0][0], box[0][1], box[0][2], box[0][3]);
+//			glVertex4f(box[1][0], box[1][1], box[1][2], box[1][3]);
+//			glVertex4f(box[2][0], box[2][1], box[2][2], box[2][3]);
+//			glVertex4f(box[3][0], box[3][1], box[3][2], box[3][3]);
+//			glEnd();
+//			
+//			//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+//			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//		}
+//
+//		x += glyphTex->advance_x / 64 * sx;
+//		y += glyphTex->advance_y / 64 * sy;
+//	}
+//}
 
 void ForwardRenderer::setMatrixUniforms(GLuint program) {
 	GLint loc;
@@ -263,11 +281,11 @@ void ForwardRenderer::setLightUniforms(GLuint program) {
 	glUniform1fv(loc, lightCount, &lightCutoffs[0]);
 }
 
-void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, const GLchar* hasUniformName, const Texture* texture, int textureUnit) {
+void ForwardRenderer::useTexture(GLuint program, const GLchar* uniformName, const GLchar* hasUniformName, const Texture* texture, GLuint textureUnit) {
 	GLint hasTexUniLoc = glGetUniformLocation(program, hasUniformName);
 	GLint texUniLoc = glGetUniformLocation(program, uniformName);
 	if (texture != nullptr /*&& texUniLoc != -1 && hasTexUniLoc != -1*/) {
-		glActiveTexture(textureIndexMap[textureUnit]);
+		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_2D, texture->textureLocation);
 		glUniform1i(texUniLoc, textureUnit);
 		glUniform1i(hasTexUniLoc, GL_TRUE);

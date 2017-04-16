@@ -6,6 +6,6 @@ using namespace Models;
 using namespace std;
 
 
-ModelClone::ModelClone(const Model* source, string name) : IGameObject(name) {
+ModelClone::ModelClone(const Model* source, string name) : GameObject(name) {
 	this->source = source;
 }

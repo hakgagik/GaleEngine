@@ -10,7 +10,7 @@ using namespace Init;
 using namespace Managers;
 
 int main(int argc, char **argv) {
-	WindowInfo window(std::string("Gale Engine"), 400, 200, 800, 600, true);
+	WindowInfo window(std::string("Gale Engine"), 400, 200, 1920, 1080, true);
 
 	ContextInfo context(4, 3, true);
 	FramebufferInfo frameBufferInfo(true, true, true, true);

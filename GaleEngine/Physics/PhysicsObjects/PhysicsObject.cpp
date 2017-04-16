@@ -55,7 +55,7 @@ void PhysicsObject::CollideWithBounds(vector<float> &bounds) {
 	float zmax = bounds[5];
 
 	for (auto kv : particleList) {
-		vec3 &p = kv.second->x;
+		vec3 &p = kv.second->p;
 		if (p.x < xmin)
 			p.x = xmin + xmin - p.x;
 		if (p.x > xmax) 
