@@ -44,7 +44,7 @@ void Physics_Manager::Update(float dt) {
 	applyExtForces(dt);
 	predictPositions(dt);
 	FluidHelper::Get().Update();
-	genCollConstraints();
+	calculatePotentialInteractions();
 	for (int i = 0; i < iterations; i++) {
 		projectConstraints(iterations);
 	}
@@ -75,10 +75,10 @@ void Physics_Manager::predictPositions(float dt) {
 	}
 }
 
-void Physics_Manager::genCollConstraints() {
+void Physics_Manager::calculatePotentialInteractions() {
 	//TODO
 	for (PhysicsObject* physObj : physicsObjectList) {
-		physObj->GenerateConstraints(dt);
+		physObj->CalculatePotentialInteractions(dt);
 	}
 }
 

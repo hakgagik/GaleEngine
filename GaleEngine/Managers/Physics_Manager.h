@@ -51,7 +51,7 @@ namespace Managers {
 		void initParticles();
 		void applyExtForces(float dt);
 		void predictPositions(float dt);
-		void genCollConstraints();
+		void calculatePotentialInteractions ();
 		void projectConstraints(int iterations);
 		void finalizePositionsAndVelocities(float dt);
 

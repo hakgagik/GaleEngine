@@ -44,7 +44,7 @@ void PhysicsObject::PredictPositions(float dt) {
 	}
 }
 
-void PhysicsObject::GenerateConstraints(float dt) { }
+void PhysicsObject::CalculatePotentialInteractions(float dt) { }
 
 void PhysicsObject::CollideWithBounds(vector<float> &bounds) {
 	float xmin = bounds[0];

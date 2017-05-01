@@ -186,16 +186,16 @@ void ForwardRenderer::SetLights(vector<Light*> lights) {
 	mat4 view = camera->GetViewMatrix();
 	this->lights.clear();
 	this->lightPositions.clear();
-	this->lightAttenuations.clear();
+	this->lightIntensities.clear();
 	this->lightColors.clear();
 	this->lightCutoffs.clear();
 	for (auto light : lights) {
 		if (light->enabled) {
 			this->lights.push_back(light);
 			lightPositions.push_back(vec3(view * vec4(light->getPosition(), 1)));
-			lightAttenuations.push_back(light->attenuation);
-			lightColors.push_back(light->color);
-			lightCutoffs.push_back(light->cutoff);
+			lightIntensities.push_back(light->Intensity);
+			lightColors.push_back(light->Color);
+			lightCutoffs.push_back(light->Cutoff);
 		}
 	}
 }
@@ -273,8 +273,8 @@ void ForwardRenderer::setLightUniforms(GLuint program) {
 	// This SCREAMS uniform buffer
 	loc = glGetUniformLocation(program, "lightPosition");
 	glUniform3fv(loc, lightCount, &lightPositions[0].x);
-	loc = glGetUniformLocation(program, "lightAttenuation");
-	glUniform3fv(loc, lightCount, &lightAttenuations[0].x);
+	loc = glGetUniformLocation(program, "lightIntensity");
+	glUniform3fv(loc, lightCount, &lightIntensities[0].x);
 	loc = glGetUniformLocation(program, "lightColor");
 	glUniform3fv(loc, lightCount, &lightColors[0].x);
 	loc = glGetUniformLocation(program, "lightCutoff");

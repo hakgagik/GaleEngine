@@ -234,8 +234,8 @@ void Scene_Manager::BuildSceneFromJSON(string &filename) {
 		json l = *it;
 		if (l["Type"] == "PointLight") {
 			vec3 color(l["Light"][0], l["Light"][1], l["Light"][2]);
-			vec3 attentuation(l["Attenuation"][0], l["Attenuation"][1], l["Attenuation"][2]);	
-			Light* light = new Light(it.key(), color, attentuation, l["Cutoff"]);
+			vec3 intensity(l["Intensity"][0], l["Intensity"][1], l["Intensity"][2]);	
+			Light* light = new Light(it.key(), color, intensity, l["Cutoff"]);
 			gameObjects[light->name] = light;
 			lights.push_back(light);
 		}
@@ -299,7 +299,7 @@ void Scene_Manager::SetupTestScene()
 	lights.push_back(new Light("Main Light"));
 	lights.push_back(new Light("Second Light"));
 	lights[0]->AddToSceneTree(headNode, vec3(0, 0, 2), norot, one);
-	lights[1]->AddToSceneTree(headNode, vec3(5), norot, one);
+	lights[1]->AddToSceneTree(headNode, vec3(10), norot, one);
 	
 	// Make a square. It's called triangle.
 	vector<VertexFormat> vertices = { VertexFormat(vec4(0, 1, 0, 1), vec3(0, -1, 0), vec2(0, 0), vec4(1, 0, 0, 1)),
@@ -309,7 +309,7 @@ void Scene_Manager::SetupTestScene()
 	vector<unsigned int> indices{ 0, 1, 2, 0, 2, 3 };
 	Model* triangle = Model_Manager::Get().CreateAndAdd("Triangle", vertices, indices);
 	triangle->source = "ModelSources\\Triangle.json";
-	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one * 3.0f, true);
+	triangle->AddToSceneTree(headNode, vec3(1.0f), -aLittleRot, one * 3.0f, false);
 	Texture* tex = Texture_Manager::Get().LoadandAddTexture("Images\\test.bmp");
 	dynamic_cast<Materials::LambertianMaterial*>(triangle->GetFragmentMat("Main"))->diffuseTexture = tex;
 
@@ -329,7 +329,7 @@ void Scene_Manager::SetupTestScene()
 	// Create the main camera
 	activeCam = new PerspectiveCamera("Main Camera");
 	activeCam->AddToSceneTree(headNode, zero, norot, one);
-	activeCam->LookAt(vec3(-2, -2, 5), vec3(4.5f, 4.5f, 0), vec3(0, 0, 1));
+	activeCam->LookAt(vec3(-2, -2, 10), vec3(5, 5, 5), vec3(0, 0, 1));
 	cameras.push_back(activeCam);
 
 	// Spam some sphere clones
@@ -366,10 +366,11 @@ void Scene_Manager::SetupTestScene()
 	fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
 	vector<vec3> positions;
+	vec3 offset(4, 4, 4);
 	for (float z = 0; z <= 1; z += 0.1f) {
 		for (float y = 0; y <= 1; y += 0.1f) {
 			for (float x = 0; x <= 1; x += 0.1f) {
-				positions.push_back(vec3(x, y, z));
+				positions.push_back(vec3(x, y, z) + offset);
 			}
 		}
 	}

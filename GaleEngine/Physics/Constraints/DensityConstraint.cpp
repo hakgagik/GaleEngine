@@ -11,8 +11,8 @@ using namespace glm;
 
 float DensityConstraint::h = 0.2f;
 float DensityConstraint::epsilon = 600.0f;
-float DensityConstraint::poly6Factor = 315.0f / (64.0f * pi<float>() * h * h * h * h * h * h);
-float DensityConstraint::spikyFactor = 15.0f / (pi<float>() * h * h * h * h);
+float DensityConstraint::poly6Factor = 315.0f / (64.0f * pi<float>() * h * h * h * h * h * h * h * h * h);
+float DensityConstraint::spikyFactor = 15.0f / (pi<float>() * h * h * h * h * h * h);
 float DensityConstraint::delSpikyFactor = -3 * spikyFactor;
 float DensityConstraint::k = 0.1f;
 float DensityConstraint::n = 4;
@@ -85,18 +85,20 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 
 }
 
-void DensityConstraint::CalculateOnlyDensity() {
-	CurrentDensity = 0;
+float DensityConstraint::CalculateLocalDensity() {
+	float localDensity= 0;
 	for (auto kv : ParticleGradients) {
 		float r = length(kv.first->p - Center->p);
 		if (r > h) continue;
-		CurrentDensity += kv.first->m * Poly6Kernel(r);
+		localDensity += kv.first->m * Poly6Kernel(r);
 	}
+	return localDensity;
 }
 
+//#pragma optimize("", off)
 void DensityConstraint::UpdateDerivs() {
 	CurrentDensity = 0;
-	Lambda = 0;
+	Lambda = 0.0;
 	CenterDeriv = vec3(0);
 
 	
@@ -109,7 +111,7 @@ void DensityConstraint::UpdateDerivs() {
 		float derivFactor = DelSpikeyKernel(r);
 		CenterDeriv += kv.first->m * r_hat * derivFactor;
 		Lambda += Center->m * Center->m * derivFactor * derivFactor;
-		kv.second = r_hat * derivFactor;
+		ParticleGradients[kv.first] = r_hat * derivFactor;
 	}
 
 	Lambda += dot(CenterDeriv, CenterDeriv);
@@ -117,6 +119,7 @@ void DensityConstraint::UpdateDerivs() {
 	Lambda += epsilon;
 	Lambda = (CurrentDensity / RestDensity - 1) / Lambda;
 }
+//#pragma optimize("", on)
 
 bool DensityConstraint::ContainsParticle(Particle* particle) {
 	for (auto kv : ParticleGradients) {
@@ -131,6 +134,7 @@ void DensityConstraint::SetRestDensity(float newDensity) {
 	RestDensity = newDensity;
 }
 
+
 vec3 DensityConstraint::GetDP() {
 	vec3 dp(0);
 	if (Center->w == 0) return dp;
@@ -139,7 +143,7 @@ vec3 DensityConstraint::GetDP() {
 		float r = length(Center->p - otherConstriant->Center->p);
 		float s_corr = Poly6Kernel(r) / sCorrDenom;
 		s_corr = -k * pow(s_corr, n);
-		dp += (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m + s_corr) * kv.second;
+		dp += (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m /*+ s_corr*/) * kv.second;
 	}
 	return (Center->w / RestDensity) * dp;
 }

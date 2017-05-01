@@ -29,7 +29,7 @@ namespace Physics {
 			virtual void InitParticles();
 			virtual void ApplyForces(float dt);
 			virtual void PredictPositions(float dt);
-			virtual void GenerateConstraints(float dt) override;
+			virtual void CalculatePotentialInteractions(float dt) override;
 			virtual void Project(int iterations) override = 0;
 			virtual void CollideWithBounds(std::vector<float> &bounds);
 			virtual void FinalizeParticles(float dt);

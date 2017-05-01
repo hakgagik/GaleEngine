@@ -56,7 +56,7 @@ namespace Rendering {
 		glm::mat4 inverseViewMatrix;
 
 		std::vector<glm::vec3> lightPositions;
-		std::vector<glm::vec3> lightAttenuations;
+		std::vector<glm::vec3> lightIntensities;
 		std::vector<glm::vec3> lightColors;
 		std::vector<glm::float32> lightCutoffs;
 

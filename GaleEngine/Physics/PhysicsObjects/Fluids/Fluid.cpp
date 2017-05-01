@@ -44,8 +44,7 @@ Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float re
 		unordered_map<float, int> densityCounts;
 		for (DensityConstraint* c : densityConstraintList) {
 			c->FindNeighbors(tempFluidHelper);
-			c->CalculateOnlyDensity();
-			densityCounts[c->CurrentDensity]++;
+			densityCounts[c->CalculateLocalDensity()]++;
 		}
 
 		float bestDensity = 0;
@@ -73,17 +72,20 @@ Fluid::~Fluid() {
 	}
 }
 
-void Fluid::GenerateConstraints(float dt) {
+void Fluid::CalculatePotentialInteractions(float dt) {
 	for (DensityConstraint* constraint : densityConstraintList) {
 		constraint->FindNeighbors(FluidHelper::Get());
 	}
 }
 
 void Fluid::Project(int iterations) {
-	for (DensityConstraint* constraint : densityConstraintList) {
-		vec3 dp;
+
+	for (DensityConstraint* constraint : densityConstraintList)  {
 		constraint->UpdateDerivs();
-		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
+	}
+
+	for (DensityConstraint* constraint : densityConstraintList) {
+		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations) * 0.001f;
 		for (auto kv : constraint->ParticleGradients) {
 			constraint->Center->p += iter_stiffness * constraint->GetDP();
 		}

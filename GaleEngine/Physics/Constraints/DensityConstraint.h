@@ -27,7 +27,7 @@ namespace Physics {
 			virtual void UpdateDerivs() override;
 			virtual bool ContainsParticle(Particles::Particle* particle) override;
 			void FindNeighbors(Physics::PhysicsObjects::Fluids::FluidHelper &fluidHelper);
-			void CalculateOnlyDensity();
+			float CalculateLocalDensity();
 			void SetRestDensity(float newDensity);
 			glm::vec3 GetDP();
 			glm::vec3 GetDV();

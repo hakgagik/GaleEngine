@@ -12,7 +12,7 @@ uniform sampler2D diffuseTexture;
 
 uniform int lightCount;
 uniform vec3 lightPosition[MAX_LIGHTS];
-uniform vec3 lightAttenuation[MAX_LIGHTS];
+uniform vec3 lightIntensity[MAX_LIGHTS];
 uniform vec3 lightColor[MAX_LIGHTS];
 uniform float lightCutoff[MAX_LIGHTS];
 
@@ -32,10 +32,10 @@ void main() {
 		float d = length(l);
 		if (d > lightCutoff[i]) { continue; }
 		l = normalize(l);
-		float attenuation = dot(lightAttenuation[i], vec3(1, d, d*d));
+		float intensity = dot(lightIntensity[i], vec3(1, 1/d, 1/(d*d)));
 		float dotProd = dot(n, l);
 		if (dotProd <= 0) { continue; }
-		result.xyz += diffuse.xyz * dotProd * lightColor[i] / attenuation;
+		result.xyz += diffuse.xyz * dotProd * lightColor[i] * intensity;
 	}
 	out_color = result;
 }
