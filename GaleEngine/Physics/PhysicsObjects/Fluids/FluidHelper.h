@@ -33,7 +33,7 @@ namespace Physics {
 			private:
 				static FluidHelper instance;
 				FluidHelper();
-				float h = 0.2f;
+				float h = 0.1f;
 			};
 		}
 	}

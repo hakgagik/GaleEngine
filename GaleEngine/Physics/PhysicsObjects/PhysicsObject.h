@@ -24,15 +24,15 @@ namespace Physics {
 		class PhysicsObject : public IConstraintGroup {
 		public:
 			virtual ~PhysicsObject();
-			virtual void AddForce(Forces::Force* force);
+			virtual void AddForce(std::string name, Forces::Force* force);
 
 			virtual void InitParticles();
-			virtual void ApplyForces(float dt);
-			virtual void PredictPositions(float dt);
-			virtual void CalculatePotentialInteractions(float dt) override;
+			virtual void ApplyForces();
+			virtual void PredictPositions();
+			virtual void CalculatePotentialInteractions() override;
 			virtual void Project(int iterations) override = 0;
 			virtual void CollideWithBounds(std::vector<float> &bounds);
-			virtual void FinalizeParticles(float dt);
+			virtual void FinalizeParticles();
 			virtual void Transmute() = 0;
 			virtual void UpdateAABB();
 			virtual std::vector<std::string> GetDebugOutput() override = 0;
@@ -42,7 +42,7 @@ namespace Physics {
 
 		protected:
 			std::unordered_map<int, Particles::Particle*> particleList;
-			std::vector<Forces::Force*> forceList;
+			std::unordered_map<std::string, Forces::Force*> forceList;
 			Rendering::GameObjects::Models::Model* model;
 			AABB* boundingBox;
 		};

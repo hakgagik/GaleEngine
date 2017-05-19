@@ -2,6 +2,7 @@
 #include "FluidHelper.h"
 #include "../../Particles/Particle.h"
 #include "../../Constraints/DensityConstraint.h"
+#include "../../../Managers/Physics_Manager.h"
 #include "../../../Rendering/GameObjects/Models/Model.h"
 #include "../../../Rendering/GameObjects/Models/Fragment.h"
 #include "../../../Rendering/Materials/SphereFluidMaterial.h"
@@ -15,6 +16,7 @@ using namespace Constraints;
 using namespace PhysicsObjects::Fluids;
 using namespace Rendering::GameObjects::Models;
 using namespace Rendering::Materials;
+using namespace Managers;
 using namespace std;
 using namespace glm;
 using json = nlohmann::json;
@@ -57,7 +59,6 @@ Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float re
 		}
 
 		this->restDensity = bestDensity; // Rest density is Best density
-
 		for (DensityConstraint* c : densityConstraintList) {
 			c->SetRestDensity(this->restDensity);
 		}
@@ -72,7 +73,7 @@ Fluid::~Fluid() {
 	}
 }
 
-void Fluid::CalculatePotentialInteractions(float dt) {
+void Fluid::CalculatePotentialInteractions() {
 	for (DensityConstraint* constraint : densityConstraintList) {
 		constraint->FindNeighbors(FluidHelper::Get());
 	}
@@ -85,14 +86,18 @@ void Fluid::Project(int iterations) {
 	}
 
 	for (DensityConstraint* constraint : densityConstraintList) {
-		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations) * 0.001f;
+		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
 		for (auto kv : constraint->ParticleGradients) {
-			constraint->Center->p += iter_stiffness * constraint->GetDP();
+			constraint->Center->dp = /*iter_stiffness **/ constraint->GetDP();
 		}
+	}
+	for (DensityConstraint* constraint : densityConstraintList) {
+		constraint->Center->p += constraint->Center->dp;
 	}
 }
 
-void Fluid::FinalizeParticles(float dt) {
+void Fluid::FinalizeParticles() {
+	float dt = Physics_Manager::Get().dt;
 	for (auto kv : particleList) {
 		kv.second->v = (kv.second->p - kv.second->x) / dt;
 	}
@@ -103,6 +108,7 @@ void Fluid::FinalizeParticles(float dt) {
 
 	//TODO: this looks like it's time step dependant. Make sure it's not
 	for (DensityConstraint* constraint : densityConstraintList) {
+		vec3 dv = constraint->GetDP();
 		constraint->Center->v += constraint->GetDV() * constraint->Center->w;
 	}
 
@@ -134,7 +140,7 @@ void Fluid::Transmute() {
 }
 
 vector<string> Fluid::GetDebugOutput() {
-	vector<string> output(3);
+	vector<string> output(4);
 	stringstream ss;
 	ss << fixed << setprecision(2);
 
@@ -148,6 +154,10 @@ vector<string> Fluid::GetDebugOutput() {
 	ss.str("");
 	ss << "Rho_center: " << densityConstraintList[densityConstraintList.size() / 2]->CurrentDensity;
 	output[2] = ss.str();
+
+	ss.str("");
+	ss << "Paricle pos: " << particleList[0]->x.x << ", " << particleList[0]->x.y << ", " << particleList[0]->x.z;
+	output[3] = ss.str();
 
 	return output;
 }

@@ -7,7 +7,7 @@ namespace Physics {
 	}
 	class IConstraintGroup : public Core::IDebuggable {
 	public:
-		virtual void CalculatePotentialInteractions(float dt) = 0;
+		virtual void CalculatePotentialInteractions() = 0;
 		virtual void Project(int iterations) = 0;
 		virtual void DeleteParticle(Particles::Particle* particle) = 0;
 		virtual std::vector<std::string> GetDebugOutput() override = 0;

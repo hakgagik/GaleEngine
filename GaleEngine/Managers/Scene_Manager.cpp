@@ -16,6 +16,7 @@
 #include "../Rendering/GameObjects/HeadNode.h"
 #include "../Rendering/Materials/MaterialsHeader.h"
 #include "../Rendering/GameObjects/Models/Fragment.h"
+#include "../Physics/Forces/Force.h"
 #include "../lib/json.hpp"
 #include "GL/glew.h"
 #include <glm/glm.hpp>
@@ -30,10 +31,10 @@
 #include "../Physics/PhysicsObjects/Solids/Cloth.h"
 #include "../Physics/PhysicsObjects/Fluids/Fluid.h"
 #include "../Physics/Forces/ConstantForce.h"
+#include "../Physics/Forces/BoundingForce.h"
 #include "GL/freeglut.h"
 using Cloth = Physics::PhysicsObjects::Solids::Cloth;
 using Fluid = Physics::PhysicsObjects::Fluids::Fluid;
-using ConstantForce = Physics::Forces::ConstantForce;
 
 using namespace Managers;
 using namespace Rendering;
@@ -41,6 +42,8 @@ using namespace GameObjects;
 using namespace Cameras;
 using namespace Models;
 using namespace Lights;
+using namespace Physics;
+using namespace Forces;
 using namespace std;
 using namespace glm;
 using namespace chrono;
@@ -72,7 +75,7 @@ void Scene_Manager::NotifyBeginFrame() {
 
 	if (timeNow > nextPhysicsFrame) {
 		if (!pausePhysics || stepPhysics) {
-			Physics_Manager::Get().Update(physicsDt);
+			Physics_Manager::Get().Update();
 			Physics_Manager::Get().Transmute();
 			stepPhysics = false;
 		}
@@ -92,9 +95,6 @@ void Scene_Manager::NotifyDisplayFrame() {
 	if (!pauseFrame || stepFrame) {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		
-
 
 		Model_Manager::Get().Draw(renderer);
 		UI_Manager::Get().Draw(renderer);
@@ -329,7 +329,7 @@ void Scene_Manager::SetupTestScene()
 	// Create the main camera
 	activeCam = new PerspectiveCamera("Main Camera");
 	activeCam->AddToSceneTree(headNode, zero, norot, one);
-	activeCam->LookAt(vec3(-2, -2, 10), vec3(5, 5, 5), vec3(0, 0, 1));
+	activeCam->LookAt(vec3(-1, -1, 2), vec3(0.5, 0.5, 0.5), vec3(0, 0, 1));
 	cameras.push_back(activeCam);
 
 	// Spam some sphere clones
@@ -360,28 +360,49 @@ void Scene_Manager::SetupTestScene()
 	//cloth->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
 	//Physics_Manager::Get().AddPhysicsObject(cloth);
 	
+	//Create physics forces
+	Force* gravity = new ConstantForce(vec3(0, 0, -9.81f));
+	Force* x_min_bound = new BoundingForce(vec3(1, 0, 0));
+	Force* y_min_bound = new BoundingForce(vec3(0, 1, 0));
+	Force* z_min_bound = new BoundingForce(vec3(0, 0, 1));
+	Force* x_max_bound = new BoundingForce(vec3(-1, 0, 0));
+	Force* y_max_bound = new BoundingForce(vec3(0, -1, 0));
+	Force* z_max_bound = new BoundingForce(vec3(0, 0, -1));
+	Physics_Manager::Get().ForceList["Gravity"] = gravity;
+	Physics_Manager::Get().ForceList["x_min_bound"] = x_min_bound;
+	Physics_Manager::Get().ForceList["y_min_bound"] = y_min_bound;
+	Physics_Manager::Get().ForceList["z_min_bound"] = z_min_bound;
+	Physics_Manager::Get().ForceList["x_max_bound"] = x_max_bound;
+	Physics_Manager::Get().ForceList["y_max_bound"] = y_max_bound;
+	Physics_Manager::Get().ForceList["z_max_bound"] = z_max_bound;
+
+
 	//Build test fluid
 	Model* fluidModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetSphereCopy("FluidModel"));
-	fluidModel->AddToSceneTree(headNode, vec3(0, 0, 0), norot, vec3(0.1, 0.1, 0.1), true);
+	fluidModel->AddToSceneTree(headNode, vec3(0, 0, 0), norot, vec3(0.025, 0.025, 0.025), true);
 	fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
 	vector<vec3> positions;
-	vec3 offset(4, 4, 4);
-	for (float z = 0; z <= 1; z += 0.1f) {
-		for (float y = 0; y <= 1; y += 0.1f) {
-			for (float x = 0; x <= 1; x += 0.1f) {
+	vec3 offset(0.1, 0.1, 0.1);
+	for (float z = 0; z <= 0.6f; z += 0.06f) {
+		for (float y = 0; y <= 0.18f; y += 0.06f) {
+			for (float x = 0; x <= 0.6f; x += 0.06f) {
 				positions.push_back(vec3(x, y, z) + offset);
 			}
 		}
 	}
 
 	Fluid* fluid = new Fluid(fluidModel, positions);
-	fluid->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
+	
+	for (auto kv : Physics_Manager::Get().ForceList) {
+		fluid->AddForce(kv.first, kv.second);
+	}
+
 	Physics_Manager::Get().AddPhysicsObject(fluid);
 
 
 	//Physics manager setup code
-	physicsDt = 1.0f / 30.0f;
+	Physics_Manager::Get().dt = 1.0f / 30.0f;
 	physicsFramePeriod = high_resolution_clock::duration(33333333);
 	pausePhysics = true;
 	stepPhysics = false;

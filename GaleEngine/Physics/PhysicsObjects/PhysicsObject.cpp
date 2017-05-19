@@ -1,20 +1,23 @@
 #include "PhysicsObject.h"
 #include "../Particles/Particle.h"
 #include "../Forces/Force.h"
+#include "../Forces/BoundingForce.h"
 #include "../AABB.h"
+#include "../../Managers/Physics_Manager.h"
 #include <glm/glm.hpp>
 
 using namespace Physics;
 using namespace Particles;
 using namespace PhysicsObjects;
 using namespace Forces;
+using namespace Managers;
 using namespace glm;
 using namespace std;
 
 PhysicsObject::~PhysicsObject() { }
 
-void PhysicsObject::AddForce(Force* force) {
-	this->forceList.push_back(force);
+void PhysicsObject::AddForce(string name, Force* force) {
+	forceList[name] = force;
 }
 
 void PhysicsObject::InitParticles() {
@@ -26,25 +29,27 @@ void PhysicsObject::InitParticles() {
 	}
 }
 
-void PhysicsObject::ApplyForces(float dt) {
+void PhysicsObject::ApplyForces() {
+	float dt = Physics_Manager::Get().dt;
 	for (auto kv : particleList) {
 		Particle* particle = kv.second;
 		vec3 forceAccum;
-		for (Force* force : forceList) {
-			forceAccum += force->GetForce(particle);
+		for (auto kv : forceList) {
+			forceAccum += kv.second->GetForce(particle);
 		}
 		particle->v += forceAccum * particle->w * dt;
 	}
 }
 
-void PhysicsObject::PredictPositions(float dt) {
+void PhysicsObject::PredictPositions() {
+	float dt = Physics_Manager::Get().dt;
 	for (auto kv : particleList) {
 		Particle* particle = kv.second;
 		particle->p += dt * particle->v;
 	}
 }
 
-void PhysicsObject::CalculatePotentialInteractions(float dt) { }
+void PhysicsObject::CalculatePotentialInteractions() { }
 
 void PhysicsObject::CollideWithBounds(vector<float> &bounds) {
 	float xmin = bounds[0];
@@ -53,25 +58,39 @@ void PhysicsObject::CollideWithBounds(vector<float> &bounds) {
 	float ymax = bounds[3];
 	float zmin = bounds[4];
 	float zmax = bounds[5];
+	float epsilon = std::min(std::min((xmax - xmin) / 1000, (ymax - ymin) / 1000), (zmax - zmin) / 1000);
 
 	for (auto kv : particleList) {
 		vec3 &p = kv.second->p;
-		if (p.x < xmin)
-			p.x = xmin + xmin - p.x;
-		if (p.x > xmax) 
-			p.x = xmax + xmax - p.x;
-		if (p.y < ymin) 
-			p.y = ymin + ymin - p.y;
-		if (p.y > ymax) 
-			p.y = ymax + ymax - p.y;
-		if (p.z < zmin) 
-			p.z = zmin + zmin - p.z;
-		if (p.z > zmax) 
-			p.z = zmax + zmax - p.z;
+		if (p.x < xmin) {
+			p.x = xmin + epsilon;
+			dynamic_cast<BoundingForce*>(forceList["x_min_bound"])->AddParticle(kv.second);
+		}
+		if (p.x > xmax) {
+			p.x = xmax - epsilon;
+			dynamic_cast<BoundingForce*>(forceList["x_max_bound"])->AddParticle(kv.second);
+		}
+		if (p.y < ymin) {
+			p.y = ymin + epsilon;
+			dynamic_cast<BoundingForce*>(forceList["y_min_bound"])->AddParticle(kv.second);
+		}
+		if (p.y > ymax) {
+			p.y = ymax - epsilon;
+			dynamic_cast<BoundingForce*>(forceList["y_max_bound"])->AddParticle(kv.second);
+		}
+		if (p.z < zmin) {
+			p.z = zmin + epsilon;
+			dynamic_cast<BoundingForce*>(forceList["z_min_bound"])->AddParticle(kv.second);
+		}
+		if (p.z > zmax) {
+			p.z = zmax - epsilon;
+			dynamic_cast<BoundingForce*>(forceList["z_max_bound"])->AddParticle(kv.second);
+		}
 	}
 }
 
-void PhysicsObject::FinalizeParticles(float dt) {
+void PhysicsObject::FinalizeParticles() {
+	float dt = Physics_Manager::Get().dt;
 	for (auto kv : particleList) {
 		Particle* particle = kv.second;
 		particle->v = (particle->p - particle->x) / dt;

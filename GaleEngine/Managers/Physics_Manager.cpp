@@ -29,7 +29,7 @@ Physics_Manager::~Physics_Manager() {
 	//for (Particle* particle : particleList)	delete particle;
 	//for (Constraint* constraint : constraintList) delete constraint;
 	//for (ForceField* force : extForceList) delete force;
-	for (PhysicsObject* physicsObject : physicsObjectList) delete physicsObject;
+	for (PhysicsObject* physicsObject : PhysicsObjectList) delete physicsObject;
 }
 
 void Physics_Manager::Init() {
@@ -40,63 +40,63 @@ void Physics_Manager::InitializeParticles() {
 	initParticles();
 }
 
-void Physics_Manager::Update(float dt) {
-	applyExtForces(dt);
-	predictPositions(dt);
+void Physics_Manager::Update() {
+	applyExtForces();
+	predictPositions();
 	FluidHelper::Get().Update();
 	calculatePotentialInteractions();
 	for (int i = 0; i < iterations; i++) {
 		projectConstraints(iterations);
 	}
-	finalizePositionsAndVelocities(dt);
+	finalizePositionsAndVelocities();
 }
 
 void Physics_Manager::Transmute() {
-	for (PhysicsObject* physObj : physicsObjectList) {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
 		physObj->Transmute();
 	}
 }
 
 void Physics_Manager::initParticles() {
-	for (PhysicsObject* physObj : physicsObjectList) {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
 		physObj->InitParticles();
 	}
 }
 
-void Physics_Manager::applyExtForces(float dt) {
-	for (PhysicsObject* physObj : physicsObjectList) {
-		physObj->ApplyForces(dt);
+void Physics_Manager::applyExtForces() {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
+		physObj->ApplyForces();
 	}
 }
 
-void Physics_Manager::predictPositions(float dt) {
-	for (PhysicsObject* physObj : physicsObjectList) {
-		physObj->PredictPositions(dt);
+void Physics_Manager::predictPositions() {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
+		physObj->PredictPositions();
 	}
 }
 
 void Physics_Manager::calculatePotentialInteractions() {
 	//TODO
-	for (PhysicsObject* physObj : physicsObjectList) {
-		physObj->CalculatePotentialInteractions(dt);
+	for (PhysicsObject* physObj : PhysicsObjectList) {
+		physObj->CalculatePotentialInteractions();
 	}
 }
 
 void Physics_Manager::projectConstraints(int iterations) {
-	for (PhysicsObject* physObj : physicsObjectList) {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
 		physObj->Project(iterations);
-		physObj->CollideWithBounds(bounds);
+		physObj->CollideWithBounds(Bounds);
 	}
 }
 
-void Physics_Manager::finalizePositionsAndVelocities(float dt) {
-	for (PhysicsObject* physObj : physicsObjectList) {
-		physObj->FinalizeParticles(dt);
+void Physics_Manager::finalizePositionsAndVelocities() {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
+		physObj->FinalizeParticles();
 	}
 }
 
 void Physics_Manager::AddPhysicsObject(PhysicsObject* physicsObject) {
-	physicsObjectList.push_back(physicsObject);
+	PhysicsObjectList.push_back(physicsObject);
 }
 
 void Physics_Manager::LoadFromJSON(json &j) {
@@ -113,7 +113,7 @@ void Physics_Manager::LoadFromJSON(json &j) {
 }
 
 void Physics_Manager::WriteToJSON(json &j) {
-	for (PhysicsObject* physObj : physicsObjectList) {
+	for (PhysicsObject* physObj : PhysicsObjectList) {
 		j["Physics"]["PhysicsObjects"].push_back(physObj->GetJSON());
 	}
 	//for (ForceField* forceField : extForceList) {

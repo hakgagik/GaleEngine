@@ -23,9 +23,9 @@ namespace Physics {
 				Fluid();
 				Fluid(Rendering::GameObjects::Models::Model* model, std::vector<glm::vec3> &positions, float particleMass = 1, float restDensity = -1, float densityStiffness = 0.999f);
 				virtual ~Fluid();
-				virtual void CalculatePotentialInteractions(float dt) override;
+				virtual void CalculatePotentialInteractions() override;
 				virtual void Project(int iterations) override;
-				virtual void FinalizeParticles(float dt) override;
+				virtual void FinalizeParticles() override;
 				virtual void DeleteParticle(Particles::Particle* particle) override;
 				virtual void Transmute() override;
 				virtual std::vector<std::string> GetDebugOutput() override;

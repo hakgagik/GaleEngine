@@ -138,6 +138,7 @@
     <ClCompile Include="Physics\Constraints\DensityConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\FaceBendingConstraint.cpp" />
     <ClCompile Include="Physics\Constraints\StretchingConstraint.cpp" />
+    <ClCompile Include="Physics\Forces\BoundingForce.cpp" />
     <ClCompile Include="Physics\Forces\ConstantForce.cpp" />
     <ClCompile Include="Physics\PhysicsObjects\Fluids\Fluid.cpp" />
     <ClCompile Include="Physics\PhysicsObjects\Fluids\FluidHelper.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Managers\UI_Manager.h" />
     <ClInclude Include="Physics\AABB.h" />
     <ClInclude Include="Physics\Collision.h" />
+    <ClInclude Include="Physics\Forces\BoundingForce.h" />
     <ClInclude Include="Physics\Recycle Bin\Boundary.h" />
     <ClInclude Include="Physics\Constraints\DensityConstraint.h" />
     <ClInclude Include="Physics\Forces\ConstantForce.h" />

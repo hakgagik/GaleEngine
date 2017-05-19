@@ -9,16 +9,16 @@ using namespace Particles;
 using namespace PhysicsObjects::Fluids;
 using namespace glm;
 
-float DensityConstraint::h = 0.2f;
+float DensityConstraint::h = 0.1f;
 float DensityConstraint::epsilon = 600.0f;
 float DensityConstraint::poly6Factor = 315.0f / (64.0f * pi<float>() * h * h * h * h * h * h * h * h * h);
 float DensityConstraint::spikyFactor = 15.0f / (pi<float>() * h * h * h * h * h * h);
 float DensityConstraint::delSpikyFactor = -3 * spikyFactor;
-float DensityConstraint::k = 0.1f;
+float DensityConstraint::k = 0.0001f;
 float DensityConstraint::n = 4;
-float DensityConstraint::q = 0.2f * h;
+float DensityConstraint::q = 0.3f * h;
 float DensityConstraint::sCorrDenom = DensityConstraint::Poly6Kernel(q);
-float DensityConstraint::c = 0.01f;
+float DensityConstraint::c = 0.02f;
 
 //void DensityConstraint::SetH(float newH) {
 //	h = newH;
@@ -86,7 +86,8 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 }
 
 float DensityConstraint::CalculateLocalDensity() {
-	float localDensity= 0;
+	float localDensity = 0.0f;
+	localDensity = Poly6Kernel(localDensity) * Center->m;
 	for (auto kv : ParticleGradients) {
 		float r = length(kv.first->p - Center->p);
 		if (r > h) continue;
@@ -97,16 +98,17 @@ float DensityConstraint::CalculateLocalDensity() {
 
 //#pragma optimize("", off)
 void DensityConstraint::UpdateDerivs() {
-	CurrentDensity = 0;
+  	CurrentDensity = 0;
+	CurrentDensity = Poly6Kernel(CurrentDensity) * Center->m;
 	Lambda = 0.0;
 	CenterDeriv = vec3(0);
 
 	
 	for (auto kv : ParticleGradients) {
-		vec3 r_hat = kv.first->p - Center->p;
+		vec3 r_hat = Center->p - kv.first->p;
 		float r = length(r_hat);
-		r_hat = normalize(r_hat);
 		if (r > h) continue;
+		if (r != 0) r_hat = normalize(r_hat);
 		CurrentDensity += kv.first->m * Poly6Kernel(r);
 		float derivFactor = DelSpikeyKernel(r);
 		CenterDeriv += kv.first->m * r_hat * derivFactor;
@@ -117,7 +119,7 @@ void DensityConstraint::UpdateDerivs() {
 	Lambda += dot(CenterDeriv, CenterDeriv);
 	Lambda /= RestDensity * RestDensity;
 	Lambda += epsilon;
-	Lambda = (CurrentDensity / RestDensity - 1) / Lambda;
+	Lambda = -(CurrentDensity / RestDensity - 1) / Lambda;
 }
 //#pragma optimize("", on)
 
@@ -135,26 +137,28 @@ void DensityConstraint::SetRestDensity(float newDensity) {
 }
 
 
-vec3 DensityConstraint::GetDP() {
+glm::vec3 DensityConstraint::GetDP() {
 	vec3 dp(0);
 	if (Center->w == 0) return dp;
 	for (auto kv : ParticleGradients) {
 		DensityConstraint* otherConstriant = FluidHelper::Get().FluidParticles[kv.first];
-		float r = length(Center->p - otherConstriant->Center->p);
+		float r = length(otherConstriant->Center->p - Center->p);
+		if (r > h || r <= 0) continue;
 		float s_corr = Poly6Kernel(r) / sCorrDenom;
 		s_corr = -k * pow(s_corr, n);
-		dp += (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m /*+ s_corr*/) * kv.second;
+		dp += (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m + s_corr) * kv.second;
 	}
-	return (Center->w / RestDensity) * dp;
+	dp *= (Center->w / RestDensity);
+	return dp;
 }
 
 vec3 DensityConstraint::GetDV() {
 	vec3 dv(0);
 	for (auto kv : ParticleGradients) {
 		Particle* other = kv.first;
-		float r = length(other->p - Center->p);
+		float r = length(Center->p - other->p);
 		if (r > h) continue;
-		dv += Poly6Kernel(r) * other->m * (other->p - Center->p);
+		dv += Poly6Kernel(r) * other->m * (other->p - Center->p) / FluidHelper::Get().FluidParticles[other]->CalculateLocalDensity();
 	}
 	return dv * c;
 }

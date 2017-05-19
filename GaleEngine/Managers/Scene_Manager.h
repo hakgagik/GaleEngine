@@ -54,7 +54,6 @@ namespace Managers {
 		std::chrono::high_resolution_clock::duration physicsFramePeriod;
 		float frameTimes[100];
 		int modularFrame;
-		float physicsDt;
 
 		Scene_Manager();
 		Scene_Manager(const Scene_Manager &);
