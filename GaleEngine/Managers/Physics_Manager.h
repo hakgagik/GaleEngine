@@ -23,7 +23,7 @@ namespace Managers {
 	public:
 		static Physics_Manager& Get();
 
-		int iterations = 10;
+		int iterations = 4;
 		float dt;
 		//std::vector<Physics::Particles::Particle*> particleList;
 		//std::vector<Physics::Constraints::Constraint*> constraintList;

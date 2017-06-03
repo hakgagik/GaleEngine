@@ -59,6 +59,8 @@ Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float re
 		}
 
 		this->restDensity = bestDensity; // Rest density is Best density
+		//this->restDensity = 6378.0f;
+
 		for (DensityConstraint* c : densityConstraintList) {
 			c->SetRestDensity(this->restDensity);
 		}
@@ -86,7 +88,7 @@ void Fluid::Project(int iterations) {
 	}
 
 	for (DensityConstraint* constraint : densityConstraintList) {
-		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
+		//float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
 		for (auto kv : constraint->ParticleGradients) {
 			constraint->Center->dp = /*iter_stiffness **/ constraint->GetDP();
 		}

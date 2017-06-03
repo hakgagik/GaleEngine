@@ -49,10 +49,10 @@ namespace Managers {
 	private:
 		static Scene_Manager instance;
 
-		std::chrono::high_resolution_clock::time_point prevTime;
 		std::chrono::high_resolution_clock::time_point nextPhysicsFrame;
 		std::chrono::high_resolution_clock::duration physicsFramePeriod;
-		float frameTimes[100];
+		std::vector<std::chrono::high_resolution_clock::time_point> frameTimes;
+		const int framesToTrack = 5;
 		int modularFrame;
 
 		Scene_Manager();

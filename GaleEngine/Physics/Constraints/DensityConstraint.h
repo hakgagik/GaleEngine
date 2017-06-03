@@ -19,6 +19,7 @@ namespace Physics {
 		public:
 			//static void SetH(float newH);
 			static float Poly6Kernel(float &r);
+			static float Poly6Kernel_rsq(float &r);
 			static float SpikeyKernel(float &r);
 			static float DelSpikeyKernel(float &r);
 
@@ -41,12 +42,13 @@ namespace Physics {
 			glm::vec3 CenterDeriv;
 		private:
 			static float h;
+			static float h_sq;
 			static float epsilon;
 			static float poly6Factor;
 			static float spikyFactor;
 			static float delSpikyFactor;
 			static float k;
-			static float n;
+			//static unsigned int n;
 			static float q;
 			static float sCorrDenom;
 			static float c;

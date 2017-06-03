@@ -82,7 +82,7 @@ void Scene_Manager::NotifyBeginFrame() {
 		nextPhysicsFrame = timeNow + physicsFramePeriod;
 	}
 
-	prevTime = timeNow;
+	UI_Manager::Get().Framerate = calculateFramerate(timeNow);
 
 	headNode->UpdateMatrices();
 	Model_Manager::Get().Update();
@@ -188,6 +188,8 @@ void Scene_Manager::Init() {
 	ForwardRenderer::Get().Init();
 
 	renderer = &ForwardRenderer::Get();
+
+	frameTimes = vector<high_resolution_clock::time_point>(framesToTrack);
 }
 
 void Scene_Manager::SetRenderer(IRenderer* renderer) {
@@ -384,10 +386,10 @@ void Scene_Manager::SetupTestScene()
 
 	vector<vec3> positions;
 	vec3 offset(0.1, 0.1, 0.1);
-	for (float z = 0; z <= 0.6f; z += 0.06f) {
-		for (float y = 0; y <= 0.18f; y += 0.06f) {
-			for (float x = 0; x <= 0.6f; x += 0.06f) {
-				positions.push_back(vec3(x, y, z) + offset);
+	for (int z = 0; z < 16; z++) {
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 5; x++) {
+				positions.push_back(vec3(x * 0.05f, y * 0.05f, z * 0.05f) + offset);
 			}
 		}
 	}
@@ -402,7 +404,8 @@ void Scene_Manager::SetupTestScene()
 
 
 	//Physics manager setup code
-	Physics_Manager::Get().dt = 1.0f / 30.0f;
+	//Physics_Manager::Get().dt = 1.0f / 30.0f;
+	Physics_Manager::Get().dt = 0.00416675f;
 	physicsFramePeriod = high_resolution_clock::duration(33333333);
 	pausePhysics = true;
 	stepPhysics = false;
@@ -419,15 +422,15 @@ void Scene_Manager::SetupTestScene()
 }
 
 float Scene_Manager::calculateFramerate(high_resolution_clock::time_point &timeNow) {
-	modularFrame++;
-	modularFrame %= 100;
-	frameTimes[modularFrame] = duration_cast<microseconds>(timeNow - prevTime).count() / 1000000.0f;
-	float totalTime = 0;
-	for (int i = 0; i < 100; i++) {
-		totalTime += frameTimes[i];
-	}
+	int nextFrameSlot = (modularFrame + 1) % framesToTrack;
+	frameTimes[modularFrame] = timeNow;
 
-	return round(1000.0f / totalTime) / 10.0f;
+	//duration_cast<microseconds>(timeNow - prevTime).count() / 1000000.0f;
+	float totalTime = duration_cast<microseconds>(frameTimes[modularFrame] - frameTimes[nextFrameSlot]).count() / 1000000.0f;
+	float avgFrameTime = totalTime / (framesToTrack - 1);
+
+	modularFrame = nextFrameSlot;
+	return round(10 / avgFrameTime) / 10;
 }
 
 void Scene_Manager::buildSceneTreeBranch(GameObject* node, GameObject* parent, json branch, unordered_map<string, GameObject*> &gameObjects) {

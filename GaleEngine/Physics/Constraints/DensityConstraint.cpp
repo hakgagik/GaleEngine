@@ -10,12 +10,13 @@ using namespace PhysicsObjects::Fluids;
 using namespace glm;
 
 float DensityConstraint::h = 0.1f;
+float DensityConstraint::h_sq = DensityConstraint::h * DensityConstraint::h;
 float DensityConstraint::epsilon = 600.0f;
 float DensityConstraint::poly6Factor = 315.0f / (64.0f * pi<float>() * h * h * h * h * h * h * h * h * h);
 float DensityConstraint::spikyFactor = 15.0f / (pi<float>() * h * h * h * h * h * h);
 float DensityConstraint::delSpikyFactor = -3 * spikyFactor;
 float DensityConstraint::k = 0.0001f;
-float DensityConstraint::n = 4;
+//unsigned int DensityConstraint::n = 4;
 float DensityConstraint::q = 0.3f * h;
 float DensityConstraint::sCorrDenom = DensityConstraint::Poly6Kernel(q);
 float DensityConstraint::c = 0.02f;
@@ -28,9 +29,21 @@ float DensityConstraint::c = 0.02f;
 //	sCorrDenom = Poly6Kernel(q);
 //}
 
+float ln_sq(vec3 &r) {
+	return r.x * r.x + r.y * r.y + r.z * r.z;
+}
+
 float DensityConstraint::Poly6Kernel(float &r) {
 	if (r < h) {
-		float temp = h * h - r * r;
+		float temp = h_sq - r * r;
+		return poly6Factor * temp * temp * temp;
+	}
+	return 0;
+}
+
+float DensityConstraint::Poly6Kernel_rsq(float &r_sq) {
+	if (r_sq < h_sq) {
+		float temp = h_sq - r_sq;
 		return poly6Factor * temp * temp * temp;
 	}
 	return 0;
@@ -74,8 +87,8 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 				auto bin = fluidHelper.Bins.find(neighborInds); // Check if the bin exists
 				if (bin != fluidHelper.Bins.end()) {
 					for (Particle* pOther : bin->second) {
-						if (pOther != Center && length(pOther->x - Center->x) < h) {
-							ParticleGradients[pOther]=vec3(0);
+						if (pOther != Center && ln_sq(pOther->x - Center->x) < h_sq) {
+							ParticleGradients[pOther];
 						}
 					}
 				}
@@ -136,17 +149,19 @@ void DensityConstraint::SetRestDensity(float newDensity) {
 	RestDensity = newDensity;
 }
 
-
 glm::vec3 DensityConstraint::GetDP() {
 	vec3 dp(0);
 	if (Center->w == 0) return dp;
+	FluidHelper& fluidHelper = FluidHelper::Get();
 	for (auto kv : ParticleGradients) {
-		DensityConstraint* otherConstriant = FluidHelper::Get().FluidParticles[kv.first];
-		float r = length(otherConstriant->Center->p - Center->p);
-		if (r > h || r <= 0) continue;
-		float s_corr = Poly6Kernel(r) / sCorrDenom;
-		s_corr = -k * pow(s_corr, n);
-		dp += (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m + s_corr) * kv.second;
+		DensityConstraint* otherConstriant = fluidHelper.FluidParticles[kv.first];
+		//DensityConstraint* otherConstriant = FluidHelper::Get().FluidParticles[kv.first];
+		float r_sq = ln_sq(otherConstriant->Center->p - Center->p);
+		if (r_sq > h_sq || r_sq <= 0) continue;
+		float s_corr = Poly6Kernel_rsq(r_sq) / sCorrDenom;
+		s_corr = -k * s_corr * s_corr * s_corr * s_corr;
+		float dpFactor = (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m + s_corr);
+		dp += kv.second * dpFactor;
 	}
 	dp *= (Center->w / RestDensity);
 	return dp;

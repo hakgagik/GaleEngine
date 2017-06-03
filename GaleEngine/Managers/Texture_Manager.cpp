@@ -22,12 +22,12 @@ Texture_Manager& Texture_Manager::Get() {
 Texture_Manager::Texture_Manager() {
 	string font("C:\\Windows\\Fonts\\consola.ttf");
 	if (FT_Init_FreeType(&ft)) {
-		cout << "Forward Renderer: Could not init freetype library." << endl;
+		cout << "Texture Manager: Could not init freetype library." << endl;
 		return;
 	}
 
 	if (FT_New_Face(ft, font.c_str(), 0, &face)) {
-		cout << "Forward Renderer: Could not open font """ << font << """." << endl;
+		cout << "Texture Manager: Could not open font """ << font << """." << endl;
 		return;
 	}
 	FT_Set_Pixel_Sizes(face, 0, 48);

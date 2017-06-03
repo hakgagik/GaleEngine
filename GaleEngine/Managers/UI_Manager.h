@@ -29,13 +29,14 @@ namespace Managers {
 		void RegisterDebuggable(Core::IDebuggable* debuggable);
 		void DeregisterDebuggable(Core::IDebuggable* debuggable);
 
-		int framerate;
+		float Framerate;
 	private:
 		UI_Manager();
 		static UI_Manager instance;
 		Rendering::GameObjects::Models::Model* screenQuad;
 		std::vector<std::string> toDisplay;
 		std::unordered_set<Core::IDebuggable*> debuggableList;
+		void drawFramerate(Rendering::IRenderer* renderer);
 		float x;
 		float y;
 		float sx;

@@ -22,6 +22,12 @@ int main(int argc, char **argv) {
 	
 	Init_GLUT::setListener(scene);
 
+	//int x, y, z;
+
+	//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &x);
+	//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &y);
+	//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &z);
+
 	Init_GLUT::run();
 
 	return 0;
