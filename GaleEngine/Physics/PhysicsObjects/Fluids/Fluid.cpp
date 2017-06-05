@@ -76,8 +76,10 @@ Fluid::~Fluid() {
 }
 
 void Fluid::CalculatePotentialInteractions() {
-	for (DensityConstraint* constraint : densityConstraintList) {
-		constraint->FindNeighbors(FluidHelper::Get());
+	//for (DensityConstraint* constraint : densityConstraintList) {
+#pragma omp parallel for
+	for (int i = 0; i < densityConstraintList.size(); i++) {
+		densityConstraintList[i]->FindNeighbors(FluidHelper::Get());
 	}
 }
 
@@ -89,9 +91,7 @@ void Fluid::Project(int iterations) {
 
 	for (DensityConstraint* constraint : densityConstraintList) {
 		//float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
-		for (auto kv : constraint->ParticleGradients) {
-			constraint->Center->dp = /*iter_stiffness **/ constraint->GetDP();
-		}
+		constraint->Center->dp = /*iter_stiffness **/ constraint->GetDP();
 	}
 	for (DensityConstraint* constraint : densityConstraintList) {
 		constraint->Center->p += constraint->Center->dp;
@@ -109,13 +109,14 @@ void Fluid::FinalizeParticles() {
 	}
 
 	//TODO: this looks like it's time step dependant. Make sure it's not
+
 	for (DensityConstraint* constraint : densityConstraintList) {
 		vec3 dv = constraint->GetDP();
 		constraint->Center->v += constraint->GetDV() * constraint->Center->w;
 	}
 
 	for (auto kv : particleList) {
-		kv.second->x = kv.second->p;
+		//kv.second->x = kv.second->p;
 	}
 }
 
@@ -142,7 +143,7 @@ void Fluid::Transmute() {
 }
 
 vector<string> Fluid::GetDebugOutput() {
-	vector<string> output(4);
+	vector<string> output(3);
 	stringstream ss;
 	ss << fixed << setprecision(2);
 
@@ -152,14 +153,15 @@ vector<string> Fluid::GetDebugOutput() {
 	ss.str("");
 	ss << "Rho_0: " << restDensity;
 	output[1] = ss.str();
+
+	int totalGradients = 0;
+	for (DensityConstraint* constraint : densityConstraintList) {
+		totalGradients += constraint->ParticleGradients.size();
+	}
 	
 	ss.str("");
-	ss << "Rho_center: " << densityConstraintList[densityConstraintList.size() / 2]->CurrentDensity;
+	ss << "Num gradients: " << totalGradients;
 	output[2] = ss.str();
-
-	ss.str("");
-	ss << "Paricle pos: " << particleList[0]->x.x << ", " << particleList[0]->x.y << ", " << particleList[0]->x.z;
-	output[3] = ss.str();
 
 	return output;
 }

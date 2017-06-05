@@ -2,6 +2,7 @@
 #include "../Particles/Particle.h"
 #include "../PhysicsObjects/Fluids/FluidHelper.h"
 #include <glm/gtc/constants.hpp>
+#include <vector>
 
 using namespace Physics;
 using namespace Constraints;
@@ -72,10 +73,13 @@ DensityConstraint::DensityConstraint(Particle* center, float restDensity, float 
 }
 
 void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
-	ParticleGradients.clear();
+	//ParticleGradients = std::unordered_map<Particle*, vec3>(100);
+
 	int xBin = (int)round(Center->x.x / h);
 	int yBin = (int)round(Center->x.y / h);
 	int zBin = (int)round(Center->x.z / h);
+
+	std::vector<Particle*> neighbors;
 
 	ivec3 neighborInds;
 	for (int k = -1; k <= 1; k++) { // Iterate over z bins
@@ -88,7 +92,8 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 				if (bin != fluidHelper.Bins.end()) {
 					for (Particle* pOther : bin->second) {
 						if (pOther != Center && ln_sq(pOther->x - Center->x) < h_sq) {
-							ParticleGradients[pOther];
+							//ParticleGradients[pOther];
+							neighbors.push_back(pOther);
 						}
 					}
 				}
@@ -96,6 +101,22 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 		}
 	}
 
+	auto kv = ParticleGradients.begin();
+	while (kv != ParticleGradients.end()) {
+		bool exists = false;
+		for (auto n : neighbors) {
+			if (kv->first == n) {
+				exists = true;
+				break;
+			}
+		}
+		if (!exists) kv = ParticleGradients.erase(kv);
+		else kv++;
+	}
+	
+	for (auto n : neighbors) {
+		ParticleGradients[n];
+	}
 }
 
 float DensityConstraint::CalculateLocalDensity() {
