@@ -12,28 +12,29 @@ StretchingConstraint::StretchingConstraint(Particles::Particle* particle1, Parti
 	StretchingConstraint::StretchingConstraint(particle1, particle2, length(particle1->x0 - particle2->x0), stiffness) { }
 
 StretchingConstraint::StretchingConstraint(Particles::Particle* particle1, Particles::Particle* particle2, float restDistance, float stiffness) {
-	ParticleGradients = unordered_map<Particle*, vec3>();
-	this->particle1 = particle1;
-	this->particle2 = particle2;
-	ParticleGradients[particle1] = vec3(0);
-	ParticleGradients[particle2] = vec3(0);
+	ParticleList = vector<Particle*>(2);
+	ParticleGradients = vector<vec3>(2);
+	ParticleList[0] = particle1;
+	ParticleList[1] = particle2;
+	ParticleGradients[0] = vec3(0);
+	ParticleGradients[1] = vec3(0);
 	this->restDistance = restDistance;
 	this->stiffness = stiffness;
 }
 
 void StretchingConstraint::UpdateDerivs() {
-	vec3 n = particle1->p - particle2->p;
+	vec3 n = ParticleList[0]->p - ParticleList[1]->p;
 	float distance = length(n);
 	normalize(n);
-	ParticleGradients[particle1] = n;
-	ParticleGradients[particle2] = -n;
-	this->s = (distance - restDistance) / (particle1->w + particle2->w);
+	ParticleGradients[0] = n;
+	ParticleGradients[1] = -n;
+	this->s = (distance - restDistance) / (ParticleList[0]->w + ParticleList[1]->w);
 }
 
 bool StretchingConstraint::ContainsParticle(Particle* particle) {
-	return (particle == particle1 || particle == particle2);
+	return (particle == ParticleList[0] || particle == ParticleList[1]);
 }
 
 bool StretchingConstraint::ContainsParticles(Particle* p1, Particle* p2) {
-	return (p1 == particle1 && p2 == particle2) || (p2 == particle1 && p1 == particle2);
+	return (p1 == ParticleList[0] && p2 == ParticleList[1]) || (p2 == ParticleList[0] && p1 == ParticleList[1]);
 }

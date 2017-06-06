@@ -109,19 +109,15 @@ void Cloth::Project(int iterations) {
 	for (StretchingConstraint* constraint : stretchingConstraintList) {
 		constraint->UpdateDerivs();
 		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
-		for (auto pg_pair : constraint->ParticleGradients) {
-			pg_pair.first->p += -iter_stiffness * constraint->s * pg_pair.first->w * pg_pair.second;
+		for (int i = 0; i < 2; i++) {
+			constraint->ParticleList[i]->p += -iter_stiffness * constraint->s * constraint->ParticleList[i]->w * constraint->ParticleGradients[i];
 		}
 	}
 	for (FaceBendingConstraint* constraint : faceBendingConstraintList) {
 		constraint->UpdateDerivs();
 		float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
-		for (auto pg_pair : constraint->ParticleGradients) {
-			glm::vec3 blah = pg_pair.second * constraint->s;
-			if (isnan(blah.z)) {
-				int a = 0;
-			}
-			pg_pair.first->p += -iter_stiffness * constraint->s * pg_pair.first->w * pg_pair.second;
+		for (int i = 0; i < 4; i++) {
+			constraint->ParticleList[i]->p += -iter_stiffness * constraint->s * constraint->ParticleList[i]->w * constraint->ParticleGradients[i];
 		}
 	}
 }

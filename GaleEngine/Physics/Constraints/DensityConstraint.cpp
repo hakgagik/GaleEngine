@@ -176,7 +176,7 @@ vec3 DensityConstraint::GetDV() {
 		Particle* pOther = ParticleList[i];
 		float r = length(Center->p - pOther->p);
 		if (r > h) continue;
-		dv += Poly6Kernel(r) * pOther->m * (pOther->p - Center->p) / FluidHelper::Get().FluidParticles[other]->CalculateLocalDensity();
+		dv += Poly6Kernel(r) * pOther->m * (pOther->p - Center->p) / FluidHelper::Get().FluidParticles[pOther]->CalculateLocalDensity();
 	}
 	return dv * c;
 }

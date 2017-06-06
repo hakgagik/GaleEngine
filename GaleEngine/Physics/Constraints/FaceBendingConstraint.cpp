@@ -15,10 +15,12 @@ FaceBendingConstraint::FaceBendingConstraint(Particle* particle1, Particle* part
 
 FaceBendingConstraint::FaceBendingConstraint(Particle* particle1, Particle* particle2, Particle* particle3, Particle* particle4, float restAngle, float stiffness) {
 	//ParticleGradients = unordered_map<Particle*, vec3>();
-	this->ParticleList[0] = particle01;
-	this->ParticleList[1] = particle02;
-	this->ParticleList[3] = particle03;
-	this->ParticleList[3] = particle04;
+	ParticleList = vector<Particle*>(4);
+	ParticleGradients = vector<vec3>(4);
+	ParticleList[0] = particle1;
+	ParticleList[1] = particle2;
+	ParticleList[3] = particle3;
+	ParticleList[3] = particle4;
 	ParticleGradients[0] = vec3(0);
 	ParticleGradients[1] = vec3(0);
 	ParticleGradients[2] = vec3(0);
