@@ -13,10 +13,10 @@ namespace Physics {
 			bool ContainsParticle(Particles::Particle* particle) override;
 
 			float restAngle;
-			Particles::Particle* particle1;
-			Particles::Particle* particle2;
-			Particles::Particle* particle3;
-			Particles::Particle* particle4;
+			//Particles::Particle* particle1;
+			//Particles::Particle* particle2;
+			//Particles::Particle* particle3;
+			//Particles::Particle* particle4;
 
 		protected:
 			float getAngle(glm::vec3 &p1, glm::vec3 &p2, glm::vec3 &p3, glm::vec3 &p4);

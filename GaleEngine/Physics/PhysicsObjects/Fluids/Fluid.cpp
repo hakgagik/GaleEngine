@@ -155,9 +155,9 @@ vector<string> Fluid::GetDebugOutput() {
 	output[1] = ss.str();
 
 	int totalGradients = 0;
-	for (DensityConstraint* constraint : densityConstraintList) {
-		totalGradients += constraint->ParticleGradients.size();
-	}
+	//for (DensityConstraint* constraint : densityConstraintList) {
+	//	totalGradients += constraint->ParticleGradients.size();
+	//}
 	
 	ss.str("");
 	ss << "Num gradients: " << totalGradients;
