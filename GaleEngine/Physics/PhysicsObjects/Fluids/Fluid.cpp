@@ -116,7 +116,7 @@ void Fluid::FinalizeParticles() {
 	}
 
 	for (auto kv : particleList) {
-		//kv.second->x = kv.second->p;
+		kv.second->x = kv.second->p;
 	}
 }
 
