@@ -2,6 +2,8 @@
 #include "../../Particles/Particle.h"
 #include "../../Constraints/DensityConstraint.h"
 
+#include <iostream>
+
 using namespace Physics;
 using namespace Particles;
 using namespace PhysicsObjects;
@@ -41,10 +43,11 @@ void FluidHelper::DeleteParticle(Particle* particle) {
 
 void FluidHelper::Update() {
 	// TODO: Add logic for a maximum number of bins. We don't want to run out of memory because something escaped the system.
+	cout << "New Frame!" << endl;
 	for (auto kv : Bins) {
-		kv.second.clear();
+		Bins[kv.first].clear();
 	}
-
+	
 	for (auto kv : FluidParticles) {
 		Particle* p = kv.first;
 		int x = (int)floor(p->x.x / h);

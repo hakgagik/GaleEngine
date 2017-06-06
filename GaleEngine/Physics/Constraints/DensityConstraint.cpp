@@ -98,7 +98,7 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 			}
 		}
 	}
-	ParticleGradients.resize(ParticleList.size());
+	ParticleGradients = std::vector<vec3>(ParticleList.size());
 }
 
 float DensityConstraint::CalculateLocalDensity() {
