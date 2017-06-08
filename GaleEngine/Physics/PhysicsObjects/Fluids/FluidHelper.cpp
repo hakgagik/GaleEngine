@@ -43,7 +43,6 @@ void FluidHelper::DeleteParticle(Particle* particle) {
 
 void FluidHelper::Update() {
 	// TODO: Add logic for a maximum number of bins. We don't want to run out of memory because something escaped the system.
-	cout << "New Frame!" << endl;
 	for (auto kv : Bins) {
 		Bins[kv.first].clear();
 	}

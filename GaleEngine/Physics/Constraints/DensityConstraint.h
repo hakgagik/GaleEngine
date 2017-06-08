@@ -52,6 +52,8 @@ namespace Physics {
 			static float q;
 			static float sCorrDenom;
 			static float c;
+
+			float flipOrder;
 		};
 	}
 }

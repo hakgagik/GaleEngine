@@ -19,7 +19,7 @@ FaceBendingConstraint::FaceBendingConstraint(Particle* particle1, Particle* part
 	ParticleGradients = vector<vec3>(4);
 	ParticleList[0] = particle1;
 	ParticleList[1] = particle2;
-	ParticleList[3] = particle3;
+	ParticleList[2] = particle3;
 	ParticleList[3] = particle4;
 	ParticleGradients[0] = vec3(0);
 	ParticleGradients[1] = vec3(0);
@@ -44,7 +44,7 @@ void FaceBendingConstraint::UpdateDerivs() {
 	//mat3 J3, J4;
 	//p1 = ParticleList[0]->p;
 	//p2 = ParticleList[1]->p;
-	//p3 = ParticleList[3]->p;
+	//p3 = ParticleList[2]->p;
 	//p4 = ParticleList[3]->p;
 	//float phi = getAngle(p1, p2, p3, p4);
 	//float sinPhi = sin(phi);
@@ -61,7 +61,7 @@ void FaceBendingConstraint::UpdateDerivs() {
 
 	vec3 p1 = vec3(0);
 	vec3 p2 = ParticleList[1]->p - ParticleList[0]->p;
-	vec3 p3 = ParticleList[3]->p - ParticleList[0]->p;
+	vec3 p3 = ParticleList[2]->p - ParticleList[0]->p;
 	vec3 p4 = ParticleList[3]->p - ParticleList[0]->p;
 
 	vec3 n1 = normalize(cross(p2, p3));
@@ -81,7 +81,7 @@ void FaceBendingConstraint::UpdateDerivs() {
 
 	float sum = ParticleList[0]->w * dot(ParticleGradients[0], ParticleGradients[0]);
 	sum += ParticleList[1]->w * dot(ParticleGradients[1], ParticleGradients[1]);
-	sum += ParticleList[3]->w * dot(ParticleGradients[2], ParticleGradients[2]);
+	sum += ParticleList[2]->w * dot(ParticleGradients[2], ParticleGradients[2]);
 	sum += ParticleList[3]->w * dot(ParticleGradients[3], ParticleGradients[3]);
 
 	if (sum > -0.000001f && sum < 0.000001f) {
@@ -93,7 +93,7 @@ void FaceBendingConstraint::UpdateDerivs() {
 }
 
 bool FaceBendingConstraint::ContainsParticle(Particle* particle) {
-	return (particle == ParticleList[0] || particle == ParticleList[1] || particle == ParticleList[3] || particle == ParticleList[3]);
+	return (particle == ParticleList[0] || particle == ParticleList[1] || particle == ParticleList[2] || particle == ParticleList[3]);
 }
 
 float FaceBendingConstraint::getAngle(vec3 &p1, vec3 &p2, vec3 &p3, vec3 &p4) {

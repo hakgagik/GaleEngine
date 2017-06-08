@@ -352,14 +352,13 @@ void Scene_Manager::SetupTestScene()
 
 	//Build test cloth
 	//Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
-	//clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(5, 5, 1), true);
+	//clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
 	//clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 
-	//headNode->UpdateMatrices();
+	headNode->UpdateMatrices();
 
 	////Continue building test cloth
 	//Cloth* cloth = new Cloth(clothModel, 0, 200);
-	//cloth->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
 	//Physics_Manager::Get().AddPhysicsObject(cloth);
 	
 	//Create physics forces
@@ -395,12 +394,14 @@ void Scene_Manager::SetupTestScene()
 	}
 
 	Fluid* fluid = new Fluid(fluidModel, positions);
-	
+	Physics_Manager::Get().AddPhysicsObject(fluid);
+
+
+	// Add forces to any PhysicsObjects
 	for (auto kv : Physics_Manager::Get().ForceList) {
 		fluid->AddForce(kv.first, kv.second);
+		//cloth->AddForce(kv.first, kv.second);
 	}
-
-	Physics_Manager::Get().AddPhysicsObject(fluid);
 
 
 	//Physics manager setup code
@@ -416,9 +417,6 @@ void Scene_Manager::SetupTestScene()
 	//cloth->FixParticle(110);
 	//cloth->FixParticle(120);
 	Physics_Manager::Get().Transmute();
-
-	// Add stuff to UI_Manager
-	UI_Manager::Get().RegisterDebuggable(fluid);
 }
 
 float Scene_Manager::calculateFramerate(high_resolution_clock::time_point &timeNow) {

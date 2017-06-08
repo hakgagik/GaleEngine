@@ -3,6 +3,7 @@
 #include "../PhysicsObjects/Fluids/FluidHelper.h"
 #include <glm/gtc/constants.hpp>
 #include <vector>
+#include <algorithm>
 
 using namespace Physics;
 using namespace Constraints;
@@ -99,6 +100,14 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 		}
 	}
 	ParticleGradients = std::vector<vec3>(ParticleList.size());
+
+
+	// Flip the order of particles every other step, to prevent selecting a direction.
+	if (flipOrder) {
+		std::reverse(ParticleList.begin(), ParticleList.end());
+		std::reverse(ParticleGradients.begin(), ParticleGradients.end());
+	}
+	flipOrder = !flipOrder;
 }
 
 float DensityConstraint::CalculateLocalDensity() {
