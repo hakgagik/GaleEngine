@@ -5,6 +5,8 @@
 #include <vector>
 #include <algorithm>
 
+//#include <iostream>
+
 using namespace Physics;
 using namespace Constraints;
 using namespace Particles;
@@ -87,11 +89,10 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 			neighborInds[1] = yBin + j;
 			for (int i = -1; i <= 1; i++) { // Iterate over x bins
 				neighborInds[0] = xBin + i; 
-				auto bin = fluidHelper.Bins.find(neighborInds); // Check if the bin exists
-				if (bin != fluidHelper.Bins.end()) {
+				auto bin = fluidHelper.Bins.find(neighborInds); 
+				if (bin != fluidHelper.Bins.end()) { // Check if the bin exists
 					for (Particle* pOther : bin->second) {
 						if (pOther != Center && ln_sq(pOther->x - Center->x) < h_sq) {
-							//ParticleGradients[pOther];
 							ParticleList.push_back(pOther);
 						}
 					}
@@ -183,9 +184,9 @@ vec3 DensityConstraint::GetDV() {
 	vec3 dv(0);
 	for (int i = 0; i < ParticleList.size(); i++) {
 		Particle* pOther = ParticleList[i];
-		float r = length(Center->p - pOther->p);
-		if (r > h) continue;
-		dv += Poly6Kernel(r) * pOther->m * (pOther->p - Center->p) / FluidHelper::Get().FluidParticles[pOther]->CalculateLocalDensity();
+		float r_sq = ln_sq(Center->p - pOther->p);
+		if (r_sq > h_sq) continue;
+		dv += Poly6Kernel_rsq(r_sq) * pOther->m * (pOther->p - Center->p) / FluidHelper::Get().FluidParticles[pOther]->CalculateLocalDensity();
 	}
 	return dv * c;
 }

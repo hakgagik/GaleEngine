@@ -75,8 +75,10 @@ void Scene_Manager::NotifyBeginFrame() {
 
 	if (timeNow > nextPhysicsFrame) {
 		if (!pausePhysics || stepPhysics) {
-			Physics_Manager::Get().Update();
-			Physics_Manager::Get().Transmute();
+			for (int i = 0; i < 4; i++) {
+				Physics_Manager::Get().Update();
+				Physics_Manager::Get().Transmute();
+			}
 			stepPhysics = false;
 		}
 		nextPhysicsFrame = timeNow + physicsFramePeriod;
@@ -369,7 +371,7 @@ void Scene_Manager::SetupTestScene()
 	Force* x_max_bound = new BoundingForce(vec3(-1, 0, 0));
 	Force* y_max_bound = new BoundingForce(vec3(0, -1, 0));
 	Force* z_max_bound = new BoundingForce(vec3(0, 0, -1));
-	Physics_Manager::Get().ForceList["Gravity"] = gravity;
+	//Physics_Manager::Get().ForceList["Gravity"] = gravity;
 	Physics_Manager::Get().ForceList["x_min_bound"] = x_min_bound;
 	Physics_Manager::Get().ForceList["y_min_bound"] = y_min_bound;
 	Physics_Manager::Get().ForceList["z_min_bound"] = z_min_bound;
@@ -384,11 +386,12 @@ void Scene_Manager::SetupTestScene()
 	fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
 	vector<vec3> positions;
+	float particleSpacing = 0.05f;
 	vec3 offset(0.1, 0.1, 0.1);
-	for (int z = 0; z < 16; z++) {
-		for (int y = 0; y < 16; y++) {
-			for (int x = 0; x < 5; x++) {
-				positions.push_back(vec3(x * 0.05f, y * 0.05f, z * 0.05f) + offset);
+	for (int z = 0; z < 3; z++) {
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 3; x++) {
+				positions.push_back(vec3(x * particleSpacing, y * particleSpacing, z * particleSpacing) + offset);
 			}
 		}
 	}
@@ -407,7 +410,7 @@ void Scene_Manager::SetupTestScene()
 	//Physics manager setup code
 	//Physics_Manager::Get().dt = 1.0f / 30.0f;
 	Physics_Manager::Get().dt = 0.00416675f;
-	physicsFramePeriod = high_resolution_clock::duration(33333333);
+	physicsFramePeriod = high_resolution_clock::duration(int(Physics_Manager::Get().dt * 1000000000));
 	pausePhysics = true;
 	stepPhysics = false;
 	Physics_Manager::Get().InitializeParticles();

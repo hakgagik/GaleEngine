@@ -46,7 +46,7 @@ void FluidHelper::Update() {
 	for (auto kv : Bins) {
 		Bins[kv.first].clear();
 	}
-	
+
 	for (auto kv : FluidParticles) {
 		Particle* p = kv.first;
 		int x = (int)floor(p->x.x / h);
