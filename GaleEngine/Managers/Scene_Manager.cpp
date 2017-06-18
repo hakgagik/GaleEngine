@@ -353,15 +353,15 @@ void Scene_Manager::SetupTestScene()
 	//SaveSceneToJSON("JSON\\testScedne.json");
 
 	//Build test cloth
-	//Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
-	//clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
-	//clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
+	Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
+	clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
+	clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 
 	headNode->UpdateMatrices();
 
-	////Continue building test cloth
-	//Cloth* cloth = new Cloth(clothModel, 0, 200);
-	//Physics_Manager::Get().AddPhysicsObject(cloth);
+	//Continue building test cloth
+	Cloth* cloth = new Cloth(clothModel, 0, 200);
+	Physics_Manager::Get().AddPhysicsObject(cloth);
 	
 	//Create physics forces
 	Force* gravity = new ConstantForce(vec3(0, 0, -9.81f));
@@ -371,7 +371,7 @@ void Scene_Manager::SetupTestScene()
 	Force* x_max_bound = new BoundingForce(vec3(-1, 0, 0));
 	Force* y_max_bound = new BoundingForce(vec3(0, -1, 0));
 	Force* z_max_bound = new BoundingForce(vec3(0, 0, -1));
-	//Physics_Manager::Get().ForceList["Gravity"] = gravity;
+	Physics_Manager::Get().ForceList["Gravity"] = gravity;
 	Physics_Manager::Get().ForceList["x_min_bound"] = x_min_bound;
 	Physics_Manager::Get().ForceList["y_min_bound"] = y_min_bound;
 	Physics_Manager::Get().ForceList["z_min_bound"] = z_min_bound;
@@ -388,9 +388,9 @@ void Scene_Manager::SetupTestScene()
 	vector<vec3> positions;
 	float particleSpacing = 0.05f;
 	vec3 offset(0.1, 0.1, 0.1);
-	for (int z = 0; z < 3; z++) {
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 3; x++) {
+	for (int z = 0; z < 16; z++) {
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 6; x++) {
 				positions.push_back(vec3(x * particleSpacing, y * particleSpacing, z * particleSpacing) + offset);
 			}
 		}
@@ -403,7 +403,7 @@ void Scene_Manager::SetupTestScene()
 	// Add forces to any PhysicsObjects
 	for (auto kv : Physics_Manager::Get().ForceList) {
 		fluid->AddForce(kv.first, kv.second);
-		//cloth->AddForce(kv.first, kv.second);
+		cloth->AddForce(kv.first, kv.second);
 	}
 
 
@@ -415,10 +415,10 @@ void Scene_Manager::SetupTestScene()
 	stepPhysics = false;
 	Physics_Manager::Get().InitializeParticles();
 	//TODO: InitializeParticles should respect fixed particles
-	//cloth->FixParticle(0);
-	//cloth->FixParticle(10);
-	//cloth->FixParticle(110);
-	//cloth->FixParticle(120);
+	cloth->FixParticle(0);
+	cloth->FixParticle(10);
+	cloth->FixParticle(110);
+	cloth->FixParticle(120);
 	Physics_Manager::Get().Transmute();
 }
 

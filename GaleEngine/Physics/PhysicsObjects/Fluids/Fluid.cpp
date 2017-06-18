@@ -59,8 +59,8 @@ Fluid::Fluid(Model* model, vector<vec3> &positions, float particleMass, float re
 			}
 		}
 
-		//this->restDensity = bestDensity; // Rest density is Best density
-		this->restDensity = 6378.0f;
+		this->restDensity = bestDensity; // Rest density is Best density
+		//this->restDensity = 6378.0f;
 
 		for (DensityConstraint* c : densityConstraintList) {
 			c->SetRestDensity(this->restDensity);
@@ -84,12 +84,12 @@ void Fluid::CalculatePotentialInteractions() {
 	}
 }
 
+
 void Fluid::Project(int iterations) {
 #pragma omp parallel for
 	for (int i = 0; i < densityConstraintList.size(); i++) {
 		densityConstraintList[i]->UpdateDerivs();
 	}
-
 #pragma omp parallel for
 	for (int i = 0; i < densityConstraintList.size(); i++) {
 		DensityConstraint* constraint = densityConstraintList[i];

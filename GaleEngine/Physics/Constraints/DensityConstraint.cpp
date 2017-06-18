@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-//#include <iostream>
+#include <iostream>
 
 using namespace Physics;
 using namespace Constraints;
@@ -78,9 +78,9 @@ DensityConstraint::DensityConstraint(Particle* center, float restDensity, float 
 void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 	ParticleList.clear();
 
-	int xBin = (int)round(Center->x.x / h);
-	int yBin = (int)round(Center->x.y / h);
-	int zBin = (int)round(Center->x.z / h);
+	int xBin = (int)floor(Center->p.x / h);
+	int yBin = (int)floor(Center->p.y / h);
+	int zBin = (int)floor(Center->p.z / h);
 
 	ivec3 neighborInds;
 	for (int k = -1; k <= 1; k++) { // Iterate over z bins
@@ -92,7 +92,7 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 				auto bin = fluidHelper.Bins.find(neighborInds); 
 				if (bin != fluidHelper.Bins.end()) { // Check if the bin exists
 					for (Particle* pOther : bin->second) {
-						if (pOther != Center && ln_sq(pOther->x - Center->x) < h_sq) {
+						if (pOther != Center && ln_sq(pOther->p - Center->p) < h_sq) {
 							ParticleList.push_back(pOther);
 						}
 					}
@@ -122,12 +122,13 @@ float DensityConstraint::CalculateLocalDensity() {
 	return localDensity;
 }
 
+//vec3 netR(0);
 //#pragma optimize("", off)
 void DensityConstraint::UpdateDerivs() {
   	CurrentDensity = 0;
 	CurrentDensity = Poly6Kernel(CurrentDensity) * Center->m;
 	Lambda = 0.0;
-	CenterDeriv = vec3(0);
+	vec3 centerDeriv(0);
 
 	for (int i = 0; i < ParticleList.size(); i++) {
 		Particle* pOther = ParticleList[i];
@@ -137,12 +138,15 @@ void DensityConstraint::UpdateDerivs() {
 		if (r != 0) r_hat /= r;
 		CurrentDensity += pOther->m * Poly6Kernel(r);
 		float derivFactor = DelSpikeyKernel(r);
-		CenterDeriv += pOther->m * r_hat * derivFactor;
+		centerDeriv += pOther->m * r_hat * derivFactor;
 		Lambda += Center->m * Center->m * derivFactor * derivFactor;
 		ParticleGradients[i] = r_hat * derivFactor;
+		//netR += r_hat;
 	}
 
-	Lambda += dot(CenterDeriv, CenterDeriv);
+	//std::cout << netR.x << " " << netR.y << " " << netR.z << std::endl;
+
+	Lambda += dot(centerDeriv, centerDeriv);
 	Lambda /= RestDensity * RestDensity;
 	Lambda += epsilon;
 	Lambda = -(CurrentDensity / RestDensity - 1) / Lambda;
@@ -168,7 +172,6 @@ glm::vec3 DensityConstraint::GetDP() {
 	FluidHelper& fluidHelper = FluidHelper::Get();
 	for (int i = 0; i < ParticleList.size(); i++) {
 		DensityConstraint* otherConstriant = fluidHelper.FluidParticles[ParticleList[i]];
-		//DensityConstraint* otherConstriant = FluidHelper::Get().FluidParticles[kv.first];
 		float r_sq = ln_sq(otherConstriant->Center->p - Center->p);
 		if (r_sq > h_sq || r_sq <= 0) continue;
 		float s_corr = Poly6Kernel_rsq(r_sq) / sCorrDenom;

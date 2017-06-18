@@ -49,9 +49,9 @@ void FluidHelper::Update() {
 
 	for (auto kv : FluidParticles) {
 		Particle* p = kv.first;
-		int x = (int)floor(p->x.x / h);
-		int y = (int)floor(p->x.y / h);
-		int z = (int)floor(p->x.z / h);
+		int x = (int)floor(p->p.x / h);
+		int y = (int)floor(p->p.y / h);
+		int z = (int)floor(p->p.z / h);
 		Bins[{x, y, z}].push_back(p);
 	}
 }
