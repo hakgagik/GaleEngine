@@ -39,7 +39,7 @@ namespace Physics {
 			float Lambda;
 			float Omega;
 			Particles::Particle* Center;
-			glm::vec3 CenterDeriv;
+			//glm::vec3 CenterDeriv;
 		private:
 			static float h;
 			static float h_sq;
@@ -52,6 +52,8 @@ namespace Physics {
 			static float q;
 			static float sCorrDenom;
 			static float c;
+
+			float flipOrder;
 		};
 	}
 }

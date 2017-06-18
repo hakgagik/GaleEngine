@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <unordered_map>
+#include <vector>
 
 
 namespace Physics {
@@ -16,7 +16,8 @@ namespace Physics {
 			virtual void UpdateDerivs() = 0;
 			virtual bool ContainsParticle(Particles::Particle* particle) = 0;
 
-			std::unordered_map<Particles::Particle*, glm::vec3> ParticleGradients;
+			std::vector<Particles::Particle*> ParticleList;
+			std::vector<glm::vec3> ParticleGradients;
 			float stiffness;
 			//float currentValue;
 			float s;

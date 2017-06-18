@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 using namespace Physics;
 using namespace Particles;
@@ -83,16 +84,19 @@ void Fluid::CalculatePotentialInteractions() {
 	}
 }
 
+
 void Fluid::Project(int iterations) {
-
-	for (DensityConstraint* constraint : densityConstraintList)  {
-		constraint->UpdateDerivs();
+#pragma omp parallel for
+	for (int i = 0; i < densityConstraintList.size(); i++) {
+		densityConstraintList[i]->UpdateDerivs();
 	}
-
-	for (DensityConstraint* constraint : densityConstraintList) {
+#pragma omp parallel for
+	for (int i = 0; i < densityConstraintList.size(); i++) {
+		DensityConstraint* constraint = densityConstraintList[i];
 		//float iter_stiffness = 1.0f - pow(1.0f - constraint->stiffness, 1.0f / (float)iterations);
 		constraint->Center->dp = /*iter_stiffness **/ constraint->GetDP();
 	}
+
 	for (DensityConstraint* constraint : densityConstraintList) {
 		constraint->Center->p += constraint->Center->dp;
 	}
@@ -104,14 +108,15 @@ void Fluid::FinalizeParticles() {
 		kv.second->v = (kv.second->p - kv.second->x) / dt;
 	}
 
-	for (DensityConstraint* constraint : densityConstraintList) {
-		constraint->Center->v += constraint->GetFVC() * constraint->Center->w * dt;
-	}
+	//for (DensityConstraint* constraint : densityConstraintList) {
+	//	constraint->Center->v += constraint->GetFVC() * constraint->Center->w * dt;
+	//}
 
 	//TODO: this looks like it's time step dependant. Make sure it's not
 
-	for (DensityConstraint* constraint : densityConstraintList) {
-		vec3 dv = constraint->GetDP();
+#pragma omp parallel for
+	for (int i = 0; i < densityConstraintList.size(); i++) {
+		DensityConstraint* constraint = densityConstraintList[i];
 		constraint->Center->v += constraint->GetDV() * constraint->Center->w;
 	}
 
@@ -155,9 +160,9 @@ vector<string> Fluid::GetDebugOutput() {
 	output[1] = ss.str();
 
 	int totalGradients = 0;
-	for (DensityConstraint* constraint : densityConstraintList) {
-		totalGradients += constraint->ParticleGradients.size();
-	}
+	//for (DensityConstraint* constraint : densityConstraintList) {
+	//	totalGradients += constraint->ParticleGradients.size();
+	//}
 	
 	ss.str("");
 	ss << "Num gradients: " << totalGradients;

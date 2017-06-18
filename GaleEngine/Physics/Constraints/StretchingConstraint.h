@@ -13,8 +13,8 @@ namespace Physics {
 			bool ContainsParticles(Particles::Particle* p1, Particles::Particle* p2);
 
 			float restDistance;
-			Particles::Particle* particle1;
-			Particles::Particle* particle2;
+			//Particles::Particle* particle1;
+			//Particles::Particle* particle2;
 		};
 	}
 }

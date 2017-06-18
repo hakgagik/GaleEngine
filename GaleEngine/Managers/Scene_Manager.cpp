@@ -75,8 +75,10 @@ void Scene_Manager::NotifyBeginFrame() {
 
 	if (timeNow > nextPhysicsFrame) {
 		if (!pausePhysics || stepPhysics) {
-			Physics_Manager::Get().Update();
-			Physics_Manager::Get().Transmute();
+			for (int i = 0; i < 4; i++) {
+				Physics_Manager::Get().Update();
+				Physics_Manager::Get().Transmute();
+			}
 			stepPhysics = false;
 		}
 		nextPhysicsFrame = timeNow + physicsFramePeriod;
@@ -351,16 +353,15 @@ void Scene_Manager::SetupTestScene()
 	//SaveSceneToJSON("JSON\\testScedne.json");
 
 	//Build test cloth
-	//Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
-	//clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(5, 5, 1), true);
-	//clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
+	Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
+	clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
+	clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 
-	//headNode->UpdateMatrices();
+	headNode->UpdateMatrices();
 
-	////Continue building test cloth
-	//Cloth* cloth = new Cloth(clothModel, 0, 200);
-	//cloth->AddForce(new ConstantForce(vec3(0, 0, -9.81f)));
-	//Physics_Manager::Get().AddPhysicsObject(cloth);
+	//Continue building test cloth
+	Cloth* cloth = new Cloth(clothModel, 0, 200);
+	Physics_Manager::Get().AddPhysicsObject(cloth);
 	
 	//Create physics forces
 	Force* gravity = new ConstantForce(vec3(0, 0, -9.81f));
@@ -385,40 +386,40 @@ void Scene_Manager::SetupTestScene()
 	fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
 	vector<vec3> positions;
+	float particleSpacing = 0.05f;
 	vec3 offset(0.1, 0.1, 0.1);
 	for (int z = 0; z < 16; z++) {
 		for (int y = 0; y < 16; y++) {
-			for (int x = 0; x < 5; x++) {
-				positions.push_back(vec3(x * 0.05f, y * 0.05f, z * 0.05f) + offset);
+			for (int x = 0; x < 6; x++) {
+				positions.push_back(vec3(x * particleSpacing, y * particleSpacing, z * particleSpacing) + offset);
 			}
 		}
 	}
 
 	Fluid* fluid = new Fluid(fluidModel, positions);
-	
+	Physics_Manager::Get().AddPhysicsObject(fluid);
+
+
+	// Add forces to any PhysicsObjects
 	for (auto kv : Physics_Manager::Get().ForceList) {
 		fluid->AddForce(kv.first, kv.second);
+		cloth->AddForce(kv.first, kv.second);
 	}
-
-	Physics_Manager::Get().AddPhysicsObject(fluid);
 
 
 	//Physics manager setup code
 	//Physics_Manager::Get().dt = 1.0f / 30.0f;
 	Physics_Manager::Get().dt = 0.00416675f;
-	physicsFramePeriod = high_resolution_clock::duration(33333333);
+	physicsFramePeriod = high_resolution_clock::duration(int(Physics_Manager::Get().dt * 1000000000));
 	pausePhysics = true;
 	stepPhysics = false;
 	Physics_Manager::Get().InitializeParticles();
 	//TODO: InitializeParticles should respect fixed particles
-	//cloth->FixParticle(0);
-	//cloth->FixParticle(10);
-	//cloth->FixParticle(110);
-	//cloth->FixParticle(120);
+	cloth->FixParticle(0);
+	cloth->FixParticle(10);
+	cloth->FixParticle(110);
+	cloth->FixParticle(120);
 	Physics_Manager::Get().Transmute();
-
-	// Add stuff to UI_Manager
-	UI_Manager::Get().RegisterDebuggable(fluid);
 }
 
 float Scene_Manager::calculateFramerate(high_resolution_clock::time_point &timeNow) {

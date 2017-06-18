@@ -3,6 +3,9 @@
 #include "../PhysicsObjects/Fluids/FluidHelper.h"
 #include <glm/gtc/constants.hpp>
 #include <vector>
+#include <algorithm>
+
+#include <iostream>
 
 using namespace Physics;
 using namespace Constraints;
@@ -73,13 +76,11 @@ DensityConstraint::DensityConstraint(Particle* center, float restDensity, float 
 }
 
 void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
-	//ParticleGradients = std::unordered_map<Particle*, vec3>(100);
+	ParticleList.clear();
 
-	int xBin = (int)round(Center->x.x / h);
-	int yBin = (int)round(Center->x.y / h);
-	int zBin = (int)round(Center->x.z / h);
-
-	std::vector<Particle*> neighbors;
+	int xBin = (int)floor(Center->p.x / h);
+	int yBin = (int)floor(Center->p.y / h);
+	int zBin = (int)floor(Center->p.z / h);
 
 	ivec3 neighborInds;
 	for (int k = -1; k <= 1; k++) { // Iterate over z bins
@@ -88,69 +89,64 @@ void DensityConstraint::FindNeighbors(FluidHelper &fluidHelper) {
 			neighborInds[1] = yBin + j;
 			for (int i = -1; i <= 1; i++) { // Iterate over x bins
 				neighborInds[0] = xBin + i; 
-				auto bin = fluidHelper.Bins.find(neighborInds); // Check if the bin exists
-				if (bin != fluidHelper.Bins.end()) {
+				auto bin = fluidHelper.Bins.find(neighborInds); 
+				if (bin != fluidHelper.Bins.end()) { // Check if the bin exists
 					for (Particle* pOther : bin->second) {
-						if (pOther != Center && ln_sq(pOther->x - Center->x) < h_sq) {
-							//ParticleGradients[pOther];
-							neighbors.push_back(pOther);
+						if (pOther != Center && ln_sq(pOther->p - Center->p) < h_sq) {
+							ParticleList.push_back(pOther);
 						}
 					}
 				}
 			}
 		}
 	}
+	ParticleGradients = std::vector<vec3>(ParticleList.size());
 
-	auto kv = ParticleGradients.begin();
-	while (kv != ParticleGradients.end()) {
-		bool exists = false;
-		for (auto n : neighbors) {
-			if (kv->first == n) {
-				exists = true;
-				break;
-			}
-		}
-		if (!exists) kv = ParticleGradients.erase(kv);
-		else kv++;
+
+	// Flip the order of particles every other step, to prevent selecting a direction.
+	if (flipOrder) {
+		std::reverse(ParticleList.begin(), ParticleList.end());
+		std::reverse(ParticleGradients.begin(), ParticleGradients.end());
 	}
-	
-	for (auto n : neighbors) {
-		ParticleGradients[n];
-	}
+	flipOrder = !flipOrder;
 }
 
 float DensityConstraint::CalculateLocalDensity() {
 	float localDensity = 0.0f;
 	localDensity = Poly6Kernel(localDensity) * Center->m;
-	for (auto kv : ParticleGradients) {
-		float r = length(kv.first->p - Center->p);
-		if (r > h) continue;
-		localDensity += kv.first->m * Poly6Kernel(r);
+	for (int i = 0; i < ParticleList.size(); i++) {
+		float r_sq = ln_sq(ParticleList[i]->p - Center->p);
+		if (r_sq > h_sq) continue;
+		localDensity += ParticleList[i]->m * Poly6Kernel_rsq(r_sq);
 	}
 	return localDensity;
 }
 
+//vec3 netR(0);
 //#pragma optimize("", off)
 void DensityConstraint::UpdateDerivs() {
   	CurrentDensity = 0;
 	CurrentDensity = Poly6Kernel(CurrentDensity) * Center->m;
 	Lambda = 0.0;
-	CenterDeriv = vec3(0);
+	vec3 centerDeriv(0);
 
-	
-	for (auto kv : ParticleGradients) {
-		vec3 r_hat = Center->p - kv.first->p;
+	for (int i = 0; i < ParticleList.size(); i++) {
+		Particle* pOther = ParticleList[i];
+		vec3 r_hat = Center->p - pOther->p;
 		float r = length(r_hat);
 		if (r > h) continue;
-		if (r != 0) r_hat = normalize(r_hat);
-		CurrentDensity += kv.first->m * Poly6Kernel(r);
+		if (r != 0) r_hat /= r;
+		CurrentDensity += pOther->m * Poly6Kernel(r);
 		float derivFactor = DelSpikeyKernel(r);
-		CenterDeriv += kv.first->m * r_hat * derivFactor;
+		centerDeriv += pOther->m * r_hat * derivFactor;
 		Lambda += Center->m * Center->m * derivFactor * derivFactor;
-		ParticleGradients[kv.first] = r_hat * derivFactor;
+		ParticleGradients[i] = r_hat * derivFactor;
+		//netR += r_hat;
 	}
 
-	Lambda += dot(CenterDeriv, CenterDeriv);
+	//std::cout << netR.x << " " << netR.y << " " << netR.z << std::endl;
+
+	Lambda += dot(centerDeriv, centerDeriv);
 	Lambda /= RestDensity * RestDensity;
 	Lambda += epsilon;
 	Lambda = -(CurrentDensity / RestDensity - 1) / Lambda;
@@ -158,8 +154,8 @@ void DensityConstraint::UpdateDerivs() {
 //#pragma optimize("", on)
 
 bool DensityConstraint::ContainsParticle(Particle* particle) {
-	for (auto kv : ParticleGradients) {
-		if (kv.first == particle) {
+	for (Particle* pOther : ParticleList) {
+		if (pOther == particle) {
 			return true;
 		}
 	}
@@ -174,15 +170,14 @@ glm::vec3 DensityConstraint::GetDP() {
 	vec3 dp(0);
 	if (Center->w == 0) return dp;
 	FluidHelper& fluidHelper = FluidHelper::Get();
-	for (auto kv : ParticleGradients) {
-		DensityConstraint* otherConstriant = fluidHelper.FluidParticles[kv.first];
-		//DensityConstraint* otherConstriant = FluidHelper::Get().FluidParticles[kv.first];
+	for (int i = 0; i < ParticleList.size(); i++) {
+		DensityConstraint* otherConstriant = fluidHelper.FluidParticles[ParticleList[i]];
 		float r_sq = ln_sq(otherConstriant->Center->p - Center->p);
 		if (r_sq > h_sq || r_sq <= 0) continue;
 		float s_corr = Poly6Kernel_rsq(r_sq) / sCorrDenom;
 		s_corr = -k * s_corr * s_corr * s_corr * s_corr;
 		float dpFactor = (Center->m * otherConstriant->Lambda + Lambda * otherConstriant->Center->m + s_corr);
-		dp += kv.second * dpFactor;
+		dp += ParticleGradients[i] * dpFactor;
 	}
 	dp *= (Center->w / RestDensity);
 	return dp;
@@ -190,11 +185,11 @@ glm::vec3 DensityConstraint::GetDP() {
 
 vec3 DensityConstraint::GetDV() {
 	vec3 dv(0);
-	for (auto kv : ParticleGradients) {
-		Particle* other = kv.first;
-		float r = length(Center->p - other->p);
-		if (r > h) continue;
-		dv += Poly6Kernel(r) * other->m * (other->p - Center->p) / FluidHelper::Get().FluidParticles[other]->CalculateLocalDensity();
+	for (int i = 0; i < ParticleList.size(); i++) {
+		Particle* pOther = ParticleList[i];
+		float r_sq = ln_sq(Center->p - pOther->p);
+		if (r_sq > h_sq) continue;
+		dv += Poly6Kernel_rsq(r_sq) * pOther->m * (pOther->p - Center->p) / FluidHelper::Get().FluidParticles[pOther]->CalculateLocalDensity();
 	}
 	return dv * c;
 }
