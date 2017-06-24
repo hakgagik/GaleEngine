@@ -29,7 +29,7 @@ namespace Managers {
 		//std::vector<Physics::Constraints::Constraint*> constraintList;
 		//std::vector<Physics::Forces::ForceField*> extForceList;
 		std::vector<Physics::PhysicsObjects::PhysicsObject*> PhysicsObjectList;
-		std::vector <float> Bounds = { 0, 1, 0, 1, 0, 1 };
+		std::vector <float> Bounds = { 0, 1, 0, 1, 0, 10 };
 		std::unordered_map<std::string, Physics::Forces::Force*> ForceList;
 
 		~Physics_Manager();

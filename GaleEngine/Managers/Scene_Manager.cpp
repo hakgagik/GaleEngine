@@ -302,8 +302,8 @@ void Scene_Manager::SetupTestScene()
 	//Create lights
 	lights.push_back(new Light("Main Light"));
 	lights.push_back(new Light("Second Light"));
-	lights[0]->AddToSceneTree(headNode, vec3(0, 0, 2), norot, one);
-	lights[1]->AddToSceneTree(headNode, vec3(10), norot, one);
+	lights[0]->AddToSceneTree(headNode, vec3(5, -5, 0), norot, one);
+	lights[1]->AddToSceneTree(headNode, vec3(6), norot, one);
 	
 	// Make a square. It's called triangle.
 	vector<VertexFormat> vertices = { VertexFormat(vec4(0, 1, 0, 1), vec3(0, -1, 0), vec2(0, 0), vec4(1, 0, 0, 1)),
@@ -386,11 +386,11 @@ void Scene_Manager::SetupTestScene()
 	fluidModel->SetFragmentMat("Main", new Materials::SphereFluidMaterial());
 
 	vector<vec3> positions;
-	float particleSpacing = 0.05f;
-	vec3 offset(0.1, 0.1, 0.1);
+	float particleSpacing = 0.06f;
+	vec3 offset(0.01, 0.01, 0.01);
 	for (int z = 0; z < 16; z++) {
 		for (int y = 0; y < 16; y++) {
-			for (int x = 0; x < 6; x++) {
+			for (int x = 0; x < 10; x++) {
 				positions.push_back(vec3(x * particleSpacing, y * particleSpacing, z * particleSpacing) + offset);
 			}
 		}
