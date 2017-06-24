@@ -77,9 +77,9 @@ void UI_Manager::printLine(const string &text, IRenderer* renderer) {
 		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
 		if (glyphTex->width != 0 && glyphTex->height != 0) {
 			float x2 = ox + glyphTex->bitmap_left * sx;
-			float y2 = -oy - glyphTex->bitmap_top * sy;
+			float y2 = oy + glyphTex->bitmap_top * sy;
 			float w = glyphTex->width * sx;
-			float h = glyphTex->height * sy;
+			float h = -(glyphTex->height * sy);
 			screenQuad->SetFragmentMat("Main", new ScreenQuadMaterial(vec4(x2, y2, w, h), glyphTex, vec4(0,1,0,1)));
 			renderer->Render(screenQuad);
 		}
@@ -102,9 +102,9 @@ void UI_Manager::drawFramerate(IRenderer* renderer) {
 		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
 		if (glyphTex->width != 0 && glyphTex->height != 0) {
 			float x2 = ox + glyphTex->bitmap_left * sx;
-			float y2 = -oy - glyphTex->bitmap_top * sy;
+			float y2 = oy + glyphTex->bitmap_top * sy;
 			float w = glyphTex->width * sx;
-			float h = glyphTex->height * sy;
+			float h = -(glyphTex->height * sy);
 			screenQuad->SetFragmentMat("Main", new ScreenQuadMaterial(vec4(x2, y2, w, h), glyphTex, vec4(0, 1, 0, 1)));
 			renderer->Render(screenQuad);
 		}

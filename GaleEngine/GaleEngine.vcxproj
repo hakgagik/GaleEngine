@@ -212,6 +212,7 @@
     <ClInclude Include="Rendering\GameObjects\Models\Model.h" />
     <ClInclude Include="Managers\Model_Manager.h" />
     <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="Rendering\UI\UIModel.h" />
     <ClInclude Include="Rendering\VertexFormat.h" />
     <ClInclude Include="Shaders\offset.vert" />
   </ItemGroup>

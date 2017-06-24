@@ -171,6 +171,9 @@ void ForwardRenderer::renderFragment(const Model* model, const Fragment* fragmen
 	loc = glGetUniformLocation(program, "posAndScale");
 	glUniform4fv(loc, 1, value_ptr(mat->posAndScale));
 
+	loc = glGetUniformLocation(program, "depth");
+	glUniform1f(loc, mat->depth);
+
 	useTexture(program, "tex", "hasTex", mat->texture, 0);
 	glDrawElements(fragment->primitiveType, fragment->indexCount, GL_UNSIGNED_INT, fragment->indexStartPointer);
 }
@@ -199,45 +202,6 @@ void ForwardRenderer::SetLights(vector<Light*> lights) {
 		}
 	}
 }
-
-//void ForwardRenderer::RenderText(string& text, float x, float y, float sx, float sy) {
-//	GLuint program = Shader_Manager::Get().GetShader("text");
-//	glUseProgram(program);
-//	//glBindVertexArray(1);
-//	for (char p : text) {
-//		const GlyphTexture* glyphTex = Texture_Manager::Get().GetCharTexture(p);
-//
-//		if (glyphTex->width != 0 && glyphTex->height != 0)
-//		{
-//			float x2 = x + glyphTex->bitmap_left * sx;
-//			float y2 = -y - glyphTex->bitmap_top * sy;
-//			float w = glyphTex->width * sx;
-//			float h = glyphTex->height * sy;
-//
-//			GLfloat box[4][4] = {
-//				{x2, -y2, 0, 0},
-//				{x2 + w, -y2, 1, 0},
-//				{x2, -y2 - h, 0, 1},
-//				{x2 + w, -y2 - h, 1, 1}
-//			};
-//
-//			useTexture(program, "tex", "null", glyphTex, 0);
-//			
-//			glBegin(GL_TRIANGLE_STRIP);
-//			glVertex4f(box[0][0], box[0][1], box[0][2], box[0][3]);
-//			glVertex4f(box[1][0], box[1][1], box[1][2], box[1][3]);
-//			glVertex4f(box[2][0], box[2][1], box[2][2], box[2][3]);
-//			glVertex4f(box[3][0], box[3][1], box[3][2], box[3][3]);
-//			glEnd();
-//			
-//			//glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-//			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//		}
-//
-//		x += glyphTex->advance_x / 64 * sx;
-//		y += glyphTex->advance_y / 64 * sy;
-//	}
-//}
 
 void ForwardRenderer::setMatrixUniforms(GLuint program) {
 	GLint loc;

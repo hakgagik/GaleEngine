@@ -200,9 +200,6 @@
     <ClInclude Include="Rendering\GameObjects\Cameras\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Rendering\GameObjects\Models\Fragment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -291,6 +288,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Forces\BoundingForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\UI\UIModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
