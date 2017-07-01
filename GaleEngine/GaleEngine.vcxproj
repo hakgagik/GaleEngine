@@ -158,6 +158,7 @@
     <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp" />
     <ClCompile Include="Rendering\GlyphTexture.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="Rendering\UI\UIModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\ContextInfo.h" />

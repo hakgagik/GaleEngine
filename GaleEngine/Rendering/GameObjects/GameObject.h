@@ -34,9 +34,9 @@ namespace Rendering {
 			virtual glm::quat getOrientation() const;
 			virtual glm::vec3 getScale() const;
 
-			virtual void setPosition(glm::vec3 pos);
-			virtual void setOrientation(glm::quat orientation);
-			virtual void setScale(glm::vec3 scale);
+			virtual void setPosition(glm::vec3 &pos);
+			virtual void setOrientation(glm::quat &orientation);
+			virtual void setScale(glm::vec3 &scale);
 
 			virtual std::vector<std::string> GetDebugOutput() override;
 
