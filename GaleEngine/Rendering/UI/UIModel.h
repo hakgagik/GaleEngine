@@ -30,18 +30,17 @@ namespace Rendering {
 			virtual glm::vec2 getPosition() const;
 			virtual float getOrientation() const;
 			virtual glm::vec2 getScale() const;
-			virtual unsigned int getDepth() const;
+			virtual int getDepth() const;
 			
 			virtual void setPosition(glm::vec2 &pos);
 			virtual void setOrientation(float &orientation);
 			virtual void setScale(glm::vec2 &scale);
-			virtual void setDepth(unsigned int &depth);
 
 		protected:
 			glm::vec2 position; // relative to parent
 			float orientation; // relative to parent
 			glm::vec2 scale; // relative to parent
-			unsigned int depth;
+			int depth;
 
 			bool matricesValid;
 			virtual void updateLocalMatrices();

@@ -7,7 +7,7 @@ namespace Managers {
 	public:
 		static void RegisterCallbacks();
 		static void KeyPressed(unsigned char key, int x, int y);
-		static void SpecialKeyPressed(GLuint key, int x, int y);
+		static void SpecialKeyPressed(GLint key, int x, int y);
 		static void MousePressed(GLint button, GLint state, int x, int y);
 		static void MouseMoved(int x, int y);
 		static void MousePassiveMoved(int x, int y);

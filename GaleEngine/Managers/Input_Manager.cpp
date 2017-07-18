@@ -30,6 +30,7 @@ GLint Input_Manager::mouseMiddleButton = GLUT_UP;
 
 void Input_Manager::RegisterCallbacks() {
 	glutKeyboardFunc(KeyPressed);
+	glutSpecialFunc(SpecialKeyPressed);
 	glutMouseFunc(MousePressed);
 	glutMotionFunc(MouseMoved);
 	glutPassiveMotionFunc(MousePassiveMoved);
@@ -83,7 +84,7 @@ void Input_Manager::KeyPressed(unsigned char key, int x, int y) {
 	moveMouse(x, y);
 }
 
-void Input_Manager::SpecialKeyPressed(GLuint key, int x, int y) {
+void Input_Manager::SpecialKeyPressed(GLint key, int x, int y) {
 	switch (key)
 	{
 	case GLUT_KEY_UP:

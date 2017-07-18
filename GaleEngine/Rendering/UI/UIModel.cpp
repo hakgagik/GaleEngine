@@ -74,6 +74,10 @@ vec2 UIModel::getScale() const {
 	return scale;
 }
 
+int UIModel::getDepth() const {
+	return depth;
+}
+
 void UIModel::setPosition(vec2 &pos) {
 	this->position = pos;
 	InvalidateMatrices();
@@ -89,13 +93,14 @@ void UIModel::setScale(vec2 &scale) {
 }
 
 
-
 void UIModel::updateLocalMatrices() {
 	if (matricesValid) return;
 	if (!parent->matricesValid) {
 		cout << "UIModel " << name << ": Cannot update matrices, parent's (" << parent->name << ") matrices are invalid." << endl;
 	}
 	
+	depth = parent->depth + 1;
+
 	toParentMatrix = mat3(0);
 	toParentMatrix[0][0] = scale.x;
 	toParentMatrix[1][1] = scale.y;
