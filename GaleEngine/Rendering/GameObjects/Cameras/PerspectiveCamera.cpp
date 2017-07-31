@@ -134,7 +134,8 @@ void PerspectiveCamera::Orbit(float dPhi, float dTheta, float boundSize)
 
 	globalPos = target + rho;
 
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//frameUpdated = false;
 }
 
@@ -144,7 +145,8 @@ void PerspectiveCamera::Dolly(float dRho)
 	globalPos -= dRho * negGaze;
 	target -= dRho * negGaze;
 
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//update local matrices
 	//frameUpdated = false;
 }
@@ -156,6 +158,7 @@ void PerspectiveCamera::Zoom(float zoomFactor)
 	fovy = 2.0f * atan(tfovy);
 	if (fovy > Pi) fovy = Pi - 0.001f;
 	if (fovy <= 0) fovy = 0.001f;
+	InvalidateMatrices();
 }
 
 void PerspectiveCamera::Strafe(float dx, float dy)
@@ -163,7 +166,8 @@ void PerspectiveCamera::Strafe(float dx, float dy)
 	//updateFrame();
 	globalPos += right * dx + up * dy;
 	target += right * dx + up * dy;
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//frameUpdated = false;
 }
 

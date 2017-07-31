@@ -129,7 +129,7 @@
     <ClCompile Include="Physics\Forces\BoundingForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\UI\UIModel.cpp">
+    <ClCompile Include="UI\UIModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -296,7 +296,10 @@
     <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\UI\UIModel.h">
+    <ClInclude Include="UI\UIModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\IInputListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

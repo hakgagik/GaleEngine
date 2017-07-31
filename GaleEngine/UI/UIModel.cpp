@@ -1,7 +1,6 @@
 #include "UIModel.h"
 #include <iostream>
 
-using namespace Rendering;
 using namespace UI;
 using namespace std;
 using namespace glm;

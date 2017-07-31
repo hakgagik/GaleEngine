@@ -68,7 +68,6 @@ Scene_Manager::~Scene_Manager() {
 // Any setups before the actual drawing begins are placed here
 void Scene_Manager::NotifyBeginFrame() {
 	//model_manager->Update();
-	HandleInputs();
 
 	auto timeNow = high_resolution_clock::now();
 	//reportFramerate(timeNow);
@@ -121,66 +120,151 @@ void Scene_Manager::NotifyReshape(int width, int height, int previous_width, int
 	UI_Manager::Get().Resize(width, height);
 }
 
-void Scene_Manager::HandleInputs()
-{
-	vec2 Strafe = vec2(0);
-	if (Input_Manager::arrowDown) {
-		Strafe += vec2(0, -1);
-	}
-	if (Input_Manager::arrowUp) {
-		Strafe += vec2(0, 1);
-	}
-	if (Input_Manager::arrowLeft) {
-		Strafe += vec2(-1, 0);
-	}
-	if (Input_Manager::arrowRight) {
-		Strafe += vec2(1, 0);
-	}
-	if (Input_Manager::testKey) {
-		activeCam->Orbit(0, 0.1f, 0.1f);
-	}
-	if (Input_Manager::arrowForward) {
+void Scene_Manager::NotifyKeyDown(char key) {
+	switch (key) {
+	case 'w': // stafe up
+		activeCam->Strafe(0, dStrafe);
+		break;
+	case 's': // strafe down
+		activeCam->Strafe(0, -dStrafe);
+		break;
+	case 'a': // strafe left
+		activeCam->Strafe(-dStrafe, 0);
+		break;
+	case 'd': // strafe right
+		activeCam->Strafe(dStrafe, 0);
+		break;
+	case 'r': // move forward
 		activeCam->Dolly(dStrafe);
-	}
-	if (Input_Manager::arrowBack) {
+		break;
+	case 'f': // move backward
 		activeCam->Dolly(-dStrafe);
-	}
-	if (Input_Manager::zoomForward) {
-		activeCam->Zoom(1 / (1.0f + dStrafe));
-	}
-	if (Input_Manager::zoomBack) {
-		activeCam->Zoom(1 + dStrafe);
-	}
-	if (Input_Manager::togglePhysicsPause) {
+		break;
+	case 't': // zoom in
+		activeCam->Zoom(1.0f / (1.0f + dStrafe));
+		break;
+	case 'g': // zoom out
+		activeCam->Zoom(1.0f + dStrafe);
+		break;
+	case 'p': // pause/unpause physics
+	case ' ':
 		pausePhysics = !pausePhysics;
-	}
-	if (Input_Manager::stepPhysics) {
+		break;
+	case 'o': // step physics (when paused)
 		stepPhysics = true;
-	}
-	if (Input_Manager::toggleFramePause) {
+		break;
+	case 'l': // pause/unpause rendering
 		pauseFrame = !pauseFrame;
-	}
-	if (Input_Manager::stepFrame) {
+		break;
+	case 'k':
 		stepFrame = true;
+		break;
+	default:
+		break;
 	}
-	Strafe *= dStrafe;
-	activeCam->Strafe(Strafe.x, Strafe.y);
-	if (Input_Manager::mouseLeftButton == 0) {
-		Strafe.x = -Input_Manager::mouseDelta.x * dTheta;
-		Strafe.y = -Input_Manager::mouseDelta.y * dTheta;
-		activeCam->Orbit(Strafe.x, Strafe.y, dStrafe);
-	}
-	activeCam->InvalidateMatrices();
-	Input_Manager::Update();
 }
 
+void Scene_Manager::NotifyKeyUp(char key) {}
+
+void Scene_Manager::NotifySpecialKeyDown(GLint key) {
+	switch (key) {
+	case GLUT_KEY_UP:
+		activeCam->Strafe(0, dStrafe);
+		break;
+	case GLUT_KEY_DOWN:
+		activeCam->Strafe(0, -dStrafe);
+		break;
+	case GLUT_KEY_LEFT:
+		activeCam->Strafe(dStrafe, 0);
+		break;
+	case GLUT_KEY_RIGHT:
+		activeCam->Strafe(-dStrafe, 0);
+		break;
+	default:
+		break;
+	}
+}
+
+void Scene_Manager::NotifySpecialKeyUp(GLint key) {}
+
+void Scene_Manager::NotifyMouseDown(int key) {}
+
+void Scene_Manager::NotifyMouseUp(int key) {}
+
+void Scene_Manager::NotifyMouseMove(int dx, int dy) {
+	if (Input_Manager::Get().MouseButtonStates.z) {
+		activeCam->Orbit(-dTheta * dx, -dTheta * dy, dStrafe);
+	}
+}
+
+void Scene_Manager::NotifyMouseWheel(int dz) {
+	activeCam->Dolly(dz * dStrafe);
+}
+
+//void Scene_Manager::HandleInputs()
+//{
+//	vec2 Strafe = vec2(0);
+//	if (Input_Manager::arrowDown) {
+//		Strafe += vec2(0, -1);
+//	}
+//	if (Input_Manager::arrowUp) {
+//		Strafe += vec2(0, 1);
+//	}
+//	if (Input_Manager::arrowLeft) {
+//		Strafe += vec2(-1, 0);
+//	}
+//	if (Input_Manager::arrowRight) {
+//		Strafe += vec2(1, 0);
+//	}
+//	if (Input_Manager::testKey) {
+//		activeCam->Orbit(0, 0.1f, 0.1f);
+//	}
+//	if (Input_Manager::arrowForward) {
+//		activeCam->Dolly(dStrafe);
+//	}
+//	if (Input_Manager::arrowBack) {
+//		activeCam->Dolly(-dStrafe);
+//	}
+//	if (Input_Manager::zoomForward) {
+//		activeCam->Zoom(1 / (1.0f + dStrafe));
+//	}
+//	if (Input_Manager::zoomBack) {
+//		activeCam->Zoom(1 + dStrafe);
+//	}
+//	if (Input_Manager::togglePhysicsPause) {
+//		pausePhysics = !pausePhysics;
+//	}
+//	if (Input_Manager::stepPhysics) {
+//		stepPhysics = true;
+//	}
+//	if (Input_Manager::toggleFramePause) {
+//		pauseFrame = !pauseFrame;
+//	}
+//	if (Input_Manager::stepFrame) {
+//		stepFrame = true;
+//	}
+//	Strafe *= dStrafe;
+//	activeCam->Strafe(Strafe.x, Strafe.y);
+//	if (Input_Manager::mouseLeftButton == 0) {
+//		Strafe.x = -Input_Manager::mouseDelta.x * dTheta;
+//		Strafe.y = -Input_Manager::mouseDelta.y * dTheta;
+//		activeCam->Orbit(Strafe.x, Strafe.y, dStrafe);
+//	}
+//	activeCam->InvalidateMatrices();
+//	Input_Manager::Update();
+//}
+
 void Scene_Manager::Init() {
+	// Setup some opengl parameters
+	// Should probably move this to ForwardRenderer's Init
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	sceneInitialized = false;
 
+	//Initialize the other managers
+	Input_Manager::Get().Init();
 	Shader_Manager::Get().Init();
 	Texture_Manager::Get().Init();
 	Material_Manager::Get().Init();
@@ -190,8 +274,12 @@ void Scene_Manager::Init() {
 	ForwardRenderer::Get().Init();
 
 	renderer = &ForwardRenderer::Get();
-
 	frameTimes = vector<high_resolution_clock::time_point>(framesToTrack);
+
+	//Register callbacks
+	Input_Manager::Get().KeyDownListeners.push_back(this);
+	Input_Manager::Get().SpecialKeyDownListeners.push_back(this);
+	Input_Manager::Get().MouseMoveListeners.push_back(this);
 }
 
 void Scene_Manager::SetRenderer(IRenderer* renderer) {
@@ -348,7 +436,6 @@ void Scene_Manager::SetupTestScene()
 	sceneInitialized = true;
 	pauseFrame = false;
 	stepFrame = false;
-	Input_Manager::RegisterCallbacks();
 	headNode->UpdateMatrices();
 	//SaveSceneToJSON("JSON\\testScedne.json");
 

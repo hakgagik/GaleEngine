@@ -5,7 +5,6 @@ namespace Core {
 	class ISceneListener {
 	public:
 		bool sceneInitialized;
-
 		//drawing functions
 		virtual void NotifyBeginFrame() = 0;
 		virtual void NotifyDisplayFrame() = 0;

@@ -158,13 +158,14 @@
     <ClCompile Include="Rendering\GameObjects\Models\ModelClone.cpp" />
     <ClCompile Include="Rendering\GlyphTexture.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
-    <ClCompile Include="Rendering\UI\UIModel.cpp" />
+    <ClCompile Include="UI\UIModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\ContextInfo.h" />
     <ClInclude Include="Core\DebugOutput.h" />
     <ClInclude Include="Core\FrameBufferInfo.h" />
     <ClInclude Include="Core\IDebuggable.h" />
+    <ClInclude Include="Core\IInputListener.h" />
     <ClInclude Include="Core\ISceneListener.h" />
     <ClInclude Include="Core\Init\Init_GLEW.h" />
     <ClInclude Include="Core\Init\Init_GLUT.h" />
@@ -213,7 +214,7 @@
     <ClInclude Include="Rendering\GameObjects\Models\Model.h" />
     <ClInclude Include="Managers\Model_Manager.h" />
     <ClInclude Include="Rendering\Texture.h" />
-    <ClInclude Include="Rendering\UI\UIModel.h" />
+    <ClInclude Include="UI\UIModel.h" />
     <ClInclude Include="Rendering\VertexFormat.h" />
     <ClInclude Include="Shaders\offset.vert" />
   </ItemGroup>
