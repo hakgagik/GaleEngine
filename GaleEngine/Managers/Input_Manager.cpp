@@ -26,6 +26,18 @@ void Input_Manager::Init() {
 	glutPassiveMotionFunc(mouseMoved);
 }
 
+bool Input_Manager::EitherControlDown() {
+	return SpecialKeyStates[GLUT_KEY_CTRL_L] || SpecialKeyStates[GLUT_KEY_CTRL_R];
+}
+
+bool Input_Manager::EitherAltDown() {
+	return SpecialKeyStates[GLUT_KEY_ALT_L] || SpecialKeyStates[GLUT_KEY_ALT_R];
+}
+
+bool Input_Manager::EitherShiftDown() {
+	return SpecialKeyStates[GLUT_KEY_SHIFT_L] || SpecialKeyStates[GLUT_KEY_SHIFT_R];
+}
+
 void Input_Manager::keyDown(unsigned char key, int x, int y) {
 	checkAndFireIfMouseMoved(x, y);
 	instance.KeyStates[key] = true;

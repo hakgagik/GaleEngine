@@ -27,6 +27,11 @@ namespace Managers {
 		std::vector<Core::IInputListener*> MouseWheelListeners;
 
 		void Init();
+
+		bool EitherControlDown();
+		bool EitherAltDown();
+		bool EitherShiftDown();
+
 	private:
 		static void keyDown(unsigned char key, int x, int y);
 		static void keyUp(unsigned char key, int x, int y);
@@ -38,7 +43,7 @@ namespace Managers {
 
 		static Input_Manager instance;
 
-
+		Input_Manager();
 
 		//static glm::vec2 oldMousePos;
 		//static glm::vec2 mousePos;
@@ -59,8 +64,6 @@ namespace Managers {
 		//static bool toggleFramePause;
 		//static bool stepFrame;
 		//static bool testKey;
-
-		Input_Manager();
 		//static void moveMouse(int x, int y);
 	};
 }

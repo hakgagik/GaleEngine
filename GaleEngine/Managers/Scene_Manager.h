@@ -34,11 +34,13 @@ namespace Managers {
 
 		~Scene_Manager();
 
-		virtual void NotifyBeginFrame();
-		virtual void NotifyDisplayFrame();
-		virtual void NotifyEndFrame();
-		virtual void NotifyReshape(int width, int height, int previous_width, int previous_height);
-		//virtual void HandleInputs();
+		virtual void NotifySceneInit() override;
+		virtual void NotifyBeginFrame() override;
+		virtual void NotifyDisplayFrame() override;
+		virtual void NotifyEndFrame() override;
+		virtual void NotifyReshape(int width, int height, int previous_width, int previous_height) override;
+		virtual void NotifySceneClose() override;
+
 		virtual void NotifyKeyDown(char key) override;
 		virtual void NotifyKeyUp(char key) override;
 		virtual void NotifySpecialKeyDown(GLint key) override;
@@ -52,11 +54,12 @@ namespace Managers {
 		void SetRenderer(Rendering::IRenderer* renderer);
 		void BuildSceneFromJSON(std::string &filename);
 		void SaveSceneToJSON(const std::string &filename);
-		void SetupTestScene();
 		std::string ReadFile(const std::string &filename);
 
 	private:
 		static Scene_Manager instance;
+		
+		void setupTestScene();
 		
 		std::chrono::high_resolution_clock::time_point nextPhysicsFrame;
 		std::chrono::high_resolution_clock::duration physicsFramePeriod;
@@ -79,8 +82,12 @@ namespace Managers {
 		bool stepPhysics;
 		bool pauseFrame;
 		bool stepFrame;
+		//bool fullscreen;
 
 		float calculateFramerate(std::chrono::high_resolution_clock::time_point &timeNow);
+		
+		void toggleFullscreen();
+		void exit();
 
 		//nlohmann::json writeBranchToJSON(Rendering::GameObjects::GameObject* node);
 		void buildSceneTreeBranch(Rendering::GameObjects::GameObject* node, Rendering::GameObjects::GameObject* parent, nlohmann::json branch, std::unordered_map<std::string, Rendering::GameObjects::GameObject*> &gameObjects);

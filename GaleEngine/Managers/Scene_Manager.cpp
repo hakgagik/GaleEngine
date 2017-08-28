@@ -65,6 +65,10 @@ Scene_Manager::~Scene_Manager() {
 	for (Light* light : lights) delete light;
 }
 
+void Scene_Manager::NotifySceneInit() {
+	Init();
+}
+
 // Any setups before the actual drawing begins are placed here
 void Scene_Manager::NotifyBeginFrame() {
 	//model_manager->Update();
@@ -120,6 +124,10 @@ void Scene_Manager::NotifyReshape(int width, int height, int previous_width, int
 	UI_Manager::Get().Resize(width, height);
 }
 
+void Scene_Manager::NotifySceneClose() {
+
+}
+
 void Scene_Manager::NotifyKeyDown(char key) {
 	switch (key) {
 	case 'w': // stafe up
@@ -159,6 +167,13 @@ void Scene_Manager::NotifyKeyDown(char key) {
 	case 'k':
 		stepFrame = true;
 		break;
+	case '\r': // enter key - toggle fullscreen
+		if (Input_Manager::Get().EitherAltDown()) {
+			toggleFullscreen();
+		}
+		break;
+	case char(27): // escape key - exit
+		exit();
 	default:
 		break;
 	}
@@ -180,6 +195,10 @@ void Scene_Manager::NotifySpecialKeyDown(GLint key) {
 	case GLUT_KEY_RIGHT:
 		activeCam->Strafe(-dStrafe, 0);
 		break;
+	case GLUT_KEY_F4:
+		if (Input_Manager::Get().EitherAltDown()) {
+			exit();
+		}
 	default:
 		break;
 	}
@@ -261,8 +280,6 @@ void Scene_Manager::Init() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	sceneInitialized = false;
-
 	//Initialize the other managers
 	Input_Manager::Get().Init();
 	Shader_Manager::Get().Init();
@@ -280,6 +297,9 @@ void Scene_Manager::Init() {
 	Input_Manager::Get().KeyDownListeners.push_back(this);
 	Input_Manager::Get().SpecialKeyDownListeners.push_back(this);
 	Input_Manager::Get().MouseMoveListeners.push_back(this);
+
+	// Temporary code to setup the test scene
+	setupTestScene();
 }
 
 void Scene_Manager::SetRenderer(IRenderer* renderer) {
@@ -365,11 +385,8 @@ void Scene_Manager::SaveSceneToJSON(const string &filename) {
 	output.close();
 }
 
-void Scene_Manager::SetupTestScene()
+void Scene_Manager::setupTestScene()
 {
-	//Initialize rendering settings
-	Init();
-
 	//Create shaders
 	Shader_Manager::Get().CreateProgram("single_color", "Shaders\\standard.vert", "Shaders\\single_color.frag");
 	Shader_Manager::Get().CreateProgram("lambertian", "Shaders\\standard.vert", "Shaders\\lambertian.frag");
@@ -433,7 +450,6 @@ void Scene_Manager::SetupTestScene()
 	//	}
 	//}
 
-	sceneInitialized = true;
 	pauseFrame = false;
 	stepFrame = false;
 	headNode->UpdateMatrices();
@@ -519,6 +535,14 @@ float Scene_Manager::calculateFramerate(high_resolution_clock::time_point &timeN
 
 	modularFrame = nextFrameSlot;
 	return round(10 / avgFrameTime) / 10;
+}
+
+void Scene_Manager::toggleFullscreen() {
+	glutFullScreenToggle();
+}
+
+void Scene_Manager::exit() {
+	glutLeaveMainLoop();
 }
 
 void Scene_Manager::buildSceneTreeBranch(GameObject* node, GameObject* parent, json branch, unordered_map<string, GameObject*> &gameObjects) {
