@@ -19,7 +19,8 @@ using namespace std;
 ISceneListener* Init_GLUT::listener = NULL;
 WindowInfo Init_GLUT::windowInfo;
 
-void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, const FramebufferInfo & framebufferInfo)
+// Perform GLUT-level setup
+void Init_GLUT::Init(const WindowInfo & window, const ContextInfo & context, const FramebufferInfo & framebufferInfo)
 {
 	// store window info
 	windowInfo = window;
@@ -46,7 +47,7 @@ void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, con
 	cout << "GLUT: initialized" << endl;
 
 	glEnable(GL_DEBUG_OUTPUT);
-	// now intialize glew... no idea why this has to be done
+	// now intialize glew
 	Init_GLEW::Init();
 	glDebugMessageCallback((GLDEBUGPROC)DebugOutput::myCallback, NULL);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
@@ -63,20 +64,23 @@ void Init_GLUT::init(const WindowInfo & window, const ContextInfo & context, con
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	// print out info on the window we just created
-	printOpenGLInfo(window, context);
+	PrintOpenGLInfo(window, context);
 }
 
-void Init_GLUT::run() {
-	if (listener->sceneInitialized) {
-		cout << "GLUT:\tStart Running " << endl;
-		glutMainLoop();
-	}
-	else {
-		cout << "Init_GLUT:\tScene not initalized, cannot start." << endl;
-	}
+void Init_GLUT::Run() {
+	listener->NotifySceneInit();
+	glutMainLoop();
+
+	//if (listener != nullptr && listener->sceneInitialized) {
+	//	cout << "GLUT:\tStart Running " << endl;
+	//	glutMainLoop();
+	//}
+	//else {
+	//	cout << "Init_GLUT:\tScene not initalized, cannot start." << endl;
+	//}
 }
 
-void Init_GLUT::close() {
+void Init_GLUT::Close() {
 	cout << "GLUT:\tFinished" << endl;
 	glutLeaveMainLoop();
 }
@@ -105,19 +109,10 @@ void Init_GLUT::reshapeCallback(int width, int height) {
 }
 
 void Init_GLUT::closeCallback() {
-	close();
+	Close();
 }
 
-
-void Init_GLUT::enterFullscreen() {
-	glutFullScreen();
-}
-
-void Init_GLUT::exitFullscreen() {
-	glutLeaveFullScreen();
-}
-
-void Init_GLUT::printOpenGLInfo(const WindowInfo & window, const ContextInfo & context)
+void Init_GLUT::PrintOpenGLInfo(const WindowInfo & window, const ContextInfo & context)
 {
 	const unsigned char* renderer = glGetString(GL_RENDERER);
 	const unsigned char* vendor = glGetString(GL_VENDOR);
@@ -128,7 +123,7 @@ void Init_GLUT::printOpenGLInfo(const WindowInfo & window, const ContextInfo & c
 	cout << "GLUT:\tOpenGL version: " << version << endl;
 }
 
-void Init_GLUT::setListener(ISceneListener* &iSceneListener)
+void Init_GLUT::SetListener(ISceneListener* iSceneListener)
 {
 	listener = iSceneListener;
 }

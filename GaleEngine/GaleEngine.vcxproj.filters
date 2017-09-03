@@ -129,6 +129,9 @@
     <ClCompile Include="Physics\Forces\BoundingForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\UIModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Init\Init_GLEW.h">
@@ -198,9 +201,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\GameObjects\Cameras\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\GameObjects\Models\Fragment.h">
@@ -291,6 +291,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Forces\BoundingForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GameObjects\Cameras\PerspectiveCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\IInputListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

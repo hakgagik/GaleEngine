@@ -9,8 +9,7 @@ using namespace std;
 using namespace glm;
 using json = nlohmann::json;
 
-GameObject::GameObject(std::string name) {
-	children = vector<GameObject*>();
+GameObject::GameObject(string name) {
 	this->name = name;
 }
 
@@ -78,19 +77,19 @@ vec3 GameObject::getScale() const {
 	return scale;
 }
 
-void GameObject::setPosition(vec3 pos)
+void GameObject::setPosition(vec3 &pos)
 {
 	this->position = pos;
 	InvalidateMatrices();
 }
 
-void GameObject::setOrientation(quat orientation)
+void GameObject::setOrientation(quat &orientation)
 {
 	this->orientation = orientation;
 	InvalidateMatrices();
 }
 
-void GameObject::setScale(vec3 scale) {
+void GameObject::setScale(vec3 &scale) {
 	this->scale = scale;
 	InvalidateMatrices();
 }

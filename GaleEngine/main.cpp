@@ -15,12 +15,10 @@ int main(int argc, char **argv) {
 	ContextInfo context(4, 3, true);
 	FramebufferInfo frameBufferInfo(true, true, true, true);
 
-	Init_GLUT::init(window, context, frameBufferInfo);
+	Init_GLUT::Init(window, context, frameBufferInfo);
 
-	ISceneListener* scene = &(Scene_Manager::Get());
-	dynamic_cast<Scene_Manager*>(scene)->SetupTestScene();
 	
-	Init_GLUT::setListener(scene);
+	Init_GLUT::SetListener(&(Scene_Manager::Get()));
 
 	//int x, y, z;
 
@@ -28,7 +26,7 @@ int main(int argc, char **argv) {
 	//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &y);
 	//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &z);
 
-	Init_GLUT::run();
+	Init_GLUT::Run();
 
 	return 0;
 }

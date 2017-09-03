@@ -69,6 +69,8 @@ mat4 PerspectiveCamera::GetViewMatrix() {
 
 void PerspectiveCamera::updateLocalMatrices()
 {
+	if (matricesValid) return;
+
 	mat4 worldToParent = inverse(parent->toWorldMatrix);
 	vec3 pTarget = vec3(worldToParent * vec4(target, 1));
 	vec3 pPosition = vec3(worldToParent * vec4(globalPos, 1));
@@ -117,6 +119,7 @@ void PerspectiveCamera::LookAt(vec3 pos, vec3 target, vec3 up) {
 
 void PerspectiveCamera::Orbit(float dPhi, float dTheta, float boundSize)
 {
+	updateLocalMatrices();
 	//updateFrame();
 	vec3 rho = globalPos - target;
 	float distance = length(rho);
@@ -134,36 +137,43 @@ void PerspectiveCamera::Orbit(float dPhi, float dTheta, float boundSize)
 
 	globalPos = target + rho;
 
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//frameUpdated = false;
 }
 
 void PerspectiveCamera::Dolly(float dRho)
 {
+	updateLocalMatrices();
 	//updateFrame();
 	globalPos -= dRho * negGaze;
 	target -= dRho * negGaze;
 
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//update local matrices
 	//frameUpdated = false;
 }
 
 void PerspectiveCamera::Zoom(float zoomFactor)
 {
+	updateLocalMatrices();
 	float tfovy = tan(fovy / 2.0f);
 	tfovy *= zoomFactor;
 	fovy = 2.0f * atan(tfovy);
 	if (fovy > Pi) fovy = Pi - 0.001f;
 	if (fovy <= 0) fovy = 0.001f;
+	InvalidateMatrices();
 }
 
 void PerspectiveCamera::Strafe(float dx, float dy)
 {
+	updateLocalMatrices();
 	//updateFrame();
 	globalPos += right * dx + up * dy;
 	target += right * dx + up * dy;
-	updateLocalMatrices();
+	//updateLocalMatrices();
+	InvalidateMatrices();
 	//frameUpdated = false;
 }
 
