@@ -10,8 +10,9 @@ namespace Core
 	public:
 		DebugOutput();
 		~DebugOutput();
-		//if you want you can rename myCallback; This is just an example
-		static void __stdcall myCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, const void *data);
+		
+		// Callback to gather debug info from the OpenGL context. Fired whenever there's a debug message of any kind.
+		static void __stdcall DebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, const void *data);
 
 	private:
 		//Parsing code from OpenGL Shader Language CookBook SE

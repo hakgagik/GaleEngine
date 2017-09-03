@@ -2,8 +2,13 @@
 #pragma once
 
 namespace Core {
+	// Struct to store info about the current OpenGL context version
 	struct ContextInfo {
-		int major_version, minor_version;
+		// GL major version. Ingored if core is false.
+		int major_version;
+		// GL minor version. Ignored if core is false.
+		int minor_version;
+		// Is this a core version? Or are there extensions?
 		bool core;
 
 		ContextInfo() {

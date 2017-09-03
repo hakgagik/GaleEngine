@@ -9,7 +9,7 @@ using namespace std;
 void Init_GLEW::Init()
 {
 	glewExperimental = true;
-	if (glewInit() == GLEW_OK) cout << "GLEW: Initialize" << endl;
+	if (glewInit() == GLEW_OK) cout << "GLEW: Initialized" << endl;
 	if (glewIsSupported("GL_VERSION_4_5")) cout << "GLEW GL_VERSION_4_5 is 4.5\n";
 	else cout << "GLEW GL_VERSION_4_5 not supported\n";
 }

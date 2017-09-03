@@ -44,12 +44,12 @@ void Init_GLUT::Init(const WindowInfo & window, const ContextInfo & context, con
 	glutInitContextFlags(GLUT_DEBUG); // enable debugging
 	glutCreateWindow(window.name.c_str()); // finally create the window
 
-	cout << "GLUT: initialized" << endl;
+	cout << "GLUT: Initialized" << endl;
 
 	glEnable(GL_DEBUG_OUTPUT);
 	// now intialize glew
 	Init_GLEW::Init();
-	glDebugMessageCallback((GLDEBUGPROC)DebugOutput::myCallback, NULL);
+	glDebugMessageCallback((GLDEBUGPROC)DebugOutput::DebugMessageCallback, NULL);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
 	// set the callback functions
@@ -68,6 +68,7 @@ void Init_GLUT::Init(const WindowInfo & window, const ContextInfo & context, con
 }
 
 void Init_GLUT::Run() {
+	cout << "GLUT:\tStart Running " << endl;
 	listener->NotifySceneInit();
 	glutMainLoop();
 

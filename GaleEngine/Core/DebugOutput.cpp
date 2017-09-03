@@ -9,10 +9,11 @@ DebugOutput::DebugOutput() {}
 
 DebugOutput::~DebugOutput() {}
 
-void Core::DebugOutput::myCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * msg, const void * data)
+void Core::DebugOutput::DebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * msg, const void * data)
 {
+	// Ingore notifications
 	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;
-	//display warnings/errors however you like
+	//display warnings/errors
 	cout << "\n**********Debug Output**************" << endl;
 	cout << "source: " << getStringForSource(source).c_str() << endl;
 	cout << "type: " << getStringForType(type).c_str() << endl;
@@ -23,7 +24,6 @@ void Core::DebugOutput::myCallback(GLenum source, GLenum type, GLuint id, GLenum
 
 string DebugOutput::getStringForType(GLenum type)
 {
-
 	switch (type)
 	{
 	case GL_DEBUG_TYPE_ERROR:
