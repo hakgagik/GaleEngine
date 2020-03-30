@@ -453,18 +453,17 @@ void Scene_Manager::setupTestScene()
 	pauseFrame = false;
 	stepFrame = false;
 	headNode->UpdateMatrices();
-	//SaveSceneToJSON("JSON\\testScedne.json");
 
 	//Build test cloth
-	Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
-	clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
-	clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
+	//Model* clothModel = Model_Manager::Get().PromoteToModel(Model_Manager::Get().GetRectCopy("ClothModel"));
+	//clothModel->AddToSceneTree(headNode, vec3(0, 0, 1), norot, vec3(1, 1, 1), true);
+	//clothModel->SetFragmentMat("Main", triangle->GetFragmentMat("Main"));
 
-	headNode->UpdateMatrices();
+	//headNode->UpdateMatrices();
 
 	//Continue building test cloth
-	Cloth* cloth = new Cloth(clothModel, 0, 200);
-	Physics_Manager::Get().AddPhysicsObject(cloth);
+	//Cloth* cloth = new Cloth(clothModel, 0, 200);
+	//Physics_Manager::Get().AddPhysicsObject(cloth);
 	
 	//Create physics forces
 	Force* gravity = new ConstantForce(vec3(0, 0, -9.81f));
@@ -506,7 +505,7 @@ void Scene_Manager::setupTestScene()
 	// Add forces to any PhysicsObjects
 	for (auto kv : Physics_Manager::Get().ForceList) {
 		fluid->AddForce(kv.first, kv.second);
-		cloth->AddForce(kv.first, kv.second);
+		//cloth->AddForce(kv.first, kv.second);
 	}
 
 
@@ -518,10 +517,11 @@ void Scene_Manager::setupTestScene()
 	stepPhysics = false;
 	Physics_Manager::Get().InitializeParticles();
 	//TODO: InitializeParticles should respect fixed particles
-	cloth->FixParticle(0);
-	cloth->FixParticle(10);
-	cloth->FixParticle(110);
-	cloth->FixParticle(120);
+	//cloth->FixParticle(0);
+	//cloth->FixParticle(10);
+	//cloth->FixParticle(110);
+	//cloth->FixParticle(120);
+
 	Physics_Manager::Get().Transmute();
 }
 
